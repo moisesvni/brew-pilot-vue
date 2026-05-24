@@ -1,0 +1,26 @@
+{
+  "name": "brew-pilot-vue",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@quasar/extras": "^1.18.0",
+    "axios": "^1.16.1",
+    "pinia": "^3.0.4",
+    "quasar": "^2.19.3",
+    "vue-router": "^5.0.7"
+  },
+  "devDependencies": {
+    "@quasar/app-vite": "^2.4.1",
+    "@vitejs/plugin-vue": "^6.0.7",
+    "typescript": "^6.0.3",
+    "vite": "^8.0.14",
+    "vue": "^3.5.34"
+  }
+}

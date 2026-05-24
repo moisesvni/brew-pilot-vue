@@ -1,0 +1,316 @@
+{
+  "srmColors": [
+    { "srmMin": 2,  "srmMax": 3,  "name": "Palha",                       "hex": "#F7E697" },
+    { "srmMin": 3,  "srmMax": 4,  "name": "Amarelo",                     "hex": "#ECD26E" },
+    { "srmMin": 5,  "srmMax": 6,  "name": "Dourado",                     "hex": "#D4A830" },
+    { "srmMin": 6,  "srmMax": 9,  "name": "Âmbar",                       "hex": "#BF7A15" },
+    { "srmMin": 10, "srmMax": 14, "name": "Âmbar profundo / Cobre leve", "hex": "#9A4A08" },
+    { "srmMin": 14, "srmMax": 17, "name": "Cobre",                       "hex": "#7D2E04" },
+    { "srmMin": 17, "srmMax": 18, "name": "Cobre profundo / Marrom claro","hex": "#651E02" },
+    { "srmMin": 19, "srmMax": 22, "name": "Marrom",                      "hex": "#4E1001" },
+    { "srmMin": 22, "srmMax": 30, "name": "Marrom profundo",             "hex": "#370800" },
+    { "srmMin": 30, "srmMax": 35, "name": "Marrom muito profundo",       "hex": "#220400" },
+    { "srmMin": 30, "srmMax": 40, "name": "Preto",                       "hex": "#120100" },
+    { "srmMin": 40, "srmMax": 99, "name": "Preto opaco",                 "hex": "#050000" }
+  ],
+
+  "styleAttributeTags": {
+    "session-strength":   { "label": "Teor Alcoólico Leve",       "category": "strength",     "abvMax": 4,                "meaning": "<4% ABV",                                      "descriptionPt": "<4% vol." },
+    "standard-strength":  { "label": "Teor Alcoólico Padrão",     "category": "strength",     "abvMin": 4,  "abvMax": 6,  "meaning": "4-6% ABV",                                     "descriptionPt": "4-6% vol." },
+    "high-strength":      { "label": "Teor Alcoólico Alto",       "category": "strength",     "abvMin": 6,  "abvMax": 9,  "meaning": "6-9% ABV",                                     "descriptionPt": "6-9% vol." },
+    "very-high-strength": { "label": "Teor Alcoólico Muito Alto", "category": "strength",     "abvMin": 9,               "meaning": ">9% ABV",                                      "descriptionPt": ">9% vol." },
+
+    "pale-color":         { "label": "Cor Clara",                 "category": "color",        "srmMin": 2,  "srmMax": 6,  "meaning": "straw to gold",                                "descriptionPt": "Palha a dourado" },
+    "amber-color":        { "label": "Cor Âmbar",                 "category": "color",        "srmMin": 7,  "srmMax": 17, "meaning": "amber to copper-brown",                        "descriptionPt": "Âmbar a cobre amarronzado" },
+    "dark-color":         { "label": "Cor Escura",                "category": "color",        "srmMin": 22,              "meaning": "dark brown to black",                          "descriptionPt": "Marrom escuro a preto" },
+
+    "top-fermented":      { "label": "Alta Fermentação",          "category": "fermentation",                            "meaning": "ale yeast",                                    "descriptionPt": "Levedura tipo ale" },
+    "bottom-fermented":   { "label": "Baixa Fermentação",         "category": "fermentation",                            "meaning": "lager yeast",                                  "descriptionPt": "Levedura tipo lager" },
+    "any-fermentation":   { "label": "Qualquer Fermentação",      "category": "fermentation",                            "meaning": "ale yeast or lager yeast",                     "descriptionPt": "Levedura ale ou lager" },
+    "wild-fermented":     { "label": "Fermentação Selvagem",      "category": "fermentation",                            "meaning": "non-Saccharomyces yeast/bacteria",             "descriptionPt": "Levedura não-Saccharomyces / bactérias" },
+    "lagered":            { "label": "Condicionada a Frio",       "category": "fermentation",                            "meaning": "cold conditioned",                             "descriptionPt": "Condicionamento a frio" },
+    "aged":               { "label": "Maturada",                  "category": "fermentation",                            "meaning": "long conditioning before release",             "descriptionPt": "Maturação longa" },
+
+    "british-isles":      { "label": "Ilhas Britânicas",          "category": "region",                                  "meaning": "England, Wales, Scotland, Ireland",            "descriptionPt": "Inglaterra, País de Gales, Escócia, Irlanda" },
+    "western-europe":     { "label": "Europa Ocidental",          "category": "region",                                  "meaning": "Belgium, France, Netherlands",                 "descriptionPt": "Bélgica, França, Holanda" },
+    "central-europe":     { "label": "Europa Central",            "category": "region",                                  "meaning": "Germany, Austria, Czech Republic, Scandinavia","descriptionPt": "Alemanha, Áustria, República Tcheca, Escandinávia" },
+    "eastern-europe":     { "label": "Europa Oriental",           "category": "region",                                  "meaning": "Poland, Baltic States, Russia",                "descriptionPt": "Polônia, Estados Bálticos, Rússia" },
+    "north-america":      { "label": "América do Norte",          "category": "region",                                  "meaning": "United States, Canada, Mexico",                "descriptionPt": "Estados Unidos, Canadá, México" },
+    "south-america":      { "label": "América do Sul",            "category": "region",                                  "meaning": "Argentina, Brazil",                            "descriptionPt": "Argentina, Brasil" },
+    "pacific":            { "label": "Pacífico",                  "category": "region",                                  "meaning": "Australia, New Zealand",                       "descriptionPt": "Austrália, Nova Zelândia" },
+
+    "ipa-family":         { "label": "Família IPA",               "category": "family",                                  "meaning": "",                                             "descriptionPt": "" },
+    "brown-ale-family":   { "label": "Família Brown Ale",         "category": "family",                                  "meaning": "",                                             "descriptionPt": "" },
+    "pale-ale-family":    { "label": "Família Pale Ale",          "category": "family",                                  "meaning": "",                                             "descriptionPt": "" },
+    "pale-lager-family":  { "label": "Família Pale Lager",        "category": "family",                                  "meaning": "",                                             "descriptionPt": "" },
+    "pilsner-family":     { "label": "Família Pilsner",           "category": "family",                                  "meaning": "",                                             "descriptionPt": "" },
+    "amber-ale-family":   { "label": "Família Amber Ale",         "category": "family",                                  "meaning": "",                                             "descriptionPt": "" },
+    "amber-lager-family": { "label": "Família Amber Lager",       "category": "family",                                  "meaning": "",                                             "descriptionPt": "" },
+    "dark-lager-family":  { "label": "Família Dark Lager",        "category": "family",                                  "meaning": "",                                             "descriptionPt": "" },
+    "porter-family":      { "label": "Família Porter",            "category": "family",                                  "meaning": "",                                             "descriptionPt": "" },
+    "stout-family":       { "label": "Família Stout",             "category": "family",                                  "meaning": "",                                             "descriptionPt": "" },
+    "bock-family":        { "label": "Família Bock",              "category": "family",                                  "meaning": "",                                             "descriptionPt": "" },
+    "strong-ale-family":  { "label": "Família Strong Ale",        "category": "family",                                  "meaning": "",                                             "descriptionPt": "" },
+    "wheat-beer-family":  { "label": "Família Wheat Beer",        "category": "family",                                  "meaning": "",                                             "descriptionPt": "" },
+    "specialty-beer":     { "label": "Cerveja de Especialidade",  "category": "family",                                  "meaning": "",                                             "descriptionPt": "" },
+
+    "craft-style":        { "label": "Cerveja Artesanal",         "category": "era",                                     "meaning": "developed in the modern craft beer era",       "descriptionPt": "Desenvolvido na era da cerveja artesanal moderna" },
+    "traditional-style":  { "label": "Cerveja Tradicional",       "category": "era",                                     "meaning": "developed before the modern craft beer era",   "descriptionPt": "Desenvolvido antes da era da cerveja artesanal moderna" },
+    "historical-style":   { "label": "Cerveja Histórica",         "category": "era",                                     "meaning": "no longer made, or very limited production",   "descriptionPt": "Não é mais fabricado ou uma produção muito limitada" },
+
+    "malty":    { "label": "Maltado",      "category": "flavor", "meaning": "malt-forward flavor",                                    "descriptionPt": "Malte em primeiro plano" },
+    "bitter":   { "label": "Amargo",       "category": "flavor", "meaning": "bitter-forward flavor",                                  "descriptionPt": "Amargor em primeiro plano" },
+    "balanced": { "label": "Equilibrado",  "category": "flavor", "meaning": "similar malt and bitter intensity",                      "descriptionPt": "Equilíbrio na intensidade de malte e amargor" },
+    "hoppy":    { "label": "Lupulado",     "category": "flavor", "meaning": "hop flavor",                                             "descriptionPt": "Sabor de lúpulo" },
+    "roasty":   { "label": "Tostado",      "category": "flavor", "meaning": "roasted malt or grain",                                  "descriptionPt": "Malte ou grãos tostados" },
+    "sweet":    { "label": "Adocicado",    "category": "flavor", "meaning": "noticeable residual sweetness or sugar flavor",          "descriptionPt": "Residual doce aparente ou sabor de açúcar" },
+    "smoke":    { "label": "Defumado",     "category": "flavor", "meaning": "flavor of smoked malt or grain",                         "descriptionPt": "Sabor de malte ou grãos defumado" },
+    "sour":     { "label": "Ácido",        "category": "flavor", "meaning": "noticeable sourness or intentionally elevated acidity",  "descriptionPt": "Acidez aparente ou acidez intencionalmente elevada" },
+    "wood":     { "label": "Amadeirado",   "category": "flavor", "meaning": "wood or barrel age character",                           "descriptionPt": "Característica de madeira ou maturação em barril" },
+    "fruit":    { "label": "Frutado",      "category": "flavor", "meaning": "noticeable flavor or aroma of fruit",                    "descriptionPt": "Aroma ou sabor aparente de fruta" },
+    "spice":    { "label": "Condimentado", "category": "flavor", "meaning": "noticeable flavor or aroma of spices",                   "descriptionPt": "Aroma ou sabor aparente de especiarias" }
+  },
+
+  "glossary": [
+    {
+      "key": "american-hops",
+      "term": "Lúpulos Americanos",
+      "category": "hops",
+      "definition": "Lúpulos americanos da era das cervejas artesanais, normalmente cítricos, resinosos, pinho ou de características similares. Os lúpulos mais modernos podem ter características de drupas, bagas, frutas tropicais e melão."
+    },
+    {
+      "key": "continental-hops",
+      "term": "Lúpulos Continentais / Velho Mundo",
+      "category": "hops",
+      "definition": "Lúpulos europeus tradicionais, incluindo lúpulos alemães e checos tradicionais, lúpulos ingleses e outras variedades da Europa continental. Normalmente descritos como florais, condimentados, herbais ou terrosos; normalmente menos intensos que os lúpulos do novo mundo."
+    },
+    {
+      "key": "new-world-hops",
+      "term": "Lúpulos do Novo Mundo",
+      "category": "hops",
+      "definition": "Lúpulos americanos, incluindo os da Austrália, Nova Zelândia e outros locais fora o velho mundo. Podem ter todos os atributos dos lúpulos americanos clássicos, além de frutas tropicais, drupas, uva branca e outras características aromáticas interessantes."
+    },
+    {
+      "key": "noble-hops",
+      "term": "Lúpulos Alemães ou Checos Tradicionais",
+      "category": "hops",
+      "definition": "Também chamados de lúpulos nobres ou autóctones (landrace). Comumente com caráter sutil, leve floral, condimentado ou herbal. Variedades clássicas ao invés de lúpulos modernos e mais agressivos."
+    },
+    {
+      "key": "dry-hopping",
+      "term": "Dry-Hopping",
+      "category": "hops",
+      "definition": "Adição de lúpulo realizada após a fervura que traz à cerveja um aroma fresco e vívido de lúpulo. Não deve ser gramíneo, vegetal, oxidado, parecido com queijo ou ter caráter de velho. Fresco e jovem, não cozido."
+    },
+    {
+      "key": "juicy",
+      "term": "Juicy",
+      "category": "hops",
+      "definition": "Termo moderno utilizado para descrever lúpulos com característica lembrando suco de frutas frescas, especialmente de frutas tropicais. Possui outros significados como 'dará água na boca' ou 'úmido', que não se aplicam à cerveja."
+    },
+    {
+      "key": "biscuit",
+      "term": "Biscoito",
+      "category": "malt",
+      "definition": "Seco, cereais tostados, farinha de trigo ou sabor de massa lembrando biscoitos ou cookies digestivos ingleses. Para cerveja, um sabor normalmente associado com o malte Biscuit e alguns maltes ingleses tradicionais."
+    },
+    {
+      "key": "maillard",
+      "term": "Produtos de Maillard",
+      "category": "malt",
+      "definition": "Grupo de compostos produzidos por interação complexa entre açúcares e aminoácidos em altas temperaturas, resultando em cores marrons e compostos ricos, maltados e às vezes remetendo à carne. Nas versões anteriores do guia, tratados como melanoidina."
+    },
+    {
+      "key": "munich-malt",
+      "term": "Malte Munique",
+      "category": "malt",
+      "definition": "Pode trazer pão e caráter de malte rico que amplia o perfil do malte na cerveja sem adicionar dulçor residual. Maltes Munique mais escuros podem adicionar caráter intenso de malte tostado, similar à casca de pão tostada."
+    },
+    {
+      "key": "pilsner-malt",
+      "term": "Malte Pilsner / Pilsen",
+      "category": "malt",
+      "definition": "Malte Pilsner continental bastante distinto com caráter levemente adocicado, lembrando cereais leves, levemente tostado e semelhante à mel. Possui mais precursores de DMS que outros maltes e seu uso pode resultar em um baixo sabor de milho de DMS."
+    },
+    {
+      "key": "vienna-malt",
+      "term": "Malte Vienna",
+      "category": "malt",
+      "definition": "Pode trazer caráter de malte de pão com tosta, mas as notas tostadas não são extremas — mais como a crosta de um pão recém assado do que pão tostado."
+    },
+    {
+      "key": "pome-fruit",
+      "term": "Frutas de Pomo",
+      "category": "malt",
+      "definition": "Maçã, pera, marmelo. A classificação botânica contém outras frutas, mas essas são as mais comuns."
+    },
+    {
+      "key": "drupes",
+      "term": "Drupas",
+      "category": "malt",
+      "definition": "Frutas carnudas com um único caroço, como por exemplo cereja, ameixa, pêssego, damasco, manga, etc."
+    },
+    {
+      "key": "bubblegum",
+      "term": "Goma de Mascar (Bubblegum)",
+      "category": "yeast",
+      "definition": "Refere-se ao perfil de sabor do chiclete Bazooka original, uma goma de mascar rosa; sabor que lembra um mix de frutas doces dominado por banana e morango com sabor de ponche de frutas."
+    },
+    {
+      "key": "clean-fermentation",
+      "term": "Perfil de Fermentação Limpa",
+      "category": "yeast",
+      "definition": "Caráter contendo de muito baixo a nenhum subproduto de fermentação na cerveja final; normalmente implica que não há ésteres, diacetil, acetaldeído ou compostos similares, exceto quando especificamente informado."
+    },
+    {
+      "key": "kveik",
+      "term": "Kveik",
+      "category": "yeast",
+      "definition": "Tradicionalmente, um blend de leveduras da Noruega utilizadas para produção de farmhouse ales, normalmente disponíveis como uma cepa única. Não é um estilo de cerveja."
+    },
+    {
+      "key": "acetic-character",
+      "term": "Caráter Acético",
+      "category": "mixed-fermentation",
+      "definition": "Parecido com vinagre, pungente; não é uma acidez limpa."
+    },
+    {
+      "key": "brett",
+      "term": "Brett",
+      "category": "mixed-fermentation",
+      "definition": "Abreviação para Brettanomyces, gênero de levedura de alta atenuação utilizado para produzir sabores complexos frutados, florais e frequentemente funky (couro, suor, estábulo, pelego). Significa literalmente 'fungo britânico'."
+    },
+    {
+      "key": "lab",
+      "term": "LAB / BAL",
+      "category": "mixed-fermentation",
+      "definition": "Abreviação de Bactéria Ácido Lática, inclui Lactobacillus, Pediococcus e outros da família Lactobacillaceae. Termo mais amplo para identificar a origem da acidez lática."
+    },
+    {
+      "key": "lacto",
+      "term": "Lacto",
+      "category": "mixed-fermentation",
+      "definition": "Abreviação de Lactobacillus."
+    },
+    {
+      "key": "pedio",
+      "term": "Pedio",
+      "category": "mixed-fermentation",
+      "definition": "Abreviação de Pediococcus."
+    },
+    {
+      "key": "sacch",
+      "term": "Sacch",
+      "category": "mixed-fermentation",
+      "definition": "Abreviação de Saccharomyces."
+    },
+    {
+      "key": "ropiness",
+      "term": "Ropiness / Ropey",
+      "category": "mixed-fermentation",
+      "definition": "Sensação na boca onde a cerveja desenvolve um aumento em sua viscosidade e se apresenta densa e xaroposa. Causa mais comum é a ação de diversas bactérias, sendo a Pedio a mais comum. A presença de Brett reduz esta viscosidade com o tempo."
+    },
+    {
+      "key": "thp",
+      "term": "THP (Tetrahidropiridina)",
+      "category": "mixed-fermentation",
+      "definition": "Normalmente produzida por Lacto ou Brett. Em níveis baixos apresenta característica de cereal, lembrando aveia/cereais tostados. Em altos níveis pode ser percebida como gaiola de roedores ou similar à urina. A THP aumenta com exposição ao oxigênio, mas a Brett ativa reduzirá com o tempo. Sempre uma falha."
+    },
+    {
+      "key": "clean-acidity",
+      "term": "Acidez Limpa",
+      "category": "mixed-fermentation",
+      "definition": "Descritor da qualidade da acidez que implica que a acidez não possui vinagre, funk complexo ou notas excessivas. Normalmente utilizado para descrever uma acidez lática vivaaz e de boa qualidade."
+    },
+    {
+      "key": "ethyl-acetate",
+      "term": "Acetato de Etila",
+      "category": "mixed-fermentation",
+      "definition": "Éster proveniente da fermentação formado por ácido acético e etanol. Em baixos níveis é frutado como pera, abacaxi ou bagas; em altos níveis é definitivamente uma falha com aroma de solvente ou esmalte."
+    },
+    {
+      "key": "indole",
+      "term": "Indole",
+      "category": "mixed-fermentation",
+      "definition": "Formado por contaminação por bactérias coliformes durante a fermentação. Frequentemente associado à produção simultânea de DMS. Aroma de fezes, fazenda suja ou fazenda de porco. Em níveis mais baixos pode ser jasmim ou floral. Sempre uma falha."
+    },
+    {
+      "key": "adjunct-character",
+      "term": "Característica de Adjunto",
+      "category": "off-flavor",
+      "definition": "Característica presente no aroma, sabor e sensação na boca que reflete o uso de porcentagens maiores de fermentescíveis não malteados. Pode estar presente com caráter de milho e um corpo mais leve. Não necessariamente implica o uso de um adjunto específico."
+    },
+    {
+      "key": "drinkability",
+      "term": "Drinkability",
+      "category": "off-flavor",
+      "definition": "Pertinente à facilidade associada ao beber a cerveja (também chamada de 'tomabilidade', 'bebabilidade'). Existe consenso em utilizar a palavra em sua forma original, assim como 'dry hopping' ou 'funky'."
+    },
+    {
+      "key": "balanced-quality",
+      "term": "Equilibrada",
+      "category": "off-flavor",
+      "definition": "Relativo a um estilo; implica agradável, harmonioso, condizente, uma combinação complementar de todos os elementos. Não implica um mesmo nível de todos os elementos presentes — é uma medida da coordenação apropriada dos elementos que constituem o sabor."
+    },
+    {
+      "key": "clean",
+      "term": "Limpa",
+      "category": "off-flavor",
+      "definition": "Ausente de off flavors/defeitos sensoriais. Termo positivo."
+    },
+    {
+      "key": "crisp",
+      "term": "Crisp",
+      "category": "off-flavor",
+      "definition": "Uma mudança rápida e abrupta na sensação na boca de uma cerveja indo de suave para uma sensação aguda, levando a um final seco. Normalmente um termo positivo. Normalmente se refere ao final das lagers leves. Não existe uma boa palavra que traduza o termo em português."
+    },
+    {
+      "key": "dms",
+      "term": "DMS (Dimetilsulfureto)",
+      "category": "off-flavor",
+      "definition": "Pode se apresentar com características bastante diversas. A maioria é inapropriada em qualquer estilo; no entanto, um sutil caráter de milho cozido pode estar presente e é aceitável em cervejas com alto nível de malte Pilsen."
+    },
+    {
+      "key": "dry",
+      "term": "Seco",
+      "category": "off-flavor",
+      "definition": "Mesma utilização do vinho: sem percepção de dulçor; bem atenuado. Obviamente não quer dizer 'o oposto de molhado' neste contexto."
+    },
+    {
+      "key": "elegant",
+      "term": "Elegante",
+      "category": "off-flavor",
+      "definition": "Macio, saboroso, refinado, um caráter agradável que indica o uso de ingredientes de alta qualidade manuseados com cautela; sem elementos sobressalentes desagradáveis, sabores agressivos e sensações que agridem o palato."
+    },
+    {
+      "key": "harsh",
+      "term": "Harsh",
+      "category": "off-flavor",
+      "definition": "Quando aplicado à cerveja, uma textura, sabor ou retrogosto que é desagradável, agressivo, intenso. Sinônimos: áspero, acre, abrasivo. Pode implicar adstringência. Indica o oposto de macio, limpo e agradável. Negativo."
+    },
+    {
+      "key": "funky",
+      "term": "Funky",
+      "category": "off-flavor",
+      "definition": "Termo positivo ou negativo dependendo do contexto. Se esperado ou desejável, pode manifestar-se como caráter de celeiro, feno molhado, sutil terroso, pelego ou curral. Quando muito intenso, inesperado ou indesejável pode ter caráter de silagem, fecal, fralda de bebê ou baia de cavalo."
+    },
+    {
+      "key": "rustic",
+      "term": "Rústico",
+      "category": "off-flavor",
+      "definition": "Grosseiro, caráter robusto remanescente de ingredientes tradicionais, mais velhos. Uma experiência sensorial menos refinada de modo geral."
+    },
+    {
+      "key": "belgian-lace",
+      "term": "Renda Belga (Belgian Lace)",
+      "category": "appearance",
+      "definition": "Característica do padrão de treliça persistente formado pela espuma no interior do copo conforme a cerveja é consumida. O visual lembra o belo trabalho com rendas belgas e é considerado um indicador desejável da qualidade da cerveja."
+    },
+    {
+      "key": "legs",
+      "term": "Pernas / Lágrimas",
+      "category": "appearance",
+      "definition": "Padrão que uma bebida deixa no lado de dentro do copo após uma porção ter sido consumida; gotas que escorrem vagarosamente das paredes do copo deixando rastros. Não é um indicador de qualidade, mas pode indicar um volume mais alto de álcool, açúcar ou glicerol."
+    }
+  ]
+}

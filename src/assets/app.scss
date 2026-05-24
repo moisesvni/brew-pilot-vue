@@ -1,0 +1,49 @@
+// Variáveis de cor BrewPilotApi
+$primary:   #e8a020;
+$secondary: #1e3a5f;
+$accent:    #f4c842;
+$dark:      #1a1a2e;
+
+// Fontes
+$body-font-size: 14px;
+$body-line-height: 1.5;
+
+// Utilitários globais
+.text-amber { color: $primary !important; }
+.bg-dark-page { background-color: #111827 !important; }
+
+// Cards de receita
+.recipe-card {
+  border-radius: 12px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  }
+}
+
+// Barras de comparação de estilo
+.style-bar-container {
+  position: relative;
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.1);
+
+  .style-bar-range {
+    position: absolute;
+    height: 100%;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  .style-bar-value {
+    position: absolute;
+    width: 3px;
+    height: 10px;
+    border-radius: 1.5px;
+    top: -2px;
+    background: $primary;
+    transition: left 0.3s ease;
+  }
+}
