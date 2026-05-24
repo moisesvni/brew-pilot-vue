@@ -1,5 +1,6 @@
 import { createApp } from 'vue'
 import { Quasar, Notify, Dialog, Loading, LocalStorage } from 'quasar'
+import * as QuasarAll from 'quasar'
 import { createPinia } from 'pinia'
 import router from './router'
 import App from './App.vue'
@@ -7,7 +8,7 @@ import App from './App.vue'
 // Quasar styles
 import '@quasar/extras/material-icons/material-icons.css'
 import '@quasar/extras/mdi-v7/mdi-v7.css'
-import 'quasar/src/css/index.sass'
+import 'quasar/dist/quasar.css'
 
 import './assets/app.scss'
 
@@ -16,6 +17,8 @@ const app = createApp(App)
 app.use(createPinia())
 app.use(router)
 app.use(Quasar, {
+  components: QuasarAll,
+  directives: QuasarAll,
   plugins: { Notify, Dialog, Loading, LocalStorage },
   config: {
     dark: 'auto',
@@ -36,4 +39,6 @@ app.use(Quasar, {
   }
 })
 
-app.mount('#app')
+router.isReady().then(() => {
+  app.mount('#app')
+})

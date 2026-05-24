@@ -2,18 +2,25 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import { useAuthStore } from '../stores/authStore'
 
 const routes = [
-  // ── Rotas públicas (sem layout) ────────────────────────────────────────────
+  // ── Rotas públicas (com AuthLayout) ────────────────────────────────────────
   {
-    path: '/login',
-    name: 'Login',
-    component: () => import('../pages/auth/LoginPage.vue'),
-    meta: { title: 'Login', public: true }
-  },
-  {
-    path: '/register',
-    name: 'Register',
-    component: () => import('../pages/auth/RegisterPage.vue'),
-    meta: { title: 'Cadastro', public: true }
+    path: '/',
+    component: () => import('../layouts/AuthLayout.vue'),
+    meta: { public: true },
+    children: [
+      {
+        path: 'login',
+        name: 'Login',
+        component: () => import('../pages/auth/LoginPage.vue'),
+        meta: { title: 'Login', public: true }
+      },
+      {
+        path: 'register',
+        name: 'Register',
+        component: () => import('../pages/auth/RegisterPage.vue'),
+        meta: { title: 'Cadastro', public: true }
+      }
+    ]
   },
 
   // ── Rotas protegidas (com layout) ──────────────────────────────────────────
