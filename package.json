@@ -3,7 +3,14 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "vite --port 4200",
+    "dev": "vite --port 4200",
+    "build": "vite build",
+    "build:dev": "cross-env MODE=dev vite build",
+    "build:prd": "cross-env MODE=prd vite build",
+    "preview": "vite preview --port 4200",
+    "type-check": "vue-tsc --noEmit",
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
   },
   "keywords": [],
   "author": "",
