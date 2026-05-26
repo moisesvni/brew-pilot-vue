@@ -1,8 +1,8 @@
 <template>
   <q-layout view="hHh lpR fFf">
     <!-- ── Header ──────────────────────────────────────────────────────────── -->
-    <q-header class="bg-dark" height-hint="64"
-      style="border-bottom: 1px solid rgba(193,113,14,0.2)">
+    <q-header class="bp-editor-toolbar" height-hint="64"
+      style="border-bottom: 1px solid var(--bp-border)">
       <q-toolbar class="GNL__toolbar">
         <q-btn flat dense round icon="menu" aria-label="Menu" class="q-mr-sm"
           @click="toggleLeftDrawer" />

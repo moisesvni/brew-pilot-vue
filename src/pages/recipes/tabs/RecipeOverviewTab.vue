@@ -66,7 +66,7 @@
                 </q-btn>
               </div>
             </div>
-            <q-separator dark class="q-mb-xs" />
+            <q-separator class="q-mb-xs" />
 
             <!-- Dados do lote — texto compacto -->
             <div class="column q-gutter-none">
@@ -251,8 +251,8 @@ const styleDialog = ref(false)
 
 <style scoped>
 .card-dark {
-  background: rgba(255, 255, 255, 0.03) !important;
-  border-color: rgba(255, 255, 255, 0.08) !important;
+  background: var(--bp-card-bg) !important;
+  border-color: var(--bp-card-border) !important;
 }
 
 .recipe-thumb {
@@ -286,13 +286,13 @@ const styleDialog = ref(false)
 
 .info-label {
   font-size: 12px;
-  color: #888;
+  color: var(--bp-text-secondary);
   width: 42px;
   flex-shrink: 0;
 }
 
 .info-value {
   font-size: 13px;
-  color: #e0e0e0;
+  color: var(--bp-text-primary);
 }
 </style>

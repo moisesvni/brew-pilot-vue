@@ -2,8 +2,8 @@
   <div class="recipe-section q-mb-sm">
     <!-- Header clicável -->
     <div class="section-header row items-center no-wrap q-px-md q-py-sm cursor-pointer" @click="isOpen = !isOpen">
-      <q-icon :name="icon" :color="iconColor ?? 'amber'" size="18px" class="q-mr-sm" />
-      <span class="text-body2 text-weight-bold text-white">{{ title }}</span>
+      <q-icon :name="icon" :color="iconColor ?? 'primary'" size="18px" class="q-mr-sm" />
+      <span class="text-body2 text-weight-bold bp-section-title">{{ title }}</span>
       <q-badge v-if="badge" color="grey-9" class="q-ml-sm text-grey-4" style="font-size:0.65rem">
         {{ badge }}
       </q-badge>
@@ -53,21 +53,21 @@ const isOpen = ref(props.defaultOpen)
 .recipe-section {
   border-radius: 8px;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  border: 1px solid var(--bp-section-border, rgba(255, 255, 255, 0.07));
 }
 
 .section-header {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--bp-section-header-bg, rgba(255, 255, 255, 0.05));
   user-select: none;
   transition: background 0.15s;
 }
 
 .section-header:hover {
-  background: rgba(255, 255, 255, 0.09);
+  background: var(--bp-section-header-hover, rgba(255, 255, 255, 0.09));
 }
 
 .section-body {
-  background: rgba(0, 0, 0, 0.15);
+  background: var(--bp-section-body-bg, rgba(0, 0, 0, 0.15));
   padding: 12px;
 }
 

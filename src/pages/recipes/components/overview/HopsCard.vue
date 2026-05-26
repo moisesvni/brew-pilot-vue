@@ -35,7 +35,7 @@
 
         <!-- name + AA + dados técnicos -->
         <q-item-section class="q-ml-sm">
-          <q-item-label style="font-size: 12.5px; color: #e0e0e0">
+          <q-item-label style="font-size: 12.5px; color: var(--bp-text-primary)">
             {{ h.name }}
             <q-badge v-if="h.hopForm" :label="h.hopForm" color="grey-8" text-color="grey-4"
               class="q-ml-xs" style="font-size:9px" />
@@ -61,16 +61,16 @@
     </q-list>
 
     <!-- ── Stats ──────────────────────────────────────────────────────────── -->
-    <div class="text-right q-mt-xs" style="font-size: 11px; color: rgba(255,255,255,0.45)">
+    <div class="bp-stats-muted text-right q-mt-xs" style="font-size: 11px">
       <template v-if="hopstandInfo">
-        Hopstand: <strong style="color:#ccc">{{ hopstandInfo }}</strong>
+        Hopstand: <strong class="bp-stats-value">{{ hopstandInfo }}</strong>
         &nbsp;·&nbsp;
       </template>
-      Total de IBU (Tinseth): <strong style="color:#ccc">{{ totalIbu }}</strong>
+      Total de IBU (Tinseth): <strong class="bp-stats-value">{{ totalIbu }}</strong>
       &nbsp;·&nbsp;
-      BU/GU: <strong style="color:#ccc">{{ buGu }}</strong>
+      BU/GU: <strong class="bp-stats-value">{{ buGu }}</strong>
       &nbsp;·&nbsp;
-      RBR: <strong style="color:#ccc">{{ rbr }}</strong>
+      RBR: <strong class="bp-stats-value">{{ rbr }}</strong>
     </div>
 
     <!-- ══════════════════════════════════════════════════════════════════════

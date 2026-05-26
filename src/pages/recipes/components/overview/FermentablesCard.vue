@@ -31,7 +31,7 @@
           </q-item-section>
           <!-- name -->
           <q-item-section class="q-ml-xs">
-            <q-item-label style="font-size: 12.5px; color: #e0e0e0; line-height: 1.3">
+            <q-item-label style="font-size: 12.5px; color: var(--bp-text-primary); line-height: 1.3">
               {{ f.name }}
               <span v-if="f.supplier" class="text-grey-6" style="font-weight: 400"> {{ f.supplier }}</span>
             </q-item-label>
@@ -52,23 +52,23 @@
           :style="{ width: pct(f.amount) + '%', background: ebcToHex(f.colorEbc) }" />
       </div>
       <!-- stats -->
-      <div v-if="stats" class="text-right q-mt-xs" style="font-size: 11px; color: rgba(255,255,255,0.45)">
+      <div v-if="stats" class="bp-stats-muted text-right q-mt-xs" style="font-size: 11px">
         <span style="cursor: help;">
-          <span class="q-mr-sx">OG:</span> <strong style="color:#ccc">{{ stats.og.toFixed(3) }}</strong>
+          <span class="q-mr-sx">OG:</span> <strong class="bp-stats-value">{{ stats.og.toFixed(3) }}</strong>
           <q-tooltip anchor="center right" self="center left" :offset="[6, 0]" class="sbr-tooltip">
             <div class="text-weight-bold">Original Gravity</div>
             <div class="text-grey-4" style="font-size:11px">Densidade Original</div>
           </q-tooltip>
         </span>
         <span style="cursor: help;">
-          <span class="q-mr-sx q-ml-sm">FG:</span> <strong style="color:#ccc">{{ stats.preBoilOg.toFixed(3) }}</strong>
+          <span class="q-mr-sx q-ml-sm">FG:</span> <strong class="bp-stats-value">{{ stats.preBoilOg.toFixed(3) }}</strong>
           <q-tooltip anchor="center right" self="center left" :offset="[6, 0]" class="sbr-tooltip">
             <div class="text-weight-bold">Final Gravity</div>
             <div class="text-grey-4" style="font-size:11px">Densidade Final</div>
           </q-tooltip>
         </span>
         <span style="cursor: help;">
-          <span class="q-mr-sx q-ml-sm">Cor:</span> <strong style="color:#ccc">{{ stats.ebc.toFixed(1) }} EBC</strong>
+          <span class="q-mr-sx q-ml-sm">Cor:</span> <strong class="bp-stats-value">{{ stats.ebc.toFixed(1) }} EBC</strong>
           <q-tooltip anchor="center right" self="center left" :offset="[6, 0]" class="sbr-tooltip">
             <div class="text-weight-bold">Color</div>
             <div class="text-grey-4" style="font-size:11px">Cor da Cerveja</div>

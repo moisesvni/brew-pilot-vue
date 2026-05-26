@@ -1,34 +1,105 @@
-// Variáveis de cor BrewPilotApi
+// ── BrewPilot Design Tokens ──────────────────────────────────────────────────
 $primary:   #c1710e;
-$secondary: #455a64;   // blue-grey neutro
+$secondary: #455a64;
 $accent:    #f4c842;
-$dark:      #181818;   // cinza puro, sem azul
+$dark:      #181818;
 
 // Fontes
 $body-font-size: 14px;
 $body-line-height: 1.5;
 
-// ─── CSS Variables por tema ────────────────────────────────────────────────
+// ─── CSS Variables — Dark ────────────────────────────────────────────────────
 body.body--dark {
-  --bp-page-bg:     #121212;   // grey-10 do Quasar
-  --bp-surface:     #1e1e1e;   // cards, painéis
-  --bp-surface-alt: #252525;   // superfície elevada
-  --bp-drawer-bg:   #161616;   // sidebar (levemente mais escura que a página)
-  --bp-border:      rgba(255, 255, 255, 0.06);
-  --bp-text-muted:  rgba(255, 255, 255, 0.5);
+  color-scheme: dark;
+
+  // Layout
+  --bp-page-bg:     #121212;
+  --bp-surface:     #1e1e1e;
+  --bp-surface-alt: #252525;
+  --bp-drawer-bg:   #161616;
+  --bp-toolbar-bg:  #1e1e1e;   // ← mesmo tom do surface/cards (era bg-dark #181818)
+  --bp-header-bg:   #181818;
+
+  // Bordas
+  --bp-border:    rgba(255, 255, 255, 0.06);
+  --bp-separator: rgba(255, 255, 255, 0.08);
+
+  // Scrollbar
   --bp-scrollbar:   rgba(255, 255, 255, 0.14);
   --bp-scrollbar-h: rgba(255, 255, 255, 0.28);
+
+  // Texto semântico
+  --bp-text-primary:     rgba(255, 255, 255, 0.87);
+  --bp-text-secondary:   rgba(255, 255, 255, 0.55);
+  --bp-text-muted:       rgba(255, 255, 255, 0.38);
+  --bp-text-value:       #cccccc;
+  --bp-text-stats-muted: rgba(255, 255, 255, 0.45);
+  --bp-text-stats-value: #cccccc;
+
+  // Cards
+  --bp-card-bg:     rgba(255, 255, 255, 0.03);
+  --bp-card-border: rgba(255, 255, 255, 0.08);
+
+  // Seção (RecipeSection)
+  --bp-section-header-bg:    rgba(255, 255, 255, 0.05);
+  --bp-section-header-hover: rgba(255, 255, 255, 0.09);
+  --bp-section-body-bg:      rgba(0, 0, 0, 0.18);
+  --bp-section-border:       rgba(255, 255, 255, 0.07);
+  --bp-section-title:        rgba(255, 255, 255, 0.87);
+
+  // Tabs do editor
+  --bp-editor-tabs-bg:   #1e1e1e;
+  --bp-editor-tabs-text: rgba(255, 255, 255, 0.55);
+
+  // Botões neutros (outline nos headers de seção)
+  --bp-btn-neutral: rgba(255, 255, 255, 0.38);
 }
 
+// ─── CSS Variables — Light ────────────────────────────────────────────────────
 body.body--light {
-  --bp-page-bg:     #f0f2f5;
-  --bp-surface:     #ffffff;
-  --bp-surface-alt: #f7f8fa;
-  --bp-drawer-bg:   #ffffff;
-  --bp-border:      rgba(0, 0, 0, 0.08);
-  --bp-text-muted:  rgba(0, 0, 0, 0.5);
-  --bp-scrollbar:   rgba(0, 0, 0, 0.1);
+  color-scheme: light;
+
+  // Layout — fundo quente alinhado com o amber da marca
+  --bp-page-bg:     #F5F0E8;
+  --bp-surface:     #FFFFFF;
+  --bp-surface-alt: #FAF7F2;
+  --bp-drawer-bg:   #FFFFFF;
+  --bp-toolbar-bg:  #FFFFFF;
+  --bp-header-bg:   #FFFFFF;
+
+  // Bordas
+  --bp-border:    rgba(193, 113, 14, 0.15);
+  --bp-separator: rgba(0, 0, 0, 0.08);
+
+  // Scrollbar
+  --bp-scrollbar:   rgba(0, 0, 0, 0.10);
   --bp-scrollbar-h: rgba(0, 0, 0, 0.22);
+
+  // Texto semântico
+  --bp-text-primary:     #1C1A14;
+  --bp-text-secondary:   #705C3A;
+  --bp-text-muted:       rgba(28, 26, 20, 0.45);
+  --bp-text-value:       #2C2018;
+  --bp-text-stats-muted: rgba(80, 60, 28, 0.60);
+  --bp-text-stats-value: #3A2A12;
+
+  // Cards
+  --bp-card-bg:     #FFFFFF;
+  --bp-card-border: rgba(193, 113, 14, 0.15);
+
+  // Seção (RecipeSection) — bege quente, cor de receita/malte
+  --bp-section-header-bg:    #EDE7DC;
+  --bp-section-header-hover: #E3DDD0;
+  --bp-section-body-bg:      #FDFCFA;
+  --bp-section-border:       rgba(193, 113, 14, 0.15);
+  --bp-section-title:        #1C1A14;
+
+  // Tabs do editor
+  --bp-editor-tabs-bg:   #EDE7DC;
+  --bp-editor-tabs-text: #705C3A;
+
+  // Botões neutros
+  --bp-btn-neutral: rgba(107, 91, 64, 0.55);
 }
 // ──────────────────────────────────────────────────────────────────────────
 
@@ -107,16 +178,27 @@ html, body {
   }
 }
 
-// ── Light mode — overrides globais ────────────────────────────────────────
+// ── Light mode — overrides de componentes Quasar e classes globais ───────────
 body.body--light {
+
+  // ── Layout geral ─────────────────────────────────────────────────────────
+  // Header principal
+  .q-header {
+    background: var(--bp-header-bg) !important;
+    border-bottom-color: var(--bp-border) !important;
+    color: var(--bp-text-primary) !important;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  }
+  .q-header .q-btn { color: var(--bp-text-secondary) !important; }
+  .q-header .q-btn:hover { color: var(--bp-text-primary) !important; }
 
   // Sidebar nav items
   .nav-item {
-    color: rgba(0, 0, 0, 0.62) !important;
+    color: var(--bp-text-secondary) !important;
   }
   .nav-item:hover {
-    color: rgba(0, 0, 0, 0.87) !important;
-    background: rgba(0, 0, 0, 0.05) !important;
+    color: var(--bp-text-primary) !important;
+    background: rgba(0, 0, 0, 0.04) !important;
   }
   .nav-item-active {
     color: $primary !important;
@@ -126,29 +208,145 @@ body.body--light {
     color: $primary !important;
   }
 
-  // Breadcrumbs — último item visível
+  // Breadcrumbs
   .brew-breadcrumbs {
-    border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
+    border-bottom: 1px solid var(--bp-border) !important;
   }
   .brew-breadcrumbs .text-white {
-    color: rgba(0, 0, 0, 0.85) !important;
+    color: var(--bp-text-primary) !important;
   }
 
   // Drawer border
   .q-drawer {
-    border-right-color: rgba(0, 0, 0, 0.07) !important;
+    border-right: 1px solid var(--bp-border) !important;
   }
 
-  // RecipeEditor — sub-toolbar e tabs sempre escuros (legível em ambos)
-  // Mantemos bg-dark nos sub-toolbars (parte do conteúdo, não do chrome)
+  // ── Editor toolbar (bp-editor-toolbar) ────────────────────────────────────
+  .bp-editor-toolbar {
+    border-bottom-color: var(--bp-border) !important;
+    .q-input .q-field__native,
+    .q-input .q-field__label {
+      color: var(--bp-text-primary) !important;
+    }
+    .q-btn--flat { color: var(--bp-text-secondary) !important; }
+    .q-btn--flat:hover { color: var(--bp-text-primary) !important; }
+  }
 
-  // Cards de receita em light mode
+  // ── Cards da visão geral (card-dark) ──────────────────────────────────────
   .card-dark {
-    background: #ffffff !important;
-    border-color: rgba(0, 0, 0, 0.1) !important;
+    background: var(--bp-card-bg) !important;
+    border-color: var(--bp-card-border) !important;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.06), 0 2px 12px rgba(0, 0, 0, 0.04) !important;
+    // Texto nos cards
+    .text-grey-2 { color: var(--bp-text-primary) !important; }
+    .text-grey-3 { color: var(--bp-text-value) !important; }
+    .text-grey-4 { color: var(--bp-text-secondary) !important; }
+    .text-grey-5 { color: var(--bp-text-secondary) !important; }
+    .text-grey-6 { color: var(--bp-text-muted) !important; }
+    // Ícones nos cards
+    .q-icon { color: inherit; }
   }
-}
-// ─────────────────────────────────────────────────────────────────────────
 
-// Utilitário: cor primária do texto
+  // ── Quasar inputs dentro do editor ────────────────────────────────────────
+  // q-field com dark prop forçado (nas listas de fermentáveis, lúpulos etc.)
+  .q-field--dark .q-field__control {
+    background: rgba(0, 0, 0, 0.04) !important;
+    border-color: var(--bp-border) !important;
+  }
+  .q-field--dark .q-field__label { color: var(--bp-text-secondary) !important; }
+  .q-field--dark .q-field__native,
+  .q-field--dark .q-field__input { color: var(--bp-text-primary) !important; }
+  .q-field--dark .q-field__marginal { color: var(--bp-text-secondary) !important; }
+
+  // ── Separadores ───────────────────────────────────────────────────────────
+  .q-separator--dark,
+  .q-separator { background: var(--bp-separator) !important; }
+
+  // ── Tab bar do editor ─────────────────────────────────────────────────────
+  .recipe-editor-tabs {
+    background: var(--bp-editor-tabs-bg) !important;
+    color: var(--bp-editor-tabs-text) !important;
+  }
+  .recipe-editor-tabs .q-tab__label,
+  .recipe-editor-tabs .q-tab__icon {
+    color: var(--bp-editor-tabs-text) !important;
+    opacity: 1;
+  }
+  .recipe-editor-tabs .q-tab--active .q-tab__label,
+  .recipe-editor-tabs .q-tab--active .q-tab__icon {
+    color: $primary !important;
+  }
+  .recipe-editor-tabs .q-tab__indicator {
+    background: $primary !important;
+  }
+  .recipe-editor-tabs + .q-separator {
+    background: var(--bp-separator) !important;
+  }
+
+  // ── Barras de estilo ──────────────────────────────────────────────────────
+  .style-bar-container {
+    background: rgba(0, 0, 0, 0.07) !important;
+  }
+  .style-bar-container .style-bar-range {
+    background: rgba(193, 113, 14, 0.20) !important;
+  }
+
+  // ── Botões neutros (outline nos headers de seção) ─────────────────────────
+  .q-btn--outline { border-color: var(--bp-btn-neutral) !important; }
+
+  // ── Badges ────────────────────────────────────────────────────────────────
+  .q-badge.bg-grey-9 {
+    background: var(--bp-surface-alt) !important;
+    color: var(--bp-text-secondary) !important;
+  }
+
+  // ── Listas (q-list + q-item nos cards de seção) ───────────────────────────
+  .recipe-section .q-item {
+    color: var(--bp-text-primary);
+  }
+  .recipe-section .q-item:hover {
+    background: rgba(0, 0, 0, 0.03) !important;
+  }
+  // Corrige texto quase-branco usado nos itens (text-grey-2/3)
+  .recipe-section .text-grey-2,
+  .recipe-section .text-grey-3 {
+    color: var(--bp-text-value) !important;
+  }
+  .recipe-section .text-grey-4,
+  .recipe-section .text-grey-5,
+  .recipe-section .text-grey-6,
+  .recipe-section .text-grey-7 {
+    color: var(--bp-text-secondary) !important;
+  }
+  // Footer de stats nas seções (FermentablesCard, HopsCard)
+  .recipe-section .bp-stats-muted {
+    color: var(--bp-text-stats-muted) !important;
+  }
+  .recipe-section .bp-stats-value {
+    color: var(--bp-text-stats-value) !important;
+  }
+
+  // ── Chip de estatísticas no header do editor ──────────────────────────────
+  .stat-chip-root {
+    background: rgba(193, 113, 14, 0.08) !important;
+    border-color: rgba(193, 113, 14, 0.20) !important;
+  }
+  .stat-chip-root .stat-label,
+  .stat-chip-root .stat-value { color: var(--bp-text-primary) !important; }
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
+// ── Classes utilitárias de tema (uso nos templates Vue) ───────────────────────
+.bp-section-title   { color: var(--bp-section-title); }
+.bp-text-primary    { color: var(--bp-text-primary) !important; }
+.bp-text-secondary  { color: var(--bp-text-secondary) !important; }
+.bp-text-value      { color: var(--bp-text-value) !important; }
+.bp-text-muted      { color: var(--bp-text-muted) !important; }
+.bp-stats-muted     { color: var(--bp-text-stats-muted); }
+.bp-stats-value     { color: var(--bp-text-stats-value); }
+.bp-surface         { background: var(--bp-surface) !important; }
+.bp-surface-alt     { background: var(--bp-surface-alt) !important; }
+.bp-editor-toolbar  { background: var(--bp-toolbar-bg) !important; }
+
+// Utilitário legado
 .text-brand { color: $primary !important; }

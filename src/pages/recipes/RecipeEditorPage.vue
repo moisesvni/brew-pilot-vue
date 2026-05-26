@@ -1,7 +1,7 @@
 <template>
   <q-page class="q-pa-none">
     <!-- Toolbar da receita -->
-    <q-toolbar class="bg-dark q-py-sm" style="border-bottom: 1px solid rgba(255,255,255,0.1)">
+    <q-toolbar class="bp-editor-toolbar q-py-sm" style="border-bottom: 1px solid var(--bp-border)">
       <q-btn flat round dense icon="arrow_back" @click="$router.push('/recipes')" />
       <q-toolbar-title>
         <q-input v-if="recipe" v-model="recipe.name" borderless dense class="text-h6 text-weight-bold"
@@ -52,7 +52,7 @@
     </q-toolbar>
 
     <!-- Abas do editor -->
-    <q-tabs v-model="activeTab" dense class="bg-dark text-grey-5" active-color="primary" indicator-color="primary"
+    <q-tabs v-model="activeTab" dense class="recipe-editor-tabs" active-color="primary" indicator-color="primary"
       align="left">
       <q-tab name="overview" label="Visão Geral" icon="mdi-view-dashboard-outline" />
       <q-tab name="fermentables" label="Fermentáveis" icon="mdi-barley" />
@@ -116,7 +116,7 @@
           </q-chip>
         </div>
         <div class="row q-gutter-sm items-center">
-          <q-input v-model="newTag" dense outlined bg-color="dark" placeholder="Nova tag..." style="max-width:200px"
+          <q-input v-model="newTag" dense outlined placeholder="Nova tag..." style="max-width:200px"
             @keyup.enter="addTag" />
           <q-btn flat dense icon="add" color="primary" @click="addTag" :disable="!newTag.trim()" />
         </div>
@@ -124,7 +124,7 @@
 
       <!-- Notas -->
       <q-tab-panel name="notes" class="q-pa-md">
-        <q-input v-if="recipe" v-model="recipe.notes" type="textarea" label="Notas da receita" outlined dark autogrow
+        <q-input v-if="recipe" v-model="recipe.notes" type="textarea" label="Notas da receita" outlined autogrow
           placeholder="Histórico, observações, sugestões de melhoria..." />
       </q-tab-panel>
     </q-tab-panels>
