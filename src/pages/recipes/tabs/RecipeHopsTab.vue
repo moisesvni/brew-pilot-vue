@@ -60,7 +60,7 @@
       </q-item>
     </q-list>
 
-    <ingredient-picker-dialog v-model="pickerOpen" type="Hop" @add="onAdd" />
+    <hop-picker-dialog v-model="pickerOpen" @add="onAdd" />
   </div>
 </template>
 
@@ -69,7 +69,7 @@ import { ref, computed } from 'vue'
 import { useRecipeStore } from '../../../stores/recipeStore'
 import type { Recipe, RecipeHop, RecipeStats } from '../../../types/recipe'
 import { calculateIbuTinseth, calculateIbuWhirlpool } from '../../../composables/useBrewCalculator'
-import IngredientPickerDialog from '../components/IngredientPickerDialog.vue'
+import HopPickerDialog from '../components/pickers/HopPickerDialog.vue'
 
 const store = useRecipeStore()
 const recipe = computed(() => store.currentRecipe!)

@@ -1,16 +1,75 @@
 // Variáveis de cor BrewPilotApi
-$primary:   #e8a020;
-$secondary: #1e3a5f;
+$primary:   #c1710e;
+$secondary: #455a64;   // blue-grey neutro
 $accent:    #f4c842;
-$dark:      #1a1a2e;
+$dark:      #181818;   // cinza puro, sem azul
 
 // Fontes
 $body-font-size: 14px;
 $body-line-height: 1.5;
 
-// Utilitários globais
-.text-amber { color: $primary !important; }
-.bg-dark-page { background-color: #111827 !important; }
+// ─── CSS Variables por tema ────────────────────────────────────────────────
+body.body--dark {
+  --bp-page-bg:     #121212;   // grey-10 do Quasar
+  --bp-surface:     #1e1e1e;   // cards, painéis
+  --bp-surface-alt: #252525;   // superfície elevada
+  --bp-drawer-bg:   #161616;   // sidebar (levemente mais escura que a página)
+  --bp-border:      rgba(255, 255, 255, 0.06);
+  --bp-text-muted:  rgba(255, 255, 255, 0.5);
+  --bp-scrollbar:   rgba(255, 255, 255, 0.14);
+  --bp-scrollbar-h: rgba(255, 255, 255, 0.28);
+}
+
+body.body--light {
+  --bp-page-bg:     #f0f2f5;
+  --bp-surface:     #ffffff;
+  --bp-surface-alt: #f7f8fa;
+  --bp-drawer-bg:   #ffffff;
+  --bp-border:      rgba(0, 0, 0, 0.08);
+  --bp-text-muted:  rgba(0, 0, 0, 0.5);
+  --bp-scrollbar:   rgba(0, 0, 0, 0.1);
+  --bp-scrollbar-h: rgba(0, 0, 0, 0.22);
+}
+// ──────────────────────────────────────────────────────────────────────────
+
+// ── Layout scroll fix ──────────────────────────────────────────────────────
+html, body {
+  overflow: hidden !important;
+  height: 100%;
+}
+
+.q-page-container {
+  height: 100vh !important;
+  overflow-y: auto !important;
+  box-sizing: border-box !important;
+  background-color: var(--bp-page-bg) !important;
+
+  scrollbar-width: thin;
+  scrollbar-color: var(--bp-scrollbar) transparent;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--bp-scrollbar);
+    border-radius: 3px;
+
+    &:hover {
+      background: var(--bp-scrollbar-h);
+    }
+  }
+}
+
+// bg-dark-page agora responde ao tema
+.bg-dark-page {
+  background-color: var(--bp-drawer-bg) !important;
+}
+// ──────────────────────────────────────────────────────────────────────────
 
 // Cards de receita
 .recipe-card {
@@ -47,3 +106,49 @@ $body-line-height: 1.5;
     transition: left 0.3s ease;
   }
 }
+
+// ── Light mode — overrides globais ────────────────────────────────────────
+body.body--light {
+
+  // Sidebar nav items
+  .nav-item {
+    color: rgba(0, 0, 0, 0.62) !important;
+  }
+  .nav-item:hover {
+    color: rgba(0, 0, 0, 0.87) !important;
+    background: rgba(0, 0, 0, 0.05) !important;
+  }
+  .nav-item-active {
+    color: $primary !important;
+    background: rgba(193, 113, 14, 0.1) !important;
+  }
+  .nav-item-active .q-icon {
+    color: $primary !important;
+  }
+
+  // Breadcrumbs — último item visível
+  .brew-breadcrumbs {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
+  }
+  .brew-breadcrumbs .text-white {
+    color: rgba(0, 0, 0, 0.85) !important;
+  }
+
+  // Drawer border
+  .q-drawer {
+    border-right-color: rgba(0, 0, 0, 0.07) !important;
+  }
+
+  // RecipeEditor — sub-toolbar e tabs sempre escuros (legível em ambos)
+  // Mantemos bg-dark nos sub-toolbars (parte do conteúdo, não do chrome)
+
+  // Cards de receita em light mode
+  .card-dark {
+    background: #ffffff !important;
+    border-color: rgba(0, 0, 0, 0.1) !important;
+  }
+}
+// ─────────────────────────────────────────────────────────────────────────
+
+// Utilitário: cor primária do texto
+.text-brand { color: $primary !important; }

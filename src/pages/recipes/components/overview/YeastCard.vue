@@ -9,7 +9,7 @@
         @click.stop="calcDialog = true">
         <q-tooltip>Calculadora de Levedura</q-tooltip>
       </q-btn>
-      <q-btn outline rounded dense no-caps label="+ ADICIONAR" color="amber" size="md"
+      <q-btn outline rounded dense no-caps label="+ ADICIONAR" color="primary" size="md"
         class="q-ml-xs" @click.stop="pickerOpen = true" />
     </template>
 
@@ -267,7 +267,7 @@
       </q-card>
     </q-dialog>
 
-    <ingredient-picker-dialog v-model="pickerOpen" type="Yeast" @add="(i) => onAdd(i as RecipeYeast)" />
+    <yeast-picker-dialog v-model="pickerOpen" @add="onAdd" />
   </recipe-section>
 </template>
 
@@ -276,7 +276,7 @@ import { ref, computed } from 'vue'
 import { useRecipeStore } from '../../../../stores/recipeStore'
 import RecipeSection from '../RecipeSection.vue'
 import type { RecipeYeast, YeastForm } from '../../../../types/recipe'
-import IngredientPickerDialog from '../IngredientPickerDialog.vue'
+import YeastPickerDialog from '../pickers/YeastPickerDialog.vue'
 
 const store = useRecipeStore()
 const recipe = computed(() => store.currentRecipe!)

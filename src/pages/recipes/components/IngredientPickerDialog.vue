@@ -28,7 +28,7 @@
               <q-icon name="search" color="grey-5" />
             </template>
             <template #append>
-              <q-spinner v-if="loading" color="amber" size="18px" />
+              <q-spinner v-if="loading" color="primary" size="18px" />
             </template>
           </q-input>
         </q-card-section>

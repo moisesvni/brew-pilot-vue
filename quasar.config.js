@@ -92,7 +92,7 @@ export default configure(function (/* ctx */) {
         display: 'standalone',
         orientation: 'portrait',
         background_color: '#1a1a2e',
-        theme_color: '#e8a020',
+        theme_color: '#c1710e',
         icons: [
           {
             src: 'icons/icon-128x128.png',

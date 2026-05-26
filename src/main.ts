@@ -23,10 +23,10 @@ app.use(Quasar, {
   config: {
     dark: 'auto',
     brand: {
-      primary: '#e8a020',
-      secondary: '#1e3a5f',
+      primary: '#c1710e',
+      secondary: '#455a64',
       accent: '#f4c842',
-      dark: '#1a1a2e',
+      dark: '#181818',
       positive: '#21ba45',
       negative: '#c10015',
       info: '#31ccec',

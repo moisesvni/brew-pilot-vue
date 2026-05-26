@@ -56,7 +56,7 @@
       </q-item>
     </q-list>
 
-    <ingredient-picker-dialog v-model="pickerOpen" type="Yeast" @add="onAdd" />
+    <yeast-picker-dialog v-model="pickerOpen" @add="onAdd" />
   </div>
 </template>
 
@@ -64,7 +64,7 @@
 import { ref, computed } from 'vue'
 import { useRecipeStore } from '../../../stores/recipeStore'
 import type { Recipe, RecipeYeast, RecipeStats } from '../../../types/recipe'
-import IngredientPickerDialog from '../components/IngredientPickerDialog.vue'
+import YeastPickerDialog from '../components/pickers/YeastPickerDialog.vue'
 
 const store = useRecipeStore()
 const recipe = computed(() => store.currentRecipe!)

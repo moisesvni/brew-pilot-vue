@@ -1,11 +1,13 @@
 <template>
   <q-page class="q-pa-none">
     <!-- Toolbar da receita -->
-    <q-toolbar class="bg-dark q-px-md" style="border-bottom: 1px solid rgba(255,255,255,0.1)">
+    <q-toolbar class="bg-dark q-py-sm" style="border-bottom: 1px solid rgba(255,255,255,0.1)">
       <q-btn flat round dense icon="arrow_back" @click="$router.push('/recipes')" />
       <q-toolbar-title>
         <q-input v-if="recipe" v-model="recipe.name" borderless dense class="text-h6 text-weight-bold"
-          placeholder="Nome da receita" style="max-width: 300px" />
+          placeholder="Nome da receita" style="max-width: 300px">
+          <q-tooltip>Editar nome da receita</q-tooltip>
+        </q-input>  
       </q-toolbar-title>
       <!-- Stats resumidos no header (mobile-friendly) -->
       <div v-if="stats && activeTab != 'overview'" class="row q-gutter-sm items-center q-mr-xl">
@@ -50,7 +52,7 @@
     </q-toolbar>
 
     <!-- Abas do editor -->
-    <q-tabs v-model="activeTab" dense class="bg-dark text-grey-5" active-color="amber" indicator-color="amber"
+    <q-tabs v-model="activeTab" dense class="bg-dark text-grey-5" active-color="primary" indicator-color="primary"
       align="left">
       <q-tab name="overview" label="Visão Geral" icon="mdi-view-dashboard-outline" />
       <q-tab name="fermentables" label="Fermentáveis" icon="mdi-barley" />

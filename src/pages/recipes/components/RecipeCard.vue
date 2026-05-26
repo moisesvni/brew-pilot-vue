@@ -84,6 +84,7 @@ import { computed } from 'vue'
 import type { Recipe } from '../../../types/recipe'
 import { calculateRecipeStats } from '../../../composables/useBrewCalculator'
 import StatChip from '../../../components/shared/StatChip.vue'
+import { ebcToHex } from '../../../utils/brewColors'
 
 const props = defineProps<{ recipe: Recipe }>()
 defineEmits<{
@@ -106,15 +107,6 @@ const typeLabel = computed(() => ({
   AllGrain: 'All Grain', PartialMash: 'Parcial', Extract: 'Extrato'
 }[props.recipe.type] ?? props.recipe.type))
 
-function ebcToHex(ebc: number): string {
-  const srm = ebc / 1.97
-  if (srm < 2) return '#F7E697'; if (srm < 4) return '#ECD26E'
-  if (srm < 6) return '#D4A830'; if (srm < 9) return '#BF7A15'
-  if (srm < 14) return '#9A4A08'; if (srm < 17) return '#7D2E04'
-  if (srm < 20) return '#651E02'; if (srm < 24) return '#4E1001'
-  if (srm < 30) return '#370800'; if (srm < 35) return '#220400'
-  return '#120100'
-}
 </script>
 
 <style scoped>

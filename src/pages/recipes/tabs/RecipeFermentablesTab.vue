@@ -11,7 +11,7 @@
       <q-btn color="primary" size="sm" icon="add" label="Adicionar" @click="pickerOpen = true" />
     </div>
 
-    <ingredient-picker-dialog v-model="pickerOpen" type="Fermentable" @add="onAdd" />
+    <fermentable-picker-dialog v-model="pickerOpen" @add="onAdd" />
 
     <!-- Lista de fermentáveis -->
     <q-list separator>
@@ -58,8 +58,9 @@
 import { ref, computed } from 'vue'
 import { useRecipeStore } from '../../../stores/recipeStore'
 
-import IngredientPickerDialog from '../components/IngredientPickerDialog.vue'
+import FermentablePickerDialog from '../components/pickers/FermentablePickerDialog.vue'
 import { RecipeFermentable } from 'src/types/recipe'
+import { ebcToHex } from '../../../utils/brewColors'
 
 const store = useRecipeStore()
 const recipe = computed(() => store.currentRecipe!)
@@ -89,18 +90,4 @@ const useOptions = [
   { label: 'Adição tardia', value: 'LateAddition' }
 ]
 
-function ebcToHex(ebc: number): string {
-  const srm = ebc / 1.97
-  if (srm < 2) return '#F8F753'
-  if (srm < 4) return '#F6F513'
-  if (srm < 6) return '#ECE61A'
-  if (srm < 8) return '#D5BC26'
-  if (srm < 10) return '#BF9C26'
-  if (srm < 13) return '#A07C2A'
-  if (srm < 17) return '#8A5C28'
-  if (srm < 20) return '#6A3C20'
-  if (srm < 24) return '#4A2010'
-  if (srm < 30) return '#2A1005'
-  return '#0A0505'
-}
 </script>

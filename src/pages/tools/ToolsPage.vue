@@ -1,7 +1,7 @@
 <template>
   <q-page padding>
     <div class="row items-center q-mb-lg">
-      <q-icon name="mdi-tools" size="32px" color="amber" class="q-mr-sm" />
+      <q-icon name="mdi-tools" size="32px" color="primary" class="q-mr-sm" />
       <span class="text-h5 text-weight-bold text-white">Ferramentas</span>
     </div>
     <q-banner rounded class="bg-dark text-grey-5">

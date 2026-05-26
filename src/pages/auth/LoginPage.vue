@@ -56,7 +56,7 @@
             <q-btn
               label="ENTRAR"
               type="submit"
-              color="amber-7"
+              color="primary"
               text-color="dark"
               class="full-width"
               :loading="loading"
@@ -236,7 +236,7 @@ async function handleLogin() {
 }
 
 .lp-brew  { color: #ffffff; }
-.lp-pilot { color: #e8a020; }
+.lp-pilot { color: #c1710e; }
 
 .lp-tagline {
   font-size: 0.5rem;
@@ -329,7 +329,7 @@ async function handleLogin() {
 
 /* ── Misc ─────────────────────────────────────────────────────────────────── */
 .lp-register-link {
-  color: #e8a020;
+  color: #c1710e;
   font-weight: 600;
   font-size: 0.8rem;
   text-decoration: none;

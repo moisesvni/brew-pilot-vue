@@ -47,7 +47,7 @@
       </q-item>
     </q-list>
 
-    <ingredient-picker-dialog v-model="pickerOpen" type="Misc" @add="onAdd" />
+    <misc-picker-dialog v-model="pickerOpen" @add="onAdd" />
   </div>
 </template>
 
@@ -55,7 +55,7 @@
 import { ref, computed } from 'vue'
 import { useRecipeStore } from '../../../stores/recipeStore'
 
-import IngredientPickerDialog from '../components/IngredientPickerDialog.vue'
+import MiscPickerDialog from '../components/pickers/MiscPickerDialog.vue'
 
 const props = defineProps<{ hideButton?: boolean }>()
 const store = useRecipeStore()

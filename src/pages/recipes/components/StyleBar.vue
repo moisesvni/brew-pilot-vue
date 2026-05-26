@@ -11,7 +11,7 @@
         <!-- Valor atual -->
         <div
           class="style-bar-value"
-          :style="{ left: `${valuePos}%`, backgroundColor: inRange ? '#e8a020' : '#c10015' }"
+          :style="{ left: `${valuePos}%`, backgroundColor: inRange ? '#c1710e' : '#c10015' }"
         />
       </div>
       <div class="text-caption q-ml-sm col-2" :class="inRange ? 'text-amber' : 'text-negative'">

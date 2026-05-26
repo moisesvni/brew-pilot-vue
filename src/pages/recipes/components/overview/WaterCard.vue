@@ -122,7 +122,7 @@
           <!-- Perfil Alvo -->
           <div class="water-section q-mb-md">
             <div class="row items-center no-wrap q-mb-xs">
-              <q-icon name="mdi-target" color="amber-6" size="14px" class="q-mr-xs" />
+              <q-icon name="mdi-target" color="primary" size="14px" class="q-mr-xs" />
               <span class="text-caption text-grey-5 col">Perfil Alvo (opcional)</span>
               <q-btn flat dense no-caps size="xs" label="REMOVER" color="grey-6"
                 @click="targetWater = null" />

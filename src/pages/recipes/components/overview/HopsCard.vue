@@ -12,7 +12,7 @@
       </q-btn>
       <q-btn outline rounded dense no-caps label="IBU" color="grey-5" size="md"
         class="q-ml-xs" />
-      <q-btn outline rounded dense no-caps label="+ ADICIONAR" color="amber" size="md"
+      <q-btn outline rounded dense no-caps label="+ ADICIONAR" color="primary" size="md"
         class="q-ml-xs" @click.stop="pickerOpen = true" />
     </template>
 
@@ -144,7 +144,7 @@
       </q-card>
     </q-dialog>
 
-    <ingredient-picker-dialog v-model="pickerOpen" type="Hop" @add="onAdd" />
+    <hop-picker-dialog v-model="pickerOpen" @add="onAdd" />
   </recipe-section>
 </template>
 
@@ -153,7 +153,7 @@ import { ref, computed } from 'vue'
 import { useRecipeStore } from '../../../../stores/recipeStore'
 import RecipeSection from '../RecipeSection.vue'
 import type { RecipeHop, HopUse } from '../../../../types/recipe'
-import IngredientPickerDialog from '../IngredientPickerDialog.vue'
+import HopPickerDialog from '../pickers/HopPickerDialog.vue'
 import {
   calculateIbuTinseth,
   calculateIbuWhirlpool

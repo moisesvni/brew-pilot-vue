@@ -12,12 +12,17 @@
       <div class="row items-center q-gutter-sm">
         <slot name="actions" />
       </div>
-      <q-icon
-          :name="isOpen ? 'expand_less' : 'expand_more'"
-          color="grey-5"
-          size="18px"
-          class="q-ml-sm"
-      />
+      <q-btn
+        :icon="isOpen ? 'expand_less' : 'expand_more'"
+        color="white"
+        dense
+        round
+        size="14px"
+        flat
+        class="q-ml-sm"
+      >
+        <q-tooltip>{{ isOpen ? 'Fechar seção' : 'Abrir seção' }}</q-tooltip>
+      </q-btn>
     </div>
     <!-- Conteúdo expansível -->
     <transition name="section-slide">
