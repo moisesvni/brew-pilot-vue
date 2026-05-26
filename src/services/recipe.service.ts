@@ -1,5 +1,5 @@
 import axios from 'axios'
-import type { Recipe } from '../types/recipe.types'
+import type { Recipe } from '../types/recipe'
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL ?? '/api',

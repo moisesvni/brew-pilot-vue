@@ -2,7 +2,7 @@
  * Motor de cálculos cervejeiros
  * Fórmulas usadas: Tinseth (IBU), Morey (EBC/SRM), e padrão HBD
  */
-import type { Recipe, RecipeStats } from '../types/recipe.types'
+import type { Recipe, RecipeStats } from '../types/recipe'
 import bjcpRefs from '../assets/bjcp-references.json'
 
 // ─── Tipos de referência BJCP ─────────────────────────────────────────────────
@@ -196,7 +196,7 @@ export function calculateCalories (og: number, fg: number, servingMl = 355): num
 }
 
 // ─── IBU total da receita ─────────────────────────────────────────────────────
-import type { RecipeHop } from '../types/recipe.types'
+import type { RecipeHop } from '../types/recipe'
 
 export function totalIbu (hops: RecipeHop[], og: number, batchVolume: number): number {
   return hops.reduce((sum, hop) => {

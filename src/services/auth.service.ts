@@ -1,5 +1,5 @@
 import apiClient from './apiClient'
-import type { AuthResult, LoginRequest, OAuthLoginRequest, RegisterRequest } from '../types/auth.types'
+import type { AuthResult, LoginRequest, OAuthLoginRequest, RegisterRequest } from '../types/auth'
 
 export const authService = {
   register: (data: RegisterRequest) =>

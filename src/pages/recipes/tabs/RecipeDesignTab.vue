@@ -67,10 +67,14 @@
 </template>
 
 <script setup lang="ts">
-import type { Recipe, RecipeStats } from '../../../types/recipe.types'
-import StyleBar from '../StyleBar.vue'
+import { computed } from 'vue'
+import { useRecipeStore } from '../../../stores/recipeStore'
 
-defineProps<{ recipe: Recipe; stats: RecipeStats | null }>()
+import StyleBar from '../components/StyleBar.vue'
+
+const store = useRecipeStore()
+const recipe = computed(() => store.currentRecipe!)
+const stats   = computed(() => store.stats)
 
 const typeOptions = [
   { label: 'All Grain', value: 'AllGrain' },

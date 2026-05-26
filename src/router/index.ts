@@ -65,6 +65,48 @@ const routes = [
         name: 'StylesList',
         component: () => import('../pages/styles/StylesPage.vue'),
         meta: { title: 'Estilos BJCP' }
+      },
+      {
+        path: 'batches',
+        name: 'BatchList',
+        component: () => import('../pages/batches/BatchesPage.vue'),
+        meta: { title: 'Lotes' }
+      },
+      {
+        path: 'devices',
+        name: 'DeviceList',
+        component: () => import('../pages/devices/DevicesPage.vue'),
+        meta: { title: 'Dispositivos' }
+      },
+      {
+        path: 'inventory',
+        name: 'Inventory',
+        component: () => import('../pages/inventory/InventoryPage.vue'),
+        meta: { title: 'Estoque' }
+      },
+      {
+        path: 'library',
+        name: 'Library',
+        component: () => import('../pages/library/LibraryPage.vue'),
+        meta: { title: 'Biblioteca' }
+      },
+      {
+        path: 'profiles',
+        name: 'Profiles',
+        component: () => import('../pages/profiles/ProfilesPage.vue'),
+        meta: { title: 'Perfis' }
+      },
+      {
+        path: 'tools',
+        name: 'Tools',
+        component: () => import('../pages/tools/ToolsPage.vue'),
+        meta: { title: 'Ferramentas' }
+      },
+      {
+        path: 'settings',
+        name: 'Settings',
+        component: () => import('../pages/settings/SettingsPage.vue'),
+        meta: { title: 'Configurações' }
       }
     ]
   },
@@ -86,7 +128,7 @@ router.beforeEach((to) => {
   const isPublic     = to.matched.some(r => r.meta.public)
 
   if (requiresAuth && !auth.isAuthenticated) {
-    return { path: '/login', query: { redirect: to.fullPath } }
+    //return { path: '/login', query: { redirect: to.fullPath } }
   }
   if (isPublic && auth.isAuthenticated) {
     return { path: '/' }

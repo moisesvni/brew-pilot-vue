@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { equipmentService } from '../services/equipment.service'
-import type { EquipmentProfile, CreateEquipmentProfileRequest } from '../types/equipment.types'
+import type { EquipmentProfile, CreateEquipmentProfileRequest } from '../types/equipment'
 import { useAuthStore } from './authStore'
-import { UserPlan } from '../types/auth.types'
+import { UserPlan } from '../types/auth'
 
 const FREE_EQUIPMENT_LIMIT = 2
 

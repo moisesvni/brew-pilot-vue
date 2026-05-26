@@ -5,7 +5,7 @@
         {{ recipe.hops.length }} adição(ões) · IBU total:
         <span class="text-amber">{{ stats ? Math.round(stats.ibu) : 0 }}</span>
       </div>
-      <q-btn color="primary" size="sm" icon="add" label="Adicionar" @click="addItem" />
+      <q-btn color="primary" size="sm" icon="add" label="Adicionar" @click="pickerOpen = true" />
     </div>
 
     <q-list separator>
@@ -59,29 +59,31 @@
         </q-item-section>
       </q-item>
     </q-list>
+
+    <ingredient-picker-dialog v-model="pickerOpen" type="Hop" @add="onAdd" />
   </div>
 </template>
 
 <script setup lang="ts">
-import type { Recipe, RecipeHop, RecipeStats } from '../../../types/recipe.types'
+import { ref, computed } from 'vue'
+import { useRecipeStore } from '../../../stores/recipeStore'
+import type { Recipe, RecipeHop, RecipeStats } from '../../../types/recipe'
 import { calculateIbuTinseth, calculateIbuWhirlpool } from '../../../composables/useBrewCalculator'
+import IngredientPickerDialog from '../components/IngredientPickerDialog.vue'
 
-const props = defineProps<{ recipe: Recipe; stats: RecipeStats | null }>()
+const store = useRecipeStore()
+const recipe = computed(() => store.currentRecipe!)
+const stats   = computed(() => store.stats)
 
-function addItem () {
-  props.recipe.hops.push({
-    id: crypto.randomUUID(),
-    name: '',
-    use: 'Boil',
-    amount: 30,
-    alphaAcid: 10,
-    time: 60,
-    sortOrder: props.recipe.hops.length
-  })
+const pickerOpen = ref(false)
+
+function onAdd (item: RecipeHop) {
+  item.sortOrder = recipe.value.hops.length
+  recipe.value.hops.push(item)
 }
 
 function removeItem (index: number) {
-  props.recipe.hops.splice(index, 1)
+  recipe.value.hops.splice(index, 1)
 }
 
 function onUseChange (hop: RecipeHop) {
@@ -93,12 +95,12 @@ function onUseChange (hop: RecipeHop) {
 }
 
 function ibuOf (hop: RecipeHop): number {
-  const og = props.stats?.og ?? 1.050
+  const og = stats.value?.og ?? 1.050
   if (hop.use === 'Boil' || hop.use === 'FirstWort') {
-    return calculateIbuTinseth(hop.amount, hop.alphaAcid, hop.time, og, props.recipe.batchVolume)
+    return calculateIbuTinseth(hop.amount, hop.alphaAcid, hop.time, og, recipe.value.batchVolume)
   }
   if (hop.use === 'Whirlpool' || hop.use === 'Hopstand') {
-    return calculateIbuWhirlpool(hop.amount, hop.alphaAcid, hop.time, hop.temperature ?? 85, props.recipe.batchVolume)
+    return calculateIbuWhirlpool(hop.amount, hop.alphaAcid, hop.time, hop.temperature ?? 85, recipe.value.batchVolume)
   }
   return 0
 }

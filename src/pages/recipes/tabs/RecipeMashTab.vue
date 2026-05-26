@@ -64,26 +64,27 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import type { Recipe, RecipeMashStep } from '../../../types/recipe.types'
+import { useRecipeStore } from '../../../stores/recipeStore'
 
-const props = defineProps<{ recipe: Recipe }>()
+const store  = useRecipeStore()
+const recipe = computed(() => store.currentRecipe!)
 
-const sortedSteps = computed(() => [...props.recipe.mashSteps].sort((a, b) => a.sortOrder - b.sortOrder))
+const sortedSteps = computed(() => [...recipe.value.mashSteps].sort((a, b) => a.sortOrder - b.sortOrder))
 
 function addStep () {
-  props.recipe.mashSteps.push({
+  recipe.value.mashSteps.push({
     id: crypto.randomUUID(),
     name: 'Nova Etapa',
     type: 'Infusion',
     temperature: 67,
     time: 60,
     waterRatio: 3.0,
-    sortOrder: props.recipe.mashSteps.length
+    sortOrder: recipe.value.mashSteps.length
   })
 }
 
 function removeStep (index: number) {
-  props.recipe.mashSteps.splice(index, 1)
+  recipe.value.mashSteps.splice(index, 1)
 }
 
 const stepTypes = [
@@ -118,9 +119,9 @@ const presets = [
 ]
 
 function applyPreset (preset: typeof presets[0]) {
-  props.recipe.mashSteps.splice(0)
+  recipe.value.mashSteps.splice(0)
   preset.steps.forEach((s, i) => {
-    props.recipe.mashSteps.push({
+    recipe.value.mashSteps.push({
       id: crypto.randomUUID(),
       sortOrder: i,
       waterRatio: undefined,

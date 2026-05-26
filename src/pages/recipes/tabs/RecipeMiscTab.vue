@@ -2,7 +2,7 @@
   <div>
     <div class="row items-center justify-between q-mb-md">
       <div class="text-caption text-grey-5">{{ recipe.miscs.length }} ingrediente(s) adicional(is)</div>
-      <q-btn color="primary" size="sm" icon="add" label="Adicionar" @click="addItem" />
+      <q-btn v-if="!hideButton" color="primary" size="sm" icon="add" label="Adicionar" @click="pickerOpen = true" />
     </div>
 
     <q-list separator>
@@ -46,26 +46,31 @@
         </q-item-section>
       </q-item>
     </q-list>
+
+    <ingredient-picker-dialog v-model="pickerOpen" type="Misc" @add="onAdd" />
   </div>
 </template>
 
 <script setup lang="ts">
-import type { Recipe } from '../../../types/recipe.types'
+import { ref, computed } from 'vue'
+import { useRecipeStore } from '../../../stores/recipeStore'
 
-const props = defineProps<{ recipe: Recipe }>()
+import IngredientPickerDialog from '../components/IngredientPickerDialog.vue'
 
-function addItem () {
-  props.recipe.miscs.push({
-    id: crypto.randomUUID(),
-    name: '',
-    use: 'Boil',
-    amount: 1,
-    unit: 'g'
-  })
+const props = defineProps<{ hideButton?: boolean }>()
+const store = useRecipeStore()
+const recipe = computed(() => store.currentRecipe!)
+
+const pickerOpen = ref(false)
+
+defineExpose({ openPicker: () => { pickerOpen.value = true } })
+
+function onAdd (item: RecipeMisc) {
+  recipe.value.miscs.push(item)
 }
 
 function removeItem (index: number) {
-  props.recipe.miscs.splice(index, 1)
+  recipe.value.miscs.splice(index, 1)
 }
 
 const useOptions = [

@@ -7,7 +7,7 @@
         · ABV:
         <span class="text-amber">{{ stats ? stats.abv.toFixed(1) + '%' : '—' }}</span>
       </div>
-      <q-btn color="primary" size="sm" icon="add" label="Adicionar" @click="addItem" />
+      <q-btn color="primary" size="sm" icon="add" label="Adicionar" @click="pickerOpen = true" />
     </div>
 
     <q-list separator>
@@ -55,20 +55,29 @@
         </q-item-section>
       </q-item>
     </q-list>
+
+    <ingredient-picker-dialog v-model="pickerOpen" type="Yeast" @add="onAdd" />
   </div>
 </template>
 
 <script setup lang="ts">
-import type { Recipe, RecipeStats } from '../../../types/recipe.types'
+import { ref, computed } from 'vue'
+import { useRecipeStore } from '../../../stores/recipeStore'
+import type { Recipe, RecipeYeast, RecipeStats } from '../../../types/recipe'
+import IngredientPickerDialog from '../components/IngredientPickerDialog.vue'
 
-defineProps<{ recipe: Recipe; stats: RecipeStats | null }>()
+const store = useRecipeStore()
+const recipe = computed(() => store.currentRecipe!)
+const stats   = computed(() => store.stats)
 
-function addItem () {
-  // inject into recipe.yeasts — Vue reactivity handles the rest
+const pickerOpen = ref(false)
+
+function onAdd (item: RecipeYeast) {
+  recipe.value.yeasts.push(item)
 }
 
 function removeItem (index: number) {
-  // handled reactively
+  recipe.value.yeasts.splice(index, 1)
 }
 
 const formOptions = [

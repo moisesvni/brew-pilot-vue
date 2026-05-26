@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { authService } from '../services/auth.service'
-import type { AuthUser, LoginRequest, OAuthLoginRequest, RegisterRequest } from '../types/auth.types'
-import { UserPlan } from '../types/auth.types'
+import type { AuthUser, LoginRequest, OAuthLoginRequest, RegisterRequest } from '../types/auth'
+import { UserPlan } from '../types/auth'
 
 const ACCESS_TOKEN_KEY  = 'brew_access_token'
 const REFRESH_TOKEN_KEY = 'brew_refresh_token'
@@ -55,6 +55,7 @@ export const useAuthStore = defineStore('auth', () => {
       userId: result.userId,
       email:  result.email,
       name:   result.name,
+      avatarUrl: null, 
       plan:   result.plan as UserPlan,
     }
     localStorage.setItem(ACCESS_TOKEN_KEY,  result.accessToken)

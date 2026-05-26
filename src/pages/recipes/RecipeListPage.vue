@@ -84,8 +84,8 @@ import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useQuasar } from 'quasar'
 import { useRecipeStore } from '../../stores/recipeStore'
-import RecipeCard from '../../components/recipe/RecipeCard.vue'
-import type { Recipe } from '../../types/recipe.types'
+import RecipeCard from './components/RecipeCard.vue'
+import type { Recipe } from '../../types/recipe'
 
 const store = useRecipeStore()
 const router = useRouter()

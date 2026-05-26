@@ -1,8 +1,9 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import type { Recipe, RecipeStats, RecipeValidation } from '../types/recipe.types'
+import type { Recipe, RecipeStats, RecipeValidation } from '../types/recipe'
 import { calculateRecipeStats } from '../composables/useBrewCalculator'
 import { recipeService } from '../services/recipe.service'
+import { sampleStyles } from '../data/styles-sample'
 
 export const useRecipeStore = defineStore('recipe', () => {
   // ─── State ─────────────────────────────────────────────────────────────────
@@ -54,6 +55,8 @@ export const useRecipeStore = defineStore('recipe', () => {
       preBoilVolume: 24,
       boilTime: 60,
       efficiency: 72,
+      styleGuideId: sampleStyles[0].id,
+      styleGuide: sampleStyles[0],
       fermentables: [],
       hops: [],
       yeasts: [],
