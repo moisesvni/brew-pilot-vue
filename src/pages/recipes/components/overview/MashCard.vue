@@ -37,18 +37,21 @@
 
       <!-- FG / Density Final button -->
       <div class="q-mt-sm row justify-end">
-        <brew-pilot-button variant="outline" rounded dense no-caps label="DENSIDADE FINAL"
+        <brew-pilot-button variant="outline" rounded dense no-caps label="DENSIDADE FINAL" class="q-px-sm"
           icon="mdi-pencil" size="sm" @click="fgDialog = true" />
       </div>
 
       <!-- Stats mostura -->
-      <div v-if="stats" class="bp-stats-muted text-right q-mt-xs" style="font-size:10.5px">
-        Densidade Final Esperada: <strong class="bp-stats-value">{{ stats.fg.toFixed(3) }}</strong>
-        &nbsp;·&nbsp; Atenuação Aparente: <strong class="bp-stats-value">{{ attenuation }}%</strong>
-        &nbsp;·&nbsp; Álcool por Volume: <strong class="bp-stats-value">{{ stats.abv.toFixed(1) }}%</strong>
+      <div v-if="stats" class="text-right q-mt-xs q-gutter-x-xs">
+        <brew-pilot-label variant="stats" size="10.5px">Densidade Final Esperada:</brew-pilot-label>
+        <brew-pilot-label variant="stats-value" size="10.5px"><strong>{{ stats.fg.toFixed(3) }}</strong></brew-pilot-label>
+        <brew-pilot-label variant="stats" size="10.5px">&nbsp;·&nbsp; Atenuação Aparente:</brew-pilot-label>
+        <brew-pilot-label variant="stats-value" size="10.5px"><strong>{{ attenuation }}%</strong></brew-pilot-label>
+        <brew-pilot-label variant="stats" size="10.5px">&nbsp;·&nbsp; Álcool por Volume:</brew-pilot-label>
+        <brew-pilot-label variant="stats-value" size="10.5px"><strong>{{ stats.abv.toFixed(1) }}%</strong></brew-pilot-label>
       </div>
-      <div v-if="stats" class="bp-stats-muted text-right" style="font-size:10.5px">
-        {{ stats.calories }} kcal / {{ Math.round(stats.calories * 4.184) }} kJ por 100 ml
+      <div v-if="stats" class="text-right q-mt-none">
+        <brew-pilot-label variant="stats" size="10.5px">{{ stats.calories }} kcal / {{ Math.round(stats.calories * 4.184) }} kJ por 100 ml</brew-pilot-label>
       </div>
   </recipe-section>
 
@@ -243,6 +246,7 @@ import RecipeSection from '../RecipeSection.vue'
 import BrewPilotButton from '../../../../components/shared/BrewPilotButton.vue'
 import BrewPilotDialog from '../../../../components/BrewPilotDialog.vue'
 import BrewPilotSelect from '../../../../components/shared/BrewPilotSelect.vue'
+import BrewPilotLabel from '../../../../components/shared/BrewPilotLabel.vue'
 import type { RecipeMashStep, FermentationStep } from '../../../../types/recipe'
 
 const props = defineProps<{ section: 'mash' | 'fermentation' }>()

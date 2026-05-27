@@ -541,3 +541,105 @@ body.body--light {
 
 // Utilitário legado
 .text-brand { color: $primary !important; }
+
+// ── BrewPilotBanner ───────────────────────────────────────────────────────────
+.bp-banner-menu {
+  border-radius: 8px !important;
+  overflow: hidden !important;
+}
+body.body--light .bp-banner-menu {
+  background: var(--bp-surface) !important;
+  border: 1px solid var(--bp-card-border) !important;
+  box-shadow: 0 4px 24px rgba(43, 26, 6, 0.14) !important;
+}
+body.body--dark .bp-banner-menu {
+  background: var(--bp-surface) !important;
+  border: 1px solid rgba(255, 255, 255, 0.10) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.45) !important;
+}
+
+// Cabeçalho do banner
+.bp-banner__header {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 14px 9px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+body.body--light .bp-banner__header { color: var(--bp-text-primary); }
+body.body--dark  .bp-banner__header { color: rgba(255, 255, 255, 0.80); }
+
+// Item de alerta
+.bp-banner__item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 9px 14px;
+  border-top: 1px solid var(--bp-border);
+  transition: background 0.15s;
+  cursor: default;
+}
+body.body--light .bp-banner__item:hover { background: rgba(193, 113, 14, 0.05); }
+body.body--dark  .bp-banner__item:hover { background: rgba(255, 255, 255, 0.04); }
+
+.bp-banner__item-icon { flex-shrink: 0; margin-top: 1px; }
+
+.bp-banner__item-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+// Mensagem principal
+.bp-banner__msg {
+  font-size: 12px;
+  line-height: 1.45;
+  word-break: break-word;
+}
+body.body--light .bp-banner__msg { color: var(--bp-text-primary); }
+body.body--dark  .bp-banner__msg { color: rgba(255, 255, 255, 0.85); }
+
+// Campo relacionado (opcional)
+.bp-banner__field {
+  font-size: 10px;
+  font-style: italic;
+}
+body.body--light .bp-banner__field { color: var(--bp-text-secondary); }
+body.body--dark  .bp-banner__field { color: rgba(255, 255, 255, 0.45); }
+
+// Badge de severidade
+.bp-banner__chip {
+  display: inline-flex;
+  align-items: center;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  padding: 1px 6px;
+  border-radius: 3px;
+  align-self: flex-start;
+  color: #fff;
+}
+.bp-banner__chip--critical {
+  background: #932020;
+}
+.bp-banner__chip--warning {
+  background: #8B6000;
+}
+body.body--dark .bp-banner__chip--warning {
+  background: rgba(255, 216, 96, 0.18);
+  color: #ffd860;
+}
+.bp-banner__chip--suggestion {
+  background: rgba(112, 92, 58, 0.20);
+  color: var(--bp-text-secondary);
+}
+body.body--dark .bp-banner__chip--suggestion {
+  background: rgba(255, 255, 255, 0.10);
+  color: rgba(255, 255, 255, 0.55);
+}
+

@@ -23,36 +23,15 @@
       </div>
 
       <q-btn v-if="recipe" no-caps dense unelevated size="sm"
-        class="version-chip q-ml-sm" :label="`v${recipe.version}`">
-        <q-tooltip>Versão da receita — clique para editar</q-tooltip>
-        <q-popup-edit v-model="recipe.version" auto-save v-slot="scope">
-          <q-input v-model.number="scope.value" type="number" dense autofocus label="Versão" @keyup.enter="scope.set" />
-        </q-popup-edit>
+        class="version-chip q-ml-sm" :label="`V${recipe.version}`"
+        @click="versionDialog = true">
+        <q-tooltip>Versão da receita</q-tooltip>
       </q-btn>
       <!-- Alertas -->
-      <q-btn v-if="store.validations.length" flat round :icon="store.hasErrors ? 'error' : 'warning'"
-        :color="store.hasErrors ? 'negative' : 'warning'" class="q-ml-sm">
-        <q-badge :color="store.hasErrors ? 'negative' : 'warning'" floating>
-          {{ store.validations.length }}
-        </q-badge>
-        <q-tooltip>Ver alertas</q-tooltip>
-        <q-menu dark>
-          <q-list style="min-width: 280px; max-width: 380px">
-            <q-item v-for="(v, i) in store.validations" :key="i">
-              <q-item-section avatar>
-                <q-icon :name="v.severity === 'critical' ? 'error' : v.severity === 'warning' ? 'warning' : 'info'"
-                  :color="v.severity === 'critical' ? 'negative' : v.severity === 'warning' ? 'warning' : 'info'" />
-              </q-item-section>
-              <q-item-section>
-                <q-item-label class="text-caption">{{ v.message }}</q-item-label>
-              </q-item-section>
-            </q-item>
-          </q-list>
-        </q-menu>
-      </q-btn>
+      <recipe-validation-banner :items="store.validations" />
 
       <brew-pilot-button variant="filled" color="primary" no-caps label="Salvar"
-        unelevated class="q-ml-sm" icon="mdi-save" :loading="store.saving"
+        unelevated class="q-ml-sm" icon="mdi-content-save" :loading="store.saving"
         tooltip="Salvar receita (Ctrl+S)" @click="save" />
     </q-toolbar>
 
@@ -133,6 +112,81 @@
           placeholder="Histórico, observações, sugestões de melhoria..." />
       </q-tab-panel>
     </q-tab-panels>
+
+    <!-- ── Dialog de versão ─────────────────────────────────────────────── -->
+    <brew-pilot-dialog v-model="versionDialog" title="Versão da Receita"
+      icon="mdi-source-branch" icon-color="primary" width="420px">
+
+      <!-- ══ PLANO FREE ══ -->
+      <div v-if="!isPro" class="column items-center q-pa-lg" style="gap: 14px">
+        <q-icon name="mdi-crown" size="52px" style="color: #c1710e" />
+        <div class="text-center">
+          <div class="text-subtitle2 text-weight-bold q-mb-xs" style="color: var(--bp-text-primary)">
+            Controle de versões é Pro
+          </div>
+          <div class="text-caption" style="color: var(--bp-text-secondary); line-height: 1.5">
+            Registre cada iteração da sua receita e compare versões ao longo do tempo.
+          </div>
+        </div>
+        <q-separator style="width: 100%; border-color: var(--bp-border)" />
+        <div class="full-width column q-gutter-xs">
+          <div v-for="f in versionProFeatures" :key="f" class="row items-center no-wrap" style="gap: 8px">
+            <q-icon name="mdi-check-circle-outline" size="14px" style="color: #c1710e; flex-shrink: 0" />
+            <span class="text-caption" style="color: var(--bp-text-primary)">{{ f }}</span>
+          </div>
+        </div>
+        <q-btn unelevated no-caps color="primary" icon="mdi-crown" label="Assinar Plano Pro"
+          class="full-width q-mt-xs" style="border-radius: 8px" />
+        <span class="text-caption" style="color: var(--bp-text-secondary); cursor: pointer"
+          @click="versionDialog = false">Continuar no plano Free</span>
+      </div>
+
+      <!-- ══ PLANO PRO ══ -->
+      <div v-else class="q-pa-md column" style="gap: 16px">
+        <!-- Versão atual -->
+        <div class="row items-center no-wrap q-pa-sm rounded-borders"
+          style="background: var(--bp-section-header-bg); border: 1px solid var(--bp-border); border-radius: 8px; gap: 12px">
+          <q-icon name="mdi-source-branch" size="22px" style="color: #c1710e" />
+          <div>
+            <div class="text-caption" style="color: var(--bp-text-secondary)">Versão atual</div>
+            <div class="text-subtitle2 text-weight-bold" style="color: var(--bp-text-primary)">
+              V{{ recipe?.version }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Ação: nova versão -->
+        <div>
+          <div class="text-caption q-mb-xs" style="color: var(--bp-text-secondary)">
+            Gerar nova versão — incrementa o número e salva uma cópia com as alterações atuais.
+          </div>
+          <q-btn outline no-caps color="primary" icon="mdi-plus-circle-outline"
+            :label="`Gerar V${(recipe?.version ?? 0) + 1}`"
+            class="full-width" style="border-radius: 8px"
+            @click="bumpVersion" />
+        </div>
+
+        <q-separator style="border-color: var(--bp-border)" />
+
+        <!-- Editar número manualmente -->
+        <div>
+          <div class="text-caption q-mb-xs" style="color: var(--bp-text-secondary)">
+            Ou defina manualmente:
+          </div>
+          <div class="row q-gutter-sm items-center">
+            <q-input v-if="recipe" v-model.number="recipe.version" type="number"
+              outlined dense label="Número da versão"
+              style="flex: 1; min-width: 0" :min="1" />
+            <q-btn unelevated no-caps color="primary" label="Confirmar"
+              @click="versionDialog = false" />
+          </div>
+        </div>
+      </div>
+
+      <template #footer>
+        <q-btn flat no-caps label="Fechar" color="grey-5" @click="versionDialog = false" />
+      </template>
+    </brew-pilot-dialog>
   </q-page>
 </template>
 
@@ -149,11 +203,31 @@ import RecipeHopsTab from './tabs/RecipeHopsTab.vue'
 import RecipeYeastTab from './tabs/RecipeYeastTab.vue'
 import RecipeMashTab from './tabs/RecipeMashTab.vue'
 import RecipeMiscTab from './tabs/RecipeMiscTab.vue'
+import RecipeValidationBanner from './components/RecipeValidationBanner.vue'
+import BrewPilotDialog from '../../components/BrewPilotDialog.vue'
+import { useAuthStore } from '../../stores/authStore'
 
 const route = useRoute()
 const router = useRouter()
 const $q = useQuasar()
 const store = useRecipeStore()
+const authStore = useAuthStore()
+
+const isPro = computed(() => authStore.user?.plan === 'Pro')
+const versionDialog = ref(false)
+
+const versionProFeatures = [
+  'Histórico completo de versões por receita',
+  'Compare ingredientes e parâmetros entre versões',
+  'Anote o que mudou em cada iteração',
+  'Reverta para qualquer versão anterior',
+]
+
+function bumpVersion() {
+  if (!recipe.value) return
+  recipe.value.version = (recipe.value.version ?? 1) + 1
+  versionDialog.value = false
+}
 
 const activeTab = ref('overview')
 const recipe = computed(() => store.currentRecipe)

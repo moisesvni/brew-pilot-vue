@@ -5,11 +5,11 @@
       <span v-else class="text-caption text-weight-bold">{{ userInitials }}</span>
     </q-avatar>
     <q-menu transition-show="scale" transition-hide="scale" :offset="[0, 0]"
-      class="bg-dark-page" :style="{ border: '1px solid var(--bp-border)', borderRadius: '12px', minWidth: '340px' }">
+      class="bg-dark-page" :style="{ border: '1px solid var(--bp-border)', borderRadius: '12px', minWidth: '480px' }">
       <div class="row no-wrap q-pa-md" style="gap: 0">
 
         <!-- ── Coluna esquerda: configurações ──────────────────────────────── -->
-        <div class="column" style="min-width: 160px">
+        <div class="column" style="min-width: 210px">
           <div class="text-overline text-grey-5 q-mb-sm" style="letter-spacing: 0.08em">Configurações</div>
 
           <!-- Stats -->
@@ -41,7 +41,7 @@
               <q-icon :name="$q.dark.isActive ? 'mdi-weather-sunny' : 'mdi-weather-night'" color="primary" size="18px" />
             </q-item-section>
             <q-item-section>
-              <q-item-label class="bp-text-primary text-caption">
+              <q-item-label class="bp-text-primary text-caption" style="white-space: nowrap">
                 {{ $q.dark.isActive ? 'Modo claro' : 'Modo escuro' }}
               </q-item-label>
             </q-item-section>
@@ -66,7 +66,7 @@
         <q-separator vertical class="q-mx-md" />
 
         <!-- ── Coluna direita: perfil ──────────────────────────────────────── -->
-        <div class="column items-center justify-between" style="min-width: 120px">
+        <div class="column items-center justify-between" style="min-width: 140px">
           <div class="column items-center">
             <q-avatar size="64px" :color="avatarColor" text-color="white" class="q-mb-sm shadow-4">
               <img v-if="user?.avatarUrl" :src="user.avatarUrl" referrerpolicy="no-referrer" />
@@ -85,8 +85,9 @@
           <div class="column items-center q-mt-md" style="width: 100%">
             <q-btn flat no-caps size="sm" icon="mdi-account-circle-outline" label="Perfil"
               :color="$q.dark.isActive ? 'grey-4' : 'grey-7'" class="full-width q-mb-xs" v-close-popup @click="$router.push('/profiles')" />
-            <q-btn unelevated no-caps size="sm" icon="mdi-logout" label="Sair"
-              color="negative" class="full-width" v-close-popup @click="handleLogout" />
+            <q-btn flat no-caps size="sm" icon="mdi-logout" label="Sair"
+              :color="$q.dark.isActive ? 'red-4' : 'negative'"
+              class="full-width" v-close-popup @click="handleLogout" />
           </div>
         </div>
 
@@ -99,8 +100,8 @@
 import { ref, computed } from 'vue'
 import { useQuasar } from 'quasar'
 import { useRouter } from 'vue-router'
-import { useAuthStore } from '../../stores/authStore'
-import { useRecipeStore } from '../../stores/recipeStore'
+import { useAuthStore } from '../stores/authStore'
+import { useRecipeStore } from '../stores/recipeStore'
 
 const $q = useQuasar()
 const router = useRouter()
