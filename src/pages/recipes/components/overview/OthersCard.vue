@@ -1,5 +1,5 @@
 <template>
-  <recipe-section title="Outros" icon="mdi-dots-horizontal-circle-outline" icon-color="grey-4">
+  <recipe-section title="Outros" icon="mdi-dots-horizontal-circle-outline" icon-color="blue-grey">
 
     <!-- ── Tags ──────────────────────────────────────────────────────────── -->
     <div class="q-mb-sm">

@@ -1,12 +1,12 @@
 <template>
-  <brew-pilot-dialog v-model="open" title="Adicionar Levedura" icon="mdi-flask" icon-color="teal" width="560px">
+  <brew-pilot-dialog v-model="open" title="Adicionar Levedura" icon="mdi-flask" icon-color="deep-purple-4" width="560px">
 
     <!-- ── Busca ──────────────────────────────────────────────────────────── -->
     <template v-if="step === 'search'">
       <q-card-section class="q-pb-xs">
         <brew-pilot-search-input v-model="query" autofocus
           placeholder="Buscar levedura na base de dados..."
-          :loading="loading" spinner-color="teal"
+          :loading="loading" spinner-color="deep-purple-4"
           @update:model-value="onQueryChange" />
       </q-card-section>
       <div class="overflow-auto" style="min-height:120px;max-height:340px">
@@ -26,7 +26,7 @@
               <q-item-label caption class="text-grey-5">{{ resultCaption(r) }}</q-item-label>
             </q-item-section>
             <q-item-section side>
-              <q-btn flat dense size="sm" label="Usar" color="teal" icon="add" />
+              <q-btn flat dense size="sm" label="Usar" color="deep-purple-4" icon="add" />
             </q-item-section>
           </q-item>
         </q-list>
@@ -64,7 +64,7 @@
       <q-separator  />
       <q-card-actions align="right" class="q-px-md q-pb-md">
         <q-btn flat no-caps label="Cancelar" color="grey-5" @click="open = false" />
-        <q-btn unelevated no-caps color="teal" icon="add" label="Adicionar à receita" @click="confirmAdd" />
+        <q-btn unelevated no-caps color="deep-purple-4" icon="add" label="Adicionar à receita" @click="confirmAdd" />
       </q-card-actions>
     </template>
 
@@ -93,7 +93,7 @@
       <q-separator  />
       <q-card-actions align="right" class="q-px-md q-pb-md">
         <q-btn flat no-caps label="Cancelar" color="grey-5" @click="open = false" />
-        <q-btn unelevated no-caps color="teal" icon="add" label="Criar e adicionar"
+        <q-btn unelevated no-caps color="deep-purple-4" icon="add" label="Criar e adicionar"
           :disable="!cfg.name.trim()" @click="confirmAdd" />
       </q-card-actions>
     </template>

@@ -1,44 +1,36 @@
 <template>
   <div class="sbr-row">
-
     <!-- Label colorido por status — com tooltip -->
     <div class="sbr-label" :class="`status--${status}`">
       {{ label }}
       <q-tooltip anchor="center right" self="center left" :offset="[6, 0]" class="sbr-tooltip">
-        <div class="text-weight-bold">{{ labelInfo.name }}</div>
-        <div class="text-grey-4" style="font-size:11px">{{ labelInfo.desc }}</div>
+        <div class="text-weight-bold" style="font-size:12px">{{ labelInfo.name }}</div>
+        <div style="font-size:11px; opacity: 0.72; margin-top:2px">{{ labelInfo.desc }}</div>
       </q-tooltip>
     </div>
-
     <!-- Trilha central -->
     <div class="sbr-track">
-
       <!-- Zona do range (animada na montagem) -->
       <div class="sbr-zone" :class="`zone--${status}`" :style="zoneStyle" />
-
       <!-- Min: texto na borda esquerda da zona -->
       <span class="sbr-edge" :style="{ left: `calc(${minPct}% + 5px)` }">{{ fmtMin }}</span>
-
       <!-- Max: texto na borda direita da zona -->
       <span class="sbr-edge sbr-edge--right" :style="{ right: `calc(${100 - maxPct}% + 5px)` }">{{ fmtMax }}</span>
-
       <!-- Marcador do valor atual (clamped 1–99) -->
       <div
         class="sbr-marker"
         :class="`marker--${status}`"
         :style="{ left: `${clampedPct}%` }"
       />
-
     </div>
-
     <!-- Valor atual — sempre à direita, colorido por status -->
     <div class="sbr-cur" :class="`cur--${status}`">{{ fmtCur }}</div>
-
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, ref, onMounted } from 'vue'
+import { useQuasar } from 'quasar'
 
 const props = defineProps<{
   label: string
@@ -48,6 +40,9 @@ const props = defineProps<{
   decimals?: number
   unit?: string
 }>()
+
+const $q = useQuasar()
+const dark = computed(() => $q.dark.isActive)
 
 // Mapa de tooltips para cada sigla
 const tooltipMap: Record<string, { name: string; desc: string }> = {
@@ -86,13 +81,35 @@ const zoneStyle = computed(() => ({
   width: ready.value ? `${maxPct.value - minPct.value}%` : '0%',
 }))
 
-// Formatação — min/max com unidade quando aplicável
+// Formatação
 const d      = computed(() => props.decimals ?? 0)
 const fmt    = (v: number) => v.toFixed(d.value)
 const u      = computed(() => props.unit ?? '')
 const fmtMin = computed(() => fmt(props.min) + u.value)
 const fmtMax = computed(() => fmt(props.max) + u.value)
 const fmtCur = computed(() => fmt(props.current) + u.value)
+
+// ── Cores reativas ao tema (v-bind no CSS) ───────────────────────────────────
+const trackBg    = computed(() => dark.value ? '#1a1a1a'              : '#E2D9C8')
+const edgeColor  = computed(() => dark.value ? 'rgba(255,255,255,.68)': 'rgba(43,26,6,.60)')
+
+// Zonas (fundo da área ok/low/high na trilha)
+const zoneOkBg   = computed(() => dark.value ? '#3d6b28'              : 'rgba(76,128,45,0.42)')
+const zoneLowBg  = computed(() => dark.value ? '#56460a'              : 'rgba(180,130,10,0.38)')
+const zoneHighBg = computed(() => dark.value ? '#5a1a1a'              : 'rgba(160,30,30,0.32)')
+
+// Marcador vertical
+const markerOk   = computed(() => dark.value ? '#7ad4ff' : '#155a28')
+const markerLow  = computed(() => dark.value ? '#f5ca30' : '#8B6000')
+const markerHigh = computed(() => dark.value ? '#e05050' : '#9B1C1C')
+
+// Valor atual (coluna direita)
+const curOkColor  = computed(() => dark.value ? '#6fcf6f' : '#1a5e20')
+const curOkBg     = computed(() => dark.value ? 'rgba(90,140,58,.18)' : 'rgba(76,128,45,.14)')
+const curLowColor = computed(() => dark.value ? '#ffd860' : '#7B5000')
+const curLowBg    = computed(() => dark.value ? 'rgba(245,202,48,.08)': 'rgba(180,130,10,.13)')
+const curHighColor= computed(() => dark.value ? '#ff9090' : '#8B1A1A')
+const curHighBg   = computed(() => dark.value ? 'rgba(224,80,80,.10)' : 'rgba(160,30,30,.11)')
 </script>
 
 <style scoped>
@@ -104,7 +121,7 @@ const fmtCur = computed(() => fmt(props.current) + u.value)
   align-items: center;
 }
 
-/* ── Label esquerdo ── */
+/* ── Label esquerdo (sempre colorido por status) ── */
 .sbr-label {
   font-size: 10px;
   font-weight: 800;
@@ -113,19 +130,20 @@ const fmtCur = computed(() => fmt(props.current) + u.value)
   justify-content: center;
   height: 100%;
   letter-spacing: .04em;
-  color: #111;
+  color: #fff;
   border-radius: 3px 0 0 3px;
   cursor: default;
 }
-.status--ok   { background: #5a8c3a; }
-.status--low  { background: #c9a010; }
-.status--high { background: #b02020; }
+/* status colors — iguais em ambos os modos (verde/amarelo/vermelho) */
+.status--ok   { background: #4a7c30; }
+.status--low  { background: #a07c10; }
+.status--high { background: #932020; }
 
 /* ── Trilha ── */
 .sbr-track {
   position: relative;
   height: 100%;
-  background: #1a1a1a;
+  background: v-bind(trackBg);
   overflow: hidden;
 }
 
@@ -135,24 +153,24 @@ const fmtCur = computed(() => fmt(props.current) + u.value)
   top: 0; bottom: 0;
   transition: width 0.55s cubic-bezier(0.22, 1, 0.36, 1);
 }
-.zone--ok   { background: #3d6b28; }
-.zone--low  { background: #3a5e26; }
-.zone--high { background: #3a5e26; }
+.zone--ok   { background: v-bind(zoneOkBg); }
+.zone--low  { background: v-bind(zoneLowBg); }
+.zone--high { background: v-bind(zoneHighBg); }
 
-/* Textos min/max */
+/* Textos min/max nas bordas da zona */
 .sbr-edge {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
   font-size: 9px;
-  color: rgba(255,255,255,0.70);
+  color: v-bind(edgeColor);
   z-index: 3;
   pointer-events: none;
   white-space: nowrap;
 }
 .sbr-edge--right { left: auto; }
 
-/* Marcador vertical — animado ao mudar valor */
+/* Marcador vertical — animado */
 .sbr-marker {
   position: absolute;
   top: 0; bottom: 0;
@@ -162,9 +180,9 @@ const fmtCur = computed(() => fmt(props.current) + u.value)
   border-radius: 1px;
   transition: left 0.55s cubic-bezier(0.22, 1, 0.36, 1);
 }
-.marker--ok   { background: #7ad4ff; }
-.marker--low  { background: #f5ca30; }
-.marker--high { background: #e05050; }
+.marker--ok   { background: v-bind(markerOk); }
+.marker--low  { background: v-bind(markerLow); }
+.marker--high { background: v-bind(markerHigh); }
 
 /* ── Valor atual (coluna direita) ── */
 .sbr-cur {
@@ -178,10 +196,9 @@ const fmtCur = computed(() => fmt(props.current) + u.value)
   white-space: nowrap;
   border-radius: 0 3px 3px 0;
 }
-.cur--ok   { color: #6fcf6f; background: rgba(90,140,58,0.18); }
-.cur--low  { color: #ffd860; background: rgba(245,202,48,0.08); }
-.cur--high { color: #ff9090; background: rgba(224,80,80,0.10);  }
+.cur--ok   { color: v-bind(curOkColor);   background: v-bind(curOkBg);   }
+.cur--low  { color: v-bind(curLowColor);  background: v-bind(curLowBg);  }
+.cur--high { color: v-bind(curHighColor); background: v-bind(curHighBg); }
 
-/* Tooltip */
 .sbr-tooltip { font-size: 12px; }
 </style>

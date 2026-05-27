@@ -2,7 +2,7 @@
   <recipe-section
     title="Levedura"
     icon="mdi-test-tube"
-    icon-color="green-5"
+    icon-color="deep-purple-4"
   >
     <template #actions>
       <brew-pilot-button variant="outline" round dense icon="mdi-calculator"
@@ -106,7 +106,7 @@
     <q-dialog v-model="calcDialog">
       <q-card dark class="bg-dark" style="width:680px;max-width:95vw;max-height:90vh;display:flex;flex-direction:column">
         <q-card-section class="row items-center q-pb-sm" style="flex-shrink:0">
-          <q-icon name="mdi-test-tube" color="green-5" size="20px" class="q-mr-sm" />
+          <q-icon name="mdi-test-tube" color="deep-purple-4" size="20px" class="q-mr-sm" />
           <div class="text-subtitle1 text-weight-bold text-white">
             Taxa de Inoculação / Propagação de Levedura
           </div>
@@ -135,7 +135,7 @@
 
               <q-slider v-model="pitchRate" :min="0.25" :max="3.0" :step="0.05"
                 label :label-value="`${pitchRate}`"
-                color="green-6" dark class="q-mb-md q-px-sm" />
+                color="deep-purple-4" dark class="q-mb-md q-px-sm" />
 
               <div class="row q-col-gutter-sm q-mb-sm">
                 <div class="col-6">

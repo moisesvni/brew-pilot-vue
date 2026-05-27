@@ -102,167 +102,137 @@
   <!-- Diálogos (fora das seções condicionais) -->
 
     <!-- Density Final -->
-    <q-dialog v-model="fgDialog">
-      <q-card dark class="bg-dark" style="width:320px;max-width:95vw">
-        <q-card-section>
-          <div class="text-subtitle1 text-weight-bold text-white q-mb-md">
-            Densidade Final Medida
-          </div>
-          <q-input v-model.number="measuredFg" type="number" step="0.001" min="1.000" max="1.060"
-            outlined dense dark
-            :hint="stats ? `Estimada: ${stats.fg.toFixed(3)}` : ''" />
-        </q-card-section>
+    <brew-pilot-dialog v-model="fgDialog" title="Densidade Final Medida"
+      icon="mdi-pencil" icon-color="orange-6" width="320px">
+      <q-card-section>
+        <q-input v-model.number="measuredFg" type="number" step="0.001" min="1.000" max="1.060"
+          outlined dense
+          :hint="stats ? `Estimada: ${stats.fg.toFixed(3)}` : ''" />
+      </q-card-section>
+      <template #footer>
         <q-card-actions align="right" class="q-px-md q-pb-md">
-          <q-btn flat no-caps label="CANCELAR" color="grey-5" v-close-popup />
-          <q-btn unelevated no-caps label="SALVAR" color="positive" @click="saveFg" />
+          <brew-pilot-button variant="flat" no-caps label="Cancelar" @click="fgDialog = false" />
+          <brew-pilot-button variant="filled" no-caps label="Salvar" color="positive" @click="saveFg" />
         </q-card-actions>
-      </q-card>
-    </q-dialog>
+      </template>
+    </brew-pilot-dialog>
 
     <!-- Editar Mostura -->
-    <q-dialog v-model="editMashDialog">
-      <q-card dark class="bg-dark" style="width:520px;max-width:95vw;max-height:80vh;display:flex;flex-direction:column">
-        <q-card-section class="row items-center q-pb-sm" style="flex-shrink:0">
-          <div class="text-subtitle1 text-weight-bold text-white">Editar Etapas de Mostura</div>
-          <q-space />
-          <q-btn flat round dense icon="close" v-close-popup />
-        </q-card-section>
-        <q-separator dark />
-        <div style="overflow-y:auto;flex:1 1 0;min-height:0">
-          <q-card-section class="q-gutter-sm">
-            <div v-for="(step, i) in recipe.mashSteps" :key="step.id"
-              class="mash-step-row q-pa-sm rounded-borders q-mb-xs">
-              <div class="row q-col-gutter-sm items-center">
-                <div class="col-12 col-sm-3">
-                  <q-input v-model="step.name" outlined dense dark label="Nome" />
-                </div>
-                <div class="col-6 col-sm-2">
-                  <q-input v-model.number="step.temperature" type="number" step="0.5"
-                    outlined dense dark label="°C" />
-                </div>
-                <div class="col-6 col-sm-2">
-                  <q-input v-model.number="step.time" type="number" step="1"
-                    outlined dense dark label="min" />
-                </div>
-                <div class="col-8 col-sm-3">
-                  <q-select v-model="step.type"
-                    :options="[{label:'Infusão',value:'Infusion'},{label:'Temperatura',value:'Temperature'},{label:'Decocção',value:'Decoction'}]"
-                    emit-value map-options outlined dense dark options-dark label="Tipo" />
-                </div>
-                <div class="col-4 col-sm-2 row justify-end">
-                  <q-btn flat round dense icon="delete" color="negative"
-                    @click="recipe.mashSteps.splice(i, 1)" />
-                </div>
-              </div>
+    <brew-pilot-dialog v-model="editMashDialog" title="Editar Etapas de Mostura"
+      icon="mdi-thermometer" icon-color="orange-6" width="520px" scrollable>
+      <q-card-section class="q-gutter-sm">
+        <div v-for="(step, i) in recipe.mashSteps" :key="step.id"
+          class="mash-step-row q-pa-sm rounded-borders q-mb-xs">
+          <div class="row q-col-gutter-sm items-center">
+            <div class="col-12 col-sm-3">
+              <q-input v-model="step.name" outlined dense label="Nome" />
             </div>
-          </q-card-section>
+            <div class="col-6 col-sm-2">
+              <q-input v-model.number="step.temperature" type="number" step="0.5"
+                outlined dense label="°C" />
+            </div>
+            <div class="col-6 col-sm-2">
+              <q-input v-model.number="step.time" type="number" step="1"
+                outlined dense label="min" />
+            </div>
+            <div class="col-8 col-sm-3">
+              <brew-pilot-select v-model="step.type"
+                :options="[{label:'Infusão',value:'Infusion'},{label:'Temperatura',value:'Temperature'},{label:'Decocção',value:'Decoction'}]"
+                emit-value map-options label="Tipo" />
+            </div>
+            <div class="col-4 col-sm-2 row justify-end">
+              <q-btn flat round dense icon="delete" color="negative"
+                @click="recipe.mashSteps.splice(i, 1)" />
+            </div>
+          </div>
         </div>
-        <q-separator dark />
-        <q-card-actions class="q-px-md q-pb-md" style="flex-shrink:0">
-          <q-btn outline no-caps icon="add" label="Adicionar Etapa" color="grey-5" size="sm"
-            @click="addMashStep" />
+      </q-card-section>
+      <template #footer>
+        <q-card-actions class="q-px-md q-pb-md">
+          <brew-pilot-button variant="outline" no-caps icon="mdi-plus" label="Adicionar Etapa"
+            size="sm" @click="addMashStep" />
           <q-space />
-          <q-btn unelevated no-caps label="Fechar" color="positive" v-close-popup />
+          <brew-pilot-button variant="filled" no-caps label="Fechar" color="positive"
+            @click="editMashDialog = false" />
         </q-card-actions>
-      </q-card>
-    </q-dialog>
+      </template>
+    </brew-pilot-dialog>
 
     <!-- Editar Fermentação -->
-    <q-dialog v-model="editFermDialog">
-      <q-card dark class="bg-dark" style="width:520px;max-width:95vw;max-height:80vh;display:flex;flex-direction:column">
-        <q-card-section class="row items-center q-pb-sm" style="flex-shrink:0">
-          <div class="text-subtitle1 text-weight-bold text-white">Editar Perfil de Fermentação</div>
-          <q-space />
-          <q-btn flat round dense icon="close" v-close-popup />
-        </q-card-section>
-        <q-separator dark />
-        <div style="overflow-y:auto;flex:1 1 0;min-height:0">
-          <q-card-section class="q-gutter-sm">
-            <div v-for="(step, i) in fermSteps" :key="step.id"
-              class="mash-step-row q-pa-sm rounded-borders q-mb-xs">
-              <div class="row q-col-gutter-sm items-center">
-                <div class="col-12 col-sm-4">
-                  <q-input v-model="step.name" outlined dense dark label="Nome" />
-                </div>
-                <div class="col-6 col-sm-3">
-                  <q-input v-model.number="step.temperature" type="number" step="0.5"
-                    outlined dense dark label="°C" />
-                </div>
-                <div class="col-6 col-sm-3">
-                  <q-input v-model.number="step.days" type="number" step="1"
-                    outlined dense dark label="Dias" />
-                </div>
-                <div class="col-12 col-sm-2 row justify-end">
-                  <q-btn flat round dense icon="delete" color="negative"
-                    @click="fermSteps.splice(i, 1)" />
-                </div>
-              </div>
+    <brew-pilot-dialog v-model="editFermDialog" title="Editar Perfil de Fermentação"
+      icon="mdi-chart-timeline-variant" icon-color="blue-5" width="520px" scrollable>
+      <q-card-section class="q-gutter-sm">
+        <div v-for="(step, i) in fermSteps" :key="step.id"
+          class="mash-step-row q-pa-sm rounded-borders q-mb-xs">
+          <div class="row q-col-gutter-sm items-center">
+            <div class="col-12 col-sm-4">
+              <q-input v-model="step.name" outlined dense label="Nome" />
             </div>
-          </q-card-section>
-          <q-card-section class="q-pt-xs">
-            <div class="row q-col-gutter-sm">
-              <div class="col-6">
-                <q-input v-model.number="recipe.carbonationMin" type="number" step="0.1"
-                  outlined dense dark label="Carbonatação Mín." suffix="vol CO₂" />
-              </div>
-              <div class="col-6">
-                <q-input v-model.number="recipe.carbonationMax" type="number" step="0.1"
-                  outlined dense dark label="Carbonatação Máx." suffix="vol CO₂" />
-              </div>
+            <div class="col-6 col-sm-3">
+              <q-input v-model.number="step.temperature" type="number" step="0.5"
+                outlined dense label="°C" />
             </div>
-          </q-card-section>
+            <div class="col-6 col-sm-3">
+              <q-input v-model.number="step.days" type="number" step="1"
+                outlined dense label="Dias" />
+            </div>
+            <div class="col-12 col-sm-2 row justify-end">
+              <q-btn flat round dense icon="delete" color="negative"
+                @click="fermSteps.splice(i, 1)" />
+            </div>
+          </div>
         </div>
-        <q-separator dark />
-        <q-card-actions class="q-px-md q-pb-md" style="flex-shrink:0">
-          <q-btn outline no-caps icon="add" label="Adicionar Etapa" color="grey-5" size="sm"
-            @click="addFermStep" />
+      </q-card-section>
+      <q-card-section class="q-pt-xs">
+        <div class="row q-col-gutter-sm">
+          <div class="col-6">
+            <q-input v-model.number="recipe.carbonationMin" type="number" step="0.1"
+              outlined dense label="Carbonatação Mín." suffix="vol CO₂" />
+          </div>
+          <div class="col-6">
+            <q-input v-model.number="recipe.carbonationMax" type="number" step="0.1"
+              outlined dense label="Carbonatação Máx." suffix="vol CO₂" />
+          </div>
+        </div>
+      </q-card-section>
+      <template #footer>
+        <q-card-actions class="q-px-md q-pb-md">
+          <brew-pilot-button variant="outline" no-caps icon="mdi-plus" label="Adicionar Etapa"
+            size="sm" @click="addFermStep" />
           <q-space />
-          <q-btn unelevated no-caps label="Fechar" color="positive" v-close-popup />
+          <brew-pilot-button variant="filled" no-caps label="Fechar" color="positive"
+            @click="editFermDialog = false" />
         </q-card-actions>
-      </q-card>
-    </q-dialog>
+      </template>
+    </brew-pilot-dialog>
 
-    <!-- Alterar perfil de mostura (placeholder) -->
-    <q-dialog v-model="changeMashDialog">
-      <q-card dark class="bg-dark" style="width:360px;max-width:95vw">
-        <q-card-section class="row items-center">
-          <div class="text-subtitle2 text-white">Alterar Perfil de Mostura</div>
-          <q-space />
-          <q-btn flat round dense icon="close" v-close-popup />
-        </q-card-section>
-        <q-card-section>
-          <div class="q-gutter-sm">
-            <q-btn
-              v-for="p in mashPresets" :key="p.label"
-              outline no-caps color="grey-5" class="full-width"
-              @click="applyMashPreset(p)">
-              {{ p.label }}
-            </q-btn>
-          </div>
-        </q-card-section>
-      </q-card>
-    </q-dialog>
+    <!-- Alterar perfil de mostura -->
+    <brew-pilot-dialog v-model="changeMashDialog" title="Alterar Perfil de Mostura"
+      icon="mdi-swap-horizontal" icon-color="orange-6" width="360px">
+      <q-card-section>
+        <div class="q-gutter-sm">
+          <brew-pilot-button
+            v-for="p in mashPresets" :key="p.label"
+            variant="outline" no-caps class="full-width"
+            :label="p.label"
+            @click="applyMashPreset(p)" />
+        </div>
+      </q-card-section>
+    </brew-pilot-dialog>
 
-    <!-- Alterar perfil de fermentação (placeholder) -->
-    <q-dialog v-model="changeFermDialog">
-      <q-card dark class="bg-dark" style="width:360px;max-width:95vw">
-        <q-card-section class="row items-center">
-          <div class="text-subtitle2 text-white">Alterar Perfil de Fermentação</div>
-          <q-space />
-          <q-btn flat round dense icon="close" v-close-popup />
-        </q-card-section>
-        <q-card-section>
-          <div class="q-gutter-sm">
-            <q-btn
-              v-for="p in fermPresets" :key="p.label"
-              outline no-caps color="grey-5" class="full-width"
-              @click="applyFermPreset(p)">
-              {{ p.label }}
-            </q-btn>
-          </div>
-        </q-card-section>
-      </q-card>
-    </q-dialog>
+    <!-- Alterar perfil de fermentação -->
+    <brew-pilot-dialog v-model="changeFermDialog" title="Alterar Perfil de Fermentação"
+      icon="mdi-swap-horizontal" icon-color="blue-5" width="360px">
+      <q-card-section>
+        <div class="q-gutter-sm">
+          <brew-pilot-button
+            v-for="p in fermPresets" :key="p.label"
+            variant="outline" no-caps class="full-width"
+            :label="p.label"
+            @click="applyFermPreset(p)" />
+        </div>
+      </q-card-section>
+    </brew-pilot-dialog>
 
 </template>
 
@@ -271,6 +241,8 @@ import { ref, computed } from 'vue'
 import { useRecipeStore } from '../../../../stores/recipeStore'
 import RecipeSection from '../RecipeSection.vue'
 import BrewPilotButton from '../../../../components/shared/BrewPilotButton.vue'
+import BrewPilotDialog from '../../../../components/BrewPilotDialog.vue'
+import BrewPilotSelect from '../../../../components/shared/BrewPilotSelect.vue'
 import type { RecipeMashStep, FermentationStep } from '../../../../types/recipe'
 
 const props = defineProps<{ section: 'mash' | 'fermentation' }>()

@@ -115,48 +115,7 @@
 
       <!-- ╔══ CARD 3 — Estilo ═════════════════════════════════════════════╗ -->
       <div class="col-12 col-md-4">
-        <q-card flat bordered class="card-dark full-height">
-          <q-card-section>
-            <!-- Cabeçalho estilo -->
-            <div class="row items-center justify-between q-mb-sm">
-              <div class="row items-center no-wrap">
-                <q-icon :name="recipe.styleGuide ? 'mdi-check-circle' : 'mdi-circle-outline'"
-                  :color="recipe.styleGuide ? 'positive' : 'grey-6'" size="15px" class="q-mr-xs" />
-                <span class="text-caption text-weight-bold ellipsis"
-                  :style="recipe.styleGuide ? 'color: var(--bp-text-primary)' : 'color: var(--bp-text-secondary)'"
-                  style="max-width: 200px">
-                  {{ recipe.styleGuide
-                    ? `${recipe.styleGuide.code} ${recipe.styleGuide.name}`
-                    : 'Nenhum estilo selecionado' }}
-                </span>
-              </div>
-              <brew-pilot-button variant="outline" round dense size="xs" icon="mdi-pencil"
-                tooltip="Alterar estilo" @click="styleDialog = true" />
-            </div>
-
-            <!-- Barras de range -->
-            <template v-if="stats && recipe.styleGuide">
-              <recipe-style-range-bar label="ABV" :current="stats.abv" :min="recipe.styleGuide.abvMin"
-                :max="recipe.styleGuide.abvMax" :decimals="1" />
-              <recipe-style-range-bar label="OG" :current="stats.og" :min="recipe.styleGuide.ogMin"
-                :max="recipe.styleGuide.ogMax" :decimals="3" />
-              <recipe-style-range-bar label="FG" :current="stats.fg" :min="recipe.styleGuide.fgMin"
-                :max="recipe.styleGuide.fgMax" :decimals="3" />
-              <recipe-style-range-bar label="EBC" :current="stats.ebc" :min="recipe.styleGuide.ebcMin"
-                :max="recipe.styleGuide.ebcMax" :decimals="1" />
-              <recipe-style-range-bar label="IBU" :current="stats.ibu" :min="recipe.styleGuide.ibuMin"
-                :max="recipe.styleGuide.ibuMax" :decimals="0" />
-              <recipe-style-range-bar label="BU/GU" :current="stats.buGuRatio"
-                :min="Number((recipe.styleGuide.ibuMin / ((recipe.styleGuide.ogMin - 1) * 1000)).toFixed(2))"
-                :max="Number((recipe.styleGuide.ibuMax / ((recipe.styleGuide.ogMax - 1) * 1000)).toFixed(2))"
-                :decimals="2" />
-            </template>
-            <div v-else class="text-caption text-grey-6 q-mt-sm text-center q-py-md">
-              <q-icon name="mdi-chart-bar" size="28px" class="q-mb-xs block" /><br>
-              Selecione um estilo para ver a comparação
-            </div>
-          </q-card-section>
-        </q-card>
+        <style-guide-card />
       </div>
     </div>
     <!-- ── SEÇÕES COLAPSÁVEIS ─────────────────────────────────────────────── -->
@@ -230,6 +189,7 @@ import YeastCard from '../components/overview/YeastCard.vue'
 import MashCard from '../components/overview/MashCard.vue'
 import WaterCard from '../components/overview/WaterCard.vue'
 import OthersCard from '../components/overview/OthersCard.vue'
+import StyleGuideCard from '../components/overview/StyleGuideCard.vue'
 import BrewPilotLabel from '../../../components/shared/BrewPilotLabel.vue'
 import { ebcToHex } from '../../../utils/brewColors'
 import RecipeImageDialog from '../components/overview/dialogs/RecipeImageDialog.vue'
