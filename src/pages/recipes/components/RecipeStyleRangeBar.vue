@@ -139,7 +139,7 @@ const fmtCur = computed(() => fmt(props.current) + u.value)
 .zone--low  { background: #3a5e26; }
 .zone--high { background: #3a5e26; }
 
-/* Textos min/max — brancos com padding lateral */
+/* Textos min/max */
 .sbr-edge {
   position: absolute;
   top: 50%;
@@ -152,7 +152,7 @@ const fmtCur = computed(() => fmt(props.current) + u.value)
 }
 .sbr-edge--right { left: auto; }
 
-/* Marcador vertical */
+/* Marcador vertical — animado ao mudar valor */
 .sbr-marker {
   position: absolute;
   top: 0; bottom: 0;
@@ -160,6 +160,7 @@ const fmtCur = computed(() => fmt(props.current) + u.value)
   transform: translateX(-50%);
   z-index: 4;
   border-radius: 1px;
+  transition: left 0.55s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .marker--ok   { background: #7ad4ff; }
 .marker--low  { background: #f5ca30; }

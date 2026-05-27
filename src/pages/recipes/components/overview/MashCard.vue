@@ -8,14 +8,10 @@
     icon-color="orange-6"
   >
     <template #actions>
-      <q-btn flat round dense size="md" icon="mdi-swap-horizontal" color="grey-5"
-        @click.stop="changeMashDialog = true">
-        <q-tooltip>Alterar perfil de mostura</q-tooltip>
-      </q-btn>
-      <q-btn flat round dense size="md" icon="mdi-pencil" color="grey-5"
-        @click.stop="editMashDialog = true">
-        <q-tooltip>Editar etapas de mostura</q-tooltip>
-      </q-btn>
+      <brew-pilot-button variant="outline" round dense icon="mdi-swap-horizontal"
+        tooltip="Alterar perfil de mostura" @click.stop="changeMashDialog = true" />
+      <brew-pilot-button variant="outline" round dense icon="mdi-pencil"
+        tooltip="Editar etapas de mostura" @click.stop="editMashDialog = true" />
     </template>
 
       <!-- Etapas -->
@@ -41,8 +37,8 @@
 
       <!-- FG / Density Final button -->
       <div class="q-mt-sm row justify-end">
-        <q-btn outline rounded dense no-caps label="DENSIDADE FINAL" icon="mdi-pencil"
-          color="grey-5" size="sm" @click="fgDialog = true" />
+        <brew-pilot-button variant="outline" rounded dense no-caps label="DENSIDADE FINAL"
+          icon="mdi-pencil" size="sm" @click="fgDialog = true" />
       </div>
 
       <!-- Stats mostura -->
@@ -65,14 +61,10 @@
     icon-color="blue-5"
   >
     <template #actions>
-      <q-btn flat round dense size="md" icon="mdi-swap-horizontal" color="grey-5"
-        @click.stop="changeFermDialog = true">
-        <q-tooltip>Alterar perfil de fermentação</q-tooltip>
-      </q-btn>
-      <q-btn flat round dense size="md" icon="mdi-pencil" color="grey-5"
-        @click.stop="editFermDialog = true">
-        <q-tooltip>Editar etapas de fermentação</q-tooltip>
-      </q-btn>
+      <brew-pilot-button variant="outline" round dense icon="mdi-swap-horizontal"
+        tooltip="Alterar perfil de fermentação" @click.stop="changeFermDialog = true" />
+      <brew-pilot-button variant="outline" round dense icon="mdi-pencil"
+        tooltip="Editar etapas de fermentação" @click.stop="editFermDialog = true" />
     </template>
 
       <!-- Etapas de fermentação -->
@@ -278,6 +270,7 @@
 import { ref, computed } from 'vue'
 import { useRecipeStore } from '../../../../stores/recipeStore'
 import RecipeSection from '../RecipeSection.vue'
+import BrewPilotButton from '../../../../components/shared/BrewPilotButton.vue'
 import type { RecipeMashStep, FermentationStep } from '../../../../types/recipe'
 
 const props = defineProps<{ section: 'mash' | 'fermentation' }>()

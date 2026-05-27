@@ -130,7 +130,8 @@
                     : 'Nenhum estilo selecionado' }}
                 </span>
               </div>
-              <q-btn flat round dense size="xs" icon="mdi-pencil" color="grey-5" @click="styleDialog = true" />
+              <brew-pilot-button variant="outline" round dense size="xs" icon="mdi-pencil"
+                tooltip="Alterar estilo" @click="styleDialog = true" />
             </div>
 
             <!-- Barras de range -->
@@ -174,8 +175,8 @@
       <div class="col-12 col-md-6">
         <recipe-section title="Diversos" icon="mdi-flask-outline" icon-color="teal">
           <template #actions>
-            <q-btn outline rounded dense no-caps label="+ ADICIONAR" color="primary" size="md"
-              @click.stop="miscTabRef?.openPicker()" />
+            <brew-pilot-button variant="outline" round dense icon="mdi-plus" primary
+              tooltip="Adicionar Ingrediente" @click.stop="miscTabRef?.openPicker()" />
           </template>
           <recipe-misc-tab ref="miscTabRef" :hide-button="true" />
         </recipe-section>
@@ -219,6 +220,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRecipeStore } from '../../../stores/recipeStore'
 import { useEquipmentStore } from '../../../stores/equipmentStore'
+import BrewPilotButton from '../../../components/shared/BrewPilotButton.vue'
 import RecipeStyleRangeBar from '../components/RecipeStyleRangeBar.vue'
 import RecipeSection from '../components/RecipeSection.vue'
 import RecipeMiscTab from './RecipeMiscTab.vue'

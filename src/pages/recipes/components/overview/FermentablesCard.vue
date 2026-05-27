@@ -2,19 +2,15 @@
   <div style="display:contents">
     <recipe-section title="Fermentáveis" icon="mdi-barley" icon-color="primary" :badge="totalWeightDisplay">
       <template #actions>
-        <q-btn round outline dense size="md" icon="mdi-palette" color="grey-5" class="palette-btn"
-          :style="{ '--palette-color': ebcToHex(stats?.ebc ?? 20) }" @click.stop="colorDialog = true">
-          <q-tooltip>Ajustar Cor da Receita</q-tooltip>
-        </q-btn>
-        <q-btn round outline dense color="grey-5" size="11px" padding="6px 6px" icon="mdi-percent"
-          @click.stop="pctDialog = true">
-          <q-tooltip>Definir Porcentagens</q-tooltip>
-        </q-btn>
-        <q-btn round outline dense color="grey-5" size="md" class="circle-btn" @click.stop="ogDialog = true" label="OG">
-          <q-tooltip>Redimensionar por OG</q-tooltip>
-        </q-btn>
-        <q-btn outline rounded dense label="ADICIONAR" color="primary" icon="mdi-plus" size="md" class="q-pr-sm"
-          @click.stop="pickerOpen = true" />
+        <brew-pilot-button variant="outline" round dense icon="mdi-palette"
+          class="palette-btn" :style="{ '--palette-color': ebcToHex(stats?.ebc ?? 20) }"
+          tooltip="Ajustar Cor da Receita" @click.stop="colorDialog = true" />
+        <brew-pilot-button variant="outline" round dense icon="mdi-percent"
+          tooltip="Definir Porcentagens" @click.stop="pctDialog = true" />
+        <brew-pilot-button variant="outline" round dense label="OG"
+          class="circle-btn" tooltip="Redimensionar por OG" @click.stop="ogDialog = true" />
+        <brew-pilot-button variant="outline" round dense icon="mdi-plus" primary
+          tooltip="Adicionar Fermentável" @click.stop="pickerOpen = true" />
       </template>
 
       <!-- ── Lista ──────────────────────────────────────────────────────────── -->
@@ -104,6 +100,7 @@
 import { ref, computed } from 'vue'
 import { useRecipeStore } from '../../../../stores/recipeStore'
 import RecipeSection from '../RecipeSection.vue'
+import BrewPilotButton from '../../../../components/shared/BrewPilotButton.vue'
 import type { RecipeFermentable, FermentableType } from '../../../../types/recipe'
 import FermentablePickerDialog from '../pickers/FermentablePickerDialog.vue'
 import EditFermentableDialog from './dialogs/EditFermentableDialog.vue'

@@ -6,15 +6,11 @@
     :badge="phOk ? `pH ${estimatedPh.toFixed(2)}` : `pH ${estimatedPh.toFixed(2)} ⚠`"
   >
     <template #actions>
-      <q-btn flat round dense size="md" icon="help_outline" color="grey-5"
-        @click.stop>
-        <q-tooltip>
-          Os volumes de água mostrados são para a calculadora de água.<br>
-          Para ajustar a quantidade, edite o perfil de equipamento.
-        </q-tooltip>
-      </q-btn>
-      <q-btn outline rounded dense no-caps label="CALCULADORA" color="grey-5" size="md"
-        @click.stop="waterDialog = true" />
+      <brew-pilot-button variant="outline" round dense icon="help_outline"
+        tooltip="Os volumes mostrados são para a calculadora de água. Para ajustar a quantidade, edite o perfil de equipamento."
+        @click.stop />
+      <brew-pilot-button variant="outline" round dense icon="mdi-calculator"
+        tooltip="Abre a calculadora de água" @click.stop="waterDialog = true" />
     </template>
 
     <!-- ── Corpo estilo Brewfather: volumes (esq) + perfil iônico (dir) ──── -->
@@ -233,6 +229,7 @@
 import { ref, computed, reactive, watch } from 'vue'
 import { useRecipeStore } from '../../../../stores/recipeStore'
 import RecipeSection from '../RecipeSection.vue'
+import BrewPilotButton from '../../../../components/shared/BrewPilotButton.vue'
 import type { WaterProfile, WaterMinerals } from '../../../../types/recipe'
 
 const store = useRecipeStore()

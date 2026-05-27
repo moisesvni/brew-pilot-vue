@@ -6,14 +6,12 @@
     :badge="totalHopWeight"
   >
     <template #actions>
-      <q-btn flat round dense size="md" icon="mdi-format-list-bulleted" color="grey-5"
-        @click.stop="listMode = !listMode">
-        <q-tooltip>{{ listMode ? 'Modo compacto' : 'Modo lista' }}</q-tooltip>
-      </q-btn>
-      <q-btn outline rounded dense no-caps label="IBU" color="grey-5" size="md"
-        class="q-ml-xs" />
-      <q-btn outline rounded dense no-caps label="+ ADICIONAR" color="primary" size="md"
-        class="q-ml-xs" @click.stop="pickerOpen = true" />
+      <brew-pilot-button variant="outline" round dense icon="mdi-format-list-bulleted"
+        :tooltip="listMode ? 'Modo compacto' : 'Modo lista'" @click.stop="listMode = !listMode" />
+      <brew-pilot-button variant="outline" round dense label="IBU"
+        class="q-ml-xs" tooltip="Calculadora de IBU" />
+      <brew-pilot-button variant="outline" round dense icon="mdi-plus" primary
+        class="q-ml-xs" tooltip="Adicionar Lúpulo" @click.stop="pickerOpen = true" />
     </template>
 
     <!-- ── Lista ──────────────────────────────────────────────────────────── -->
@@ -76,73 +74,71 @@
     <!-- ══════════════════════════════════════════════════════════════════════
          DIALOG: Editar Lúpulo
     ══════════════════════════════════════════════════════════════════════════ -->
-    <q-dialog v-model="editDialog">
-      <q-card dark class="bg-dark" style="width:440px;max-width:95vw">
-        <q-card-section class="row items-center q-pb-sm">
-          <div class="text-subtitle1 text-weight-bold text-white">Editar Lúpulo</div>
-          <q-space />
-          <q-btn flat round dense icon="close" v-close-popup />
-        </q-card-section>
-        <q-separator dark />
-        <q-card-section v-if="editItem" class="q-gutter-sm">
-          <div class="row q-col-gutter-sm">
-            <div class="col-12">
-              <q-input v-model="editItem.name" outlined dense dark label="Nome" />
-            </div>
-            <div class="col-6 col-sm-4">
-              <q-input v-model.number="editItem.amount" type="number" step="1"
-                outlined dense dark label="Quantidade" suffix="g" />
-            </div>
-            <div class="col-6 col-sm-4">
-              <q-input v-model.number="editItem.alphaAcid" type="number" step="0.1"
-                outlined dense dark label="Alfa (%)" suffix="%" />
-            </div>
-            <div class="col-6 col-sm-4">
-              <q-input v-model.number="editItem.betaAcid" type="number" step="0.1"
-                outlined dense dark label="Beta (%)" suffix="%" />
-            </div>
-            <div class="col-6 col-sm-4">
-              <q-input v-model.number="editItem.cohumulone" type="number" step="0.1"
-                outlined dense dark label="Co-Humulona (%)" suffix="%" />
-            </div>
-            <div class="col-6 col-sm-4">
-              <q-input v-model.number="editItem.totalOil" type="number" step="0.01"
-                outlined dense dark label="Óleo Total" suffix="mL/100g" />
-            </div>
-            <div class="col-6 col-sm-4">
-              <q-input v-model="editItem.origin" outlined dense dark label="Origem" />
-            </div>
-            <div class="col-6 col-sm-4">
-              <q-select v-model="editItem.hopForm"
-                :options="['Pellet','Leaf','Extract']"
-                outlined dense dark options-dark label="Forma" clearable />
-            </div>
-            <div class="col-6 col-sm-4">
-              <q-input v-model.number="editItem.time" type="number" step="1"
-                outlined dense dark label="Tempo"
-                :suffix="editItem.use === 'DryHop' ? 'dias' : 'min'" />
-            </div>
-            <div class="col-6 col-sm-6">
-              <q-select v-model="editItem.use" :options="useOptions" emit-value map-options
-                outlined dense dark options-dark label="Uso"
-                @update:model-value="onUseChange" />
-            </div>
-            <div v-if="editItem.use === 'Whirlpool' || editItem.use === 'Hopstand'"
-              class="col-6 col-sm-6">
-              <q-input v-model.number="editItem.temperature" type="number" step="1"
-                outlined dense dark label="Temperatura" suffix="°C" />
-            </div>
+    <brew-pilot-dialog v-model="editDialog" title="Editar Lúpulo" icon="mdi-hops"
+      icon-color="green" width="440px">
+      <q-card-section v-if="editItem" class="q-gutter-sm">
+        <div class="row q-col-gutter-sm">
+          <div class="col-12">
+            <q-input v-model="editItem.name" outlined dense label="Nome" />
           </div>
-        </q-card-section>
-        <q-separator dark />
+          <div class="col-6 col-sm-4">
+            <q-input v-model.number="editItem.amount" type="number" step="1"
+              outlined dense label="Quantidade" suffix="g" />
+          </div>
+          <div class="col-6 col-sm-4">
+            <q-input v-model.number="editItem.alphaAcid" type="number" step="0.1"
+              outlined dense label="Alfa (%)" suffix="%" />
+          </div>
+          <div class="col-6 col-sm-4">
+            <q-input v-model.number="editItem.betaAcid" type="number" step="0.1"
+              outlined dense label="Beta (%)" suffix="%" />
+          </div>
+          <div class="col-6 col-sm-4">
+            <q-input v-model.number="editItem.cohumulone" type="number" step="0.1"
+              outlined dense label="Co-Humulona (%)" suffix="%" />
+          </div>
+          <div class="col-6 col-sm-4">
+            <q-input v-model.number="editItem.totalOil" type="number" step="0.01"
+              outlined dense label="Óleo Total" suffix="mL/100g" />
+          </div>
+          <div class="col-6 col-sm-4">
+            <q-input v-model="editItem.origin" outlined dense label="Origem" />
+          </div>
+          <div class="col-6 col-sm-4">
+            <q-select v-model="editItem.hopForm"
+              :options="['Pellet','Leaf','Extract']"
+              outlined dense label="Forma" clearable />
+          </div>
+          <div class="col-6 col-sm-4">
+            <q-select v-model="editItem.use" :options="useOptions" emit-value map-options
+              outlined dense label="Uso"
+              @update:model-value="onUseChange" />
+          </div>
+          <div class="col-6 col-sm-4">
+            <q-input v-model.number="editItem.time" type="number" step="1"
+              outlined dense label="Tempo"
+              :suffix="editItem.use === 'DryHop' ? 'dias' : 'min'" />
+          </div>
+          <div v-if="editItem.use === 'Whirlpool' || editItem.use === 'Hopstand'"
+            class="col-6 col-sm-6">
+            <q-input v-model.number="editItem.temperature" type="number" step="1"
+              outlined dense label="Temperatura" suffix="°C" />
+          </div>
+        </div>
+      </q-card-section>
+
+      <template #footer>
         <q-card-actions class="q-px-md q-pb-md">
-          <q-btn flat no-caps label="Remover" color="negative" @click="removeEditItem" />
+          <brew-pilot-button variant="flat" no-caps label="Remover" color="negative"
+            @click="removeEditItem" />
           <q-space />
-          <q-btn flat no-caps label="Cancelar" color="grey-5" v-close-popup />
-          <q-btn unelevated no-caps label="Salvar" color="positive" @click="saveEditItem" />
+          <brew-pilot-button variant="flat" no-caps label="Cancelar"
+            @click="editDialog = false" />
+          <brew-pilot-button variant="filled" no-caps label="Salvar" color="positive"
+            @click="saveEditItem" />
         </q-card-actions>
-      </q-card>
-    </q-dialog>
+      </template>
+    </brew-pilot-dialog>
 
     <hop-picker-dialog v-model="pickerOpen" @add="onAdd" />
   </recipe-section>
@@ -152,6 +148,8 @@
 import { ref, computed } from 'vue'
 import { useRecipeStore } from '../../../../stores/recipeStore'
 import RecipeSection from '../RecipeSection.vue'
+import BrewPilotButton from '../../../../components/shared/BrewPilotButton.vue'
+import BrewPilotDialog from '../../../../components/BrewPilotDialog.vue'
 import type { RecipeHop, HopUse } from '../../../../types/recipe'
 import HopPickerDialog from '../pickers/HopPickerDialog.vue'
 import {

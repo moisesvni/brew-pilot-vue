@@ -3,34 +3,30 @@
     <!-- Cabeçalho -->
     <div class="row items-center justify-between q-mb-lg">
       <div>
-        <div class="text-h5 text-weight-bold">Receitas</div>
-        <div class="text-caption text-grey-5">{{ store.recipes.length }} receita(s) cadastrada(s)</div>
+        <div class="text-h5 text-weight-bold" style="color: var(--bp-text-primary)">Receitas</div>
+        <div class="text-caption" style="color: var(--bp-text-secondary)">
+          {{ store.recipes.length }} receita(s) cadastrada(s)
+        </div>
       </div>
-      <q-btn color="primary" icon="add" label="Nova Receita" unelevated @click="createNew" />
+      <brew-pilot-button variant="filled" color="primary" icon="add" label="Nova Receita"
+        no-caps unelevated tooltip="Criar nova receita" @click="createNew" />
     </div>
 
     <!-- Filtros -->
     <div class="row q-gutter-sm q-mb-md">
-      <q-input
+      <brew-pilot-search-input
         v-model="search"
         placeholder="Buscar receita..."
-        dense outlined
         class="col-12 col-sm-4"
-        bg-color="dark"
-      >
-        <template #prepend>
-          <q-icon name="search" />
-        </template>
-      </q-input>
-
-      <q-select
+      />
+      <brew-pilot-select
         v-model="filterType"
         :options="typeOptions"
         label="Tipo"
-        dense outlined
         clearable
+        emit-value
+        map-options
         class="col-auto"
-        bg-color="dark"
         style="min-width: 140px"
       />
     </div>
@@ -41,11 +37,15 @@
     </div>
 
     <!-- Lista vazia -->
-    <div v-else-if="!filteredRecipes.length" class="column items-center q-py-xl text-grey-5">
-      <q-icon name="mdi-beer-outline" size="80px" class="q-mb-md" />
-      <div class="text-h6">Nenhuma receita encontrada</div>
-      <div class="text-body2 q-mb-md">Crie sua primeira receita cervejeira</div>
-      <q-btn color="primary" label="Criar Receita" @click="createNew" />
+    <div v-else-if="!filteredRecipes.length" class="column items-center q-py-xl">
+      <q-icon name="mdi-beer-outline" size="80px" class="q-mb-md"
+        :style="{ color: 'var(--bp-text-secondary)' }" />
+      <div class="text-h6 q-mb-xs" style="color: var(--bp-text-primary)">Nenhuma receita encontrada</div>
+      <div class="text-body2 q-mb-md" style="color: var(--bp-text-secondary)">
+        Crie sua primeira receita cervejeira
+      </div>
+      <brew-pilot-button variant="filled" color="primary" no-caps label="Criar Receita"
+        @click="createNew" />
     </div>
 
     <!-- Grid de receitas -->
@@ -62,20 +62,19 @@
     </div>
 
     <!-- Dialog de confirmação de exclusão -->
-    <q-dialog v-model="deleteDialog">
-      <q-card dark style="min-width: 320px">
-        <q-card-section>
-          <div class="text-h6">Excluir receita?</div>
-        </q-card-section>
-        <q-card-section class="text-body2">
-          A receita <strong>{{ deleteTarget?.name }}</strong> será excluída permanentemente.
-        </q-card-section>
-        <q-card-actions align="right">
-          <q-btn flat label="Cancelar" v-close-popup />
-          <q-btn flat color="negative" label="Excluir" @click="executeDelete" />
+    <brew-pilot-dialog v-model="deleteDialog" title="Excluir receita?" icon="mdi-delete-outline"
+      icon-color="negative" width="360px">
+      <q-card-section class="text-body2" style="color: var(--bp-text-primary)">
+        A receita <strong>{{ deleteTarget?.name }}</strong> será excluída permanentemente.
+      </q-card-section>
+      <template #footer>
+        <q-card-actions align="right" class="q-px-md q-pb-md">
+          <brew-pilot-button variant="flat" no-caps label="Cancelar" @click="deleteDialog = false" />
+          <brew-pilot-button variant="filled" no-caps label="Excluir" color="negative"
+            @click="executeDelete" />
         </q-card-actions>
-      </q-card>
-    </q-dialog>
+      </template>
+    </brew-pilot-dialog>
   </q-page>
 </template>
 
@@ -85,6 +84,10 @@ import { useRouter } from 'vue-router'
 import { useQuasar } from 'quasar'
 import { useRecipeStore } from '../../stores/recipeStore'
 import RecipeCard from './components/RecipeCard.vue'
+import BrewPilotButton from '../../components/shared/BrewPilotButton.vue'
+import BrewPilotSearchInput from '../../components/shared/BrewPilotSearchInput.vue'
+import BrewPilotSelect from '../../components/shared/BrewPilotSelect.vue'
+import BrewPilotDialog from '../../components/BrewPilotDialog.vue'
 import type { Recipe } from '../../types/recipe'
 
 const store = useRecipeStore()

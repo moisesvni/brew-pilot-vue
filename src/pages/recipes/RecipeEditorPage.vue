@@ -2,7 +2,9 @@
   <q-page class="q-pa-none">
     <!-- Toolbar da receita -->
     <q-toolbar class="bp-editor-toolbar bp-recipe-header q-py-sm" style="background: var(--bp-editor-header-bg); border-bottom: 1px solid var(--bp-border)">
-      <q-btn flat round dense icon="arrow_back" @click="$router.push('/recipes')" />
+      <q-btn flat round dense icon="arrow_back" @click="$router.push('/recipes')">
+        <q-tooltip>Voltar para receitas</q-tooltip>
+      </q-btn>
       <q-toolbar-title>
         <q-input v-if="recipe" v-model="recipe.name" borderless dense class="text-h6 text-weight-bold"
           placeholder="Nome da receita" style="max-width: 300px">
@@ -49,7 +51,9 @@
         </q-menu>
       </q-btn>
 
-      <q-btn color="primary" label="Salvar" unelevated class="q-ml-sm" :loading="store.saving" @click="save" />
+      <brew-pilot-button variant="filled" color="primary" no-caps label="Salvar"
+        unelevated class="q-ml-sm" icon="mdi-save" :loading="store.saving"
+        tooltip="Salvar receita (Ctrl+S)" @click="save" />
     </q-toolbar>
 
     <!-- Abas do editor -->
@@ -138,6 +142,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useQuasar } from 'quasar'
 import { useRecipeStore } from '../../stores/recipeStore'
 import StatChip from '../../components/shared/StatChip.vue'
+import BrewPilotButton from '../../components/shared/BrewPilotButton.vue'
 import RecipeOverviewTab from './tabs/RecipeOverviewTab.vue'
 import RecipeFermentablesTab from './tabs/RecipeFermentablesTab.vue'
 import RecipeHopsTab from './tabs/RecipeHopsTab.vue'

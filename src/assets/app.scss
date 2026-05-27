@@ -136,6 +136,81 @@ body.body--light {
 body.body--dark  { color: rgba(255, 255, 255, 0.87); }
 body.body--light { color: var(--bp-text-primary); }
 
+// ── BrewPilotButton — estilos globais ──────────────────────────────────────
+// outline / flat: cor vem de CSS vars, não de Quasar color prop
+.bp-btn--outline,
+.bp-btn--flat {
+  color: var(--bp-text-secondary) !important;
+  // ícone dentro do botão herda a cor
+  .q-icon { color: inherit !important; }
+}
+// borda do outline usa a cor do tema
+.bp-btn--outline.q-btn--outline {
+  border-color: var(--bp-border) !important;
+}
+// variante primary: âmbar visível, borda e ícone em tom primário
+.bp-btn--primary.bp-btn--outline.q-btn {
+  color: #c1710e !important;
+  .q-icon { color: #c1710e !important; }
+}
+.bp-btn--primary.bp-btn--outline.q-btn--outline {
+  border-color: rgba(193, 113, 14, 0.45) !important;
+}
+body.body--dark .bp-btn--primary.bp-btn--outline.q-btn {
+  color: #e0923a !important;
+  .q-icon { color: #e0923a !important; }
+}
+body.body--dark .bp-btn--primary.bp-btn--outline.q-btn--outline {
+  border-color: rgba(193, 113, 14, 0.55) !important;
+}
+// hover suave em light
+body.body--light {
+  .bp-btn--outline:hover,
+  .bp-btn--flat:hover {
+    background: rgba(193, 113, 14, 0.06) !important;
+  }
+}
+// dark: hover padrão Quasar já é ok, apenas garantir a cor
+body.body--dark {
+  .bp-btn--outline.q-btn--outline {
+    border-color: rgba(255,255,255,0.14) !important;
+  }
+}
+
+// ── BrewPilotButton tooltip (class="bp-tooltip") ───────────────────────────
+.bp-tooltip {
+  font-size: 12px;
+  padding: 4px 10px;
+}
+body.body--light .bp-tooltip {
+  background: rgba(43, 26, 6, 0.88) !important;
+  color: #FFF3E0 !important;
+  .text-grey-4, .text-caption { color: rgba(255,243,224,0.65) !important; }
+}
+body.body--dark .bp-tooltip {
+  background: rgba(30, 30, 30, 0.96) !important;
+  color: rgba(255,255,255,0.87) !important;
+}
+
+// ── Quasar default q-tooltip override (para tooltips sem class="bp-tooltip") ─
+body.body--light .q-tooltip {
+  background: rgba(43, 26, 6, 0.88);
+  color: #FFF3E0;
+}
+
+// ── BrewPilotSelect — popup dropdown (teletransportado, precisa ser global) ──
+.bp-select-popup--light.q-menu {
+  background: var(--bp-surface) !important;
+  border: 1px solid var(--bp-border);
+  .q-item { color: var(--bp-text-primary); }
+  .q-item:hover, .q-item--active { background: rgba(193, 113, 14, 0.08) !important; }
+  .q-item--active { color: #c1710e !important; }
+}
+.bp-select-popup--dark.q-menu {
+  background: var(--bp-surface-alt) !important;
+  border: 1px solid var(--bp-border);
+}
+
 // ── Version chip (botão de versão no editor) ────────────────────────────────
 .version-chip {
   border-radius: 10px !important;

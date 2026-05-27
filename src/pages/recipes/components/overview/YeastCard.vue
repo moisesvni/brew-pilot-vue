@@ -5,12 +5,10 @@
     icon-color="green-5"
   >
     <template #actions>
-      <q-btn outline rounded dense no-caps label="CALC" color="grey-5" size="md"
-        @click.stop="calcDialog = true">
-        <q-tooltip>Calculadora de Levedura</q-tooltip>
-      </q-btn>
-      <q-btn outline rounded dense no-caps label="+ ADICIONAR" color="primary" size="md"
-        class="q-ml-xs" @click.stop="pickerOpen = true" />
+      <brew-pilot-button variant="outline" round dense icon="mdi-calculator"
+        tooltip="Calculadora de Levedura" @click.stop="calcDialog = true" />
+      <brew-pilot-button variant="outline" round dense icon="mdi-plus" primary
+        class="q-ml-xs" tooltip="Adicionar Levedura" @click.stop="pickerOpen = true" />
     </template>
 
     <!-- ── Lista ──────────────────────────────────────────────────────────── -->
@@ -275,6 +273,7 @@
 import { ref, computed } from 'vue'
 import { useRecipeStore } from '../../../../stores/recipeStore'
 import RecipeSection from '../RecipeSection.vue'
+import BrewPilotButton from '../../../../components/shared/BrewPilotButton.vue'
 import type { RecipeYeast, YeastForm } from '../../../../types/recipe'
 import YeastPickerDialog from '../pickers/YeastPickerDialog.vue'
 
