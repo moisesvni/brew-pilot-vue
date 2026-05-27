@@ -6,7 +6,7 @@
     </q-avatar>
     <q-menu transition-show="scale" transition-hide="scale" :offset="[0, 0]"
       class="bg-dark-page" :style="{ border: '1px solid var(--bp-border)', borderRadius: '12px', minWidth: '480px' }">
-      <div class="row no-wrap q-pa-md" style="gap: 0">
+      <div class="row no-wrap q-pa-md" style="gap: 0; min-width: 460px">
 
         <!-- ── Coluna esquerda: configurações ──────────────────────────────── -->
         <div class="column" style="min-width: 210px">

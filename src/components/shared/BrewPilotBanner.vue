@@ -13,7 +13,9 @@
     <q-tooltip class="bp-tooltip">Ver alertas</q-tooltip>
 
     <!-- Menu popup temático -->
-    <q-menu :class="menuClass" style="min-width: 380px; max-width: 560px">
+    <q-menu :class="menuClass"
+      anchor="bottom right" self="top right"
+      :style="{ minWidth: '440px', maxWidth: '600px' }">
 
       <!-- ── Cabeçalho ── -->
       <div class="bp-banner__header">
