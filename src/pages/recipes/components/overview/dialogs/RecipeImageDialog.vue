@@ -58,6 +58,6 @@ function removeImage() {
 .img-preview {
   width: 100%;
   height: 220px;
-  background: #111;
+  background: var(--bp-page-bg);
 }
 </style>

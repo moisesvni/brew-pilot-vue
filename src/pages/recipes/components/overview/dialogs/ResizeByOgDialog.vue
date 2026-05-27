@@ -7,7 +7,7 @@
   >
     <q-card-section>
       <q-input v-model.number="ogTarget" type="number" step="0.001" min="1.010" max="1.180"
-        outlined dense dark :hint="`Atual: ${stats?.og.toFixed(4) ?? '—'}`" />
+        outlined dense  :hint="`Atual: ${stats?.og.toFixed(4) ?? '—'}`" />
     </q-card-section>
 
     <template #footer>

@@ -1,12 +1,18 @@
 <template>
   <div v-if="crumbs.length > 0" class="brew-breadcrumbs q-px-lg q-py-xs row items-center">
-    <q-breadcrumbs active-color="grey-4" separator-color="grey-7" class="text-caption">
-      <q-breadcrumbs-el icon="home" to="/" class="text-grey-6" />
+    <q-breadcrumbs
+      :active-color="$q.dark.isActive ? 'grey-4' : 'brown-7'"
+      :separator-color="$q.dark.isActive ? 'grey-7' : 'brown-6'"
+      class="text-caption"
+    >
+      <q-breadcrumbs-el icon="home" to="/" :class="$q.dark.isActive ? 'text-grey-6' : 'text-brown'" />
       <template v-for="(crumb, i) in crumbs" :key="crumb.to">
         <q-breadcrumbs-el
           :label="crumb.title"
           :to="i < crumbs.length - 1 ? crumb.to : undefined"
-          :class="i === crumbs.length - 1 ? 'last-crumb text-weight-medium' : 'text-grey-5'"
+          :class="i === crumbs.length - 1
+            ? ['last-crumb', 'text-weight-medium']
+            : ($q.dark.isActive ? 'text-grey-5' : 'text-brown')"
         />
       </template>
     </q-breadcrumbs>
@@ -16,7 +22,9 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useQuasar } from 'quasar'
 
+const $q = useQuasar()
 const route = useRoute()
 const router = useRouter()
 
@@ -44,16 +52,8 @@ const crumbs = computed(() => {
   border-bottom: 1px solid var(--bp-border, rgba(255,255,255,0.05));
 }
 
-/* Último item do breadcrumb — claro no dark, escuro no light */
 .last-crumb {
-  color: rgba(255, 255, 255, 0.92);
-}
-
-:global(body.body--light) .last-crumb {
-  color: rgba(0, 0, 0, 0.82) !important;
-}
-
-:global(body.body--light) .text-grey-5 {
-  color: rgba(0, 0, 0, 0.45) !important;
+  /* Uns tons acima do preto → marrom médio (mais claro que primary) */
+  color: var(--bp-text-value);
 }
 </style>

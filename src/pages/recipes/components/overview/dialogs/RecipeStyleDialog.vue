@@ -5,7 +5,7 @@
     <q-card-section>
       <q-input v-model="styleSearch" outlined dense
         placeholder="Buscar estilo (ex: IPA, Stout, 12C...)"
-        bg-color="dark" dark class="q-mb-md" @update:model-value="onSearch">
+         class="q-mb-md" @update:model-value="onSearch">
         <template #prepend><q-icon name="search" color="grey-5" /></template>
       </q-input>
 

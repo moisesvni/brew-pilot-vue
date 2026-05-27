@@ -14,12 +14,11 @@
       </div>
       <q-btn
         :icon="isOpen ? 'expand_less' : 'expand_more'"
-        color="white"
         dense
         round
         size="14px"
         flat
-        class="q-ml-sm"
+        class="q-ml-sm section-toggle-btn"
       >
         <q-tooltip>{{ isOpen ? 'Fechar seção' : 'Abrir seção' }}</q-tooltip>
       </q-btn>
@@ -64,6 +63,11 @@ const isOpen = ref(props.defaultOpen)
 
 .section-header:hover {
   background: var(--bp-section-header-hover, rgba(255, 255, 255, 0.09));
+}
+
+/* Botão expand/collapse — cor por tema, não hardcoded */
+.section-toggle-btn {
+  color: var(--bp-section-btn, rgba(255, 255, 255, 0.65)) !important;
 }
 
 .section-body {

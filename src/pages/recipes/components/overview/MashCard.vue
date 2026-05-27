@@ -46,12 +46,12 @@
       </div>
 
       <!-- Stats mostura -->
-      <div v-if="stats" class="text-right q-mt-xs" style="font-size:10.5px;color:rgba(255,255,255,0.4)">
-        Densidade Final Esperada: <strong style="color:#ccc">{{ stats.fg.toFixed(3) }}</strong>
-        &nbsp;·&nbsp; Atenuação Aparente: <strong style="color:#ccc">{{ attenuation }}%</strong>
-        &nbsp;·&nbsp; Álcool por Volume: <strong style="color:#ccc">{{ stats.abv.toFixed(1) }}%</strong>
+      <div v-if="stats" class="bp-stats-muted text-right q-mt-xs" style="font-size:10.5px">
+        Densidade Final Esperada: <strong class="bp-stats-value">{{ stats.fg.toFixed(3) }}</strong>
+        &nbsp;·&nbsp; Atenuação Aparente: <strong class="bp-stats-value">{{ attenuation }}%</strong>
+        &nbsp;·&nbsp; Álcool por Volume: <strong class="bp-stats-value">{{ stats.abv.toFixed(1) }}%</strong>
       </div>
-      <div v-if="stats" class="text-right" style="font-size:10.5px;color:rgba(255,255,255,0.4)">
+      <div v-if="stats" class="bp-stats-muted text-right" style="font-size:10.5px">
         {{ stats.calories }} kcal / {{ Math.round(stats.calories * 4.184) }} kJ por 100 ml
       </div>
   </recipe-section>

@@ -20,14 +20,14 @@
       <!-- Nome + Tempo + Descrição -->
       <div class="row q-col-gutter-sm q-mb-sm">
         <div class="col-12 col-sm-7">
-          <q-input v-model="form.name" outlined dense dark label="Nome" />
+          <q-input v-model="form.name" outlined dense  label="Nome" />
         </div>
         <div class="col-12 col-sm-5">
-          <q-input v-model.number="form.boilTime" type="number" outlined dense dark
+          <q-input v-model.number="form.boilTime" type="number" outlined dense 
             label="Tempo de Fervura" suffix="min" />
         </div>
         <div class="col-12">
-          <q-input v-model="form.notes" type="textarea" :rows="3" outlined dense dark
+          <q-input v-model="form.notes" type="textarea" :rows="3" outlined dense 
             label="Descrição" autogrow />
         </div>
       </div>
@@ -39,51 +39,51 @@
           <div class="col-12 col-sm-6">
             <q-select v-model="form.mashWaterMethod"
               :options="['Fermentador', 'Panela de Fervura']"
-              outlined dense dark options-dark label="Volume Desejado do Lote" />
+              outlined dense  label="Volume Desejado do Lote" />
           </div>
           <div class="col-12 col-sm-6">
-            <q-input v-model.number="form.batchVolume" type="number" outlined dense dark
+            <q-input v-model.number="form.batchVolume" type="number" outlined dense 
               label="Volume do Lote (Fermentador)" suffix="L" />
           </div>
           <div class="col-12">
-            <q-checkbox v-model="form.calculateBoilVolume" dark dense
+            <q-checkbox v-model="form.calculateBoilVolume"  dense
               label="Calcular volume de fervura" color="positive" />
           </div>
           <div class="col-12 col-sm-6">
             <q-input
               :model-value="form.calculateBoilVolume ? calcPreBoilVol : form.preBoilVolume"
               @update:model-value="v => { if (!form.calculateBoilVolume) form.preBoilVolume = +(v ?? 0) }"
-              type="number" outlined dense dark
+              type="number" outlined dense 
               :label="form.calculateBoilVolume ? 'Volume Pré Fervura (calculado)' : 'Volume Pré Fervura'"
               suffix="L" :disable="form.calculateBoilVolume" />
           </div>
           <div class="col-12 col-sm-6">
             <q-input v-model.number="form.boilOffRate" type="number" step="0.1"
-              outlined dense dark :label="`Evaporação (${evapPct}%)`" suffix="L/h" />
+              outlined dense  :label="`Evaporação (${evapPct}%)`" suffix="L/h" />
           </div>
           <div class="col-12 col-sm-6">
             <q-input v-model.number="form.trubLoss" type="number" step="0.1"
-              outlined dense dark label="Perda Trub/Chiller" suffix="L" />
+              outlined dense  label="Perda Trub/Chiller" suffix="L" />
           </div>
           <div class="col-12 col-sm-6">
             <q-input v-model.number="form.deadSpace" type="number" step="0.1"
-              outlined dense dark label="Espaço Morto Panela de Mostura" suffix="L" />
+              outlined dense  label="Espaço Morto Panela de Mostura" suffix="L" />
           </div>
           <div class="col-12 col-sm-6">
             <q-input v-model.number="form.mashLoss" type="number" step="0.1"
-              outlined dense dark label="Perda na Panela de Mostura" suffix="L" />
+              outlined dense  label="Perda na Panela de Mostura" suffix="L" />
           </div>
           <div class="col-12 col-sm-6">
             <q-input v-model.number="form.spargeDeadSpace" type="number" step="0.1"
-              outlined dense dark label="Espaço Morto Panela de Lavagem" suffix="L" />
+              outlined dense  label="Espaço Morto Panela de Lavagem" suffix="L" />
           </div>
           <div class="col-12 col-sm-6">
             <q-input v-model.number="form.fermentorLoss" type="number" step="0.1"
-              outlined dense dark label="Perda no Fermentador" suffix="L" />
+              outlined dense  label="Perda no Fermentador" suffix="L" />
           </div>
           <div class="col-12 col-sm-6">
             <q-input v-model.number="form.fermenterWater" type="number" step="0.1"
-              outlined dense dark label="Água no Fermentador" suffix="L" />
+              outlined dense  label="Água no Fermentador" suffix="L" />
           </div>
           <div class="col-12">
             <div class="eq-info-row">
@@ -100,18 +100,18 @@
         <div class="row q-col-gutter-sm">
           <div class="col-12 col-sm-6">
             <q-input v-model.number="form.efficiency" type="number" step="0.1"
-              outlined dense dark label="Eficiência do Equipamento" suffix="%" />
+              outlined dense  label="Eficiência do Equipamento" suffix="%" />
           </div>
           <div class="col-12 col-sm-6">
             <q-input
               :model-value="form.calculateMashEfficiency ? calcMashEff : form.mashEfficiency"
               @update:model-value="v => { if (!form.calculateMashEfficiency) form.mashEfficiency = +(v ?? 0) }"
-              type="number" step="0.1" outlined dense dark
+              type="number" step="0.1" outlined dense 
               :label="form.calculateMashEfficiency ? 'Eficiência da Mostura (calculada)' : 'Eficiência da Mostura'"
               suffix="%" :disable="form.calculateMashEfficiency" />
           </div>
           <div class="col-12">
-            <q-checkbox v-model="form.calculateMashEfficiency" dark dense
+            <q-checkbox v-model="form.calculateMashEfficiency"  dense
               label="Calcular eficiência da mostura" color="positive" />
           </div>
         </div>
@@ -122,24 +122,24 @@
         <div class="eq-card-title">Avançado</div>
         <div class="row q-col-gutter-sm">
           <div class="col-12 col-sm-6">
-            <q-input v-model.number="form.hopUtilization" type="number" outlined dense dark
+            <q-input v-model.number="form.hopUtilization" type="number" outlined dense 
               label="Multiplicador Utilização de Lúpulo" suffix="%" />
           </div>
           <div class="col-12 col-sm-6">
-            <q-input v-model.number="form.aromaHopUtilization" type="number" outlined dense dark
+            <q-input v-model.number="form.aromaHopUtilization" type="number" outlined dense 
               :label="form.calculateAromaHopUtil ? 'Utilização Lúpulo Aroma (calculada)' : 'Utilização Lúpulo de Aroma'"
               suffix="%" :disable="form.calculateAromaHopUtil" />
           </div>
           <div class="col-12">
-            <q-checkbox v-model="form.calculateAromaHopUtil" dark dense
+            <q-checkbox v-model="form.calculateAromaHopUtil"  dense
               label="Calcular utilização de lúpulo de aroma" color="positive" />
           </div>
           <div class="col-12 col-sm-6">
-            <q-input v-model.number="form.hopstandTemperature" type="number" outlined dense dark
+            <q-input v-model.number="form.hopstandTemperature" type="number" outlined dense 
               label="Temperatura de Hopstand" suffix="°C" />
           </div>
           <div class="col-12 col-sm-6">
-            <q-input v-model.number="form.whirlpoolTime" type="number" outlined dense dark
+            <q-input v-model.number="form.whirlpoolTime" type="number" outlined dense 
               label="Tempo Whirlpool / No-Chill" suffix="min" />
           </div>
         </div>
@@ -150,24 +150,24 @@
         <div class="eq-card-title">Altitude / Temperatura da Fervura</div>
         <div class="row q-col-gutter-sm">
           <div class="col-12">
-            <q-checkbox v-model="form.altitudeAdjust" dark dense
+            <q-checkbox v-model="form.altitudeAdjust"  dense
               label="Ajuste de altitude" color="positive" />
           </div>
           <div class="col-12 col-sm-6">
-            <q-input v-model.number="form.altitude" type="number" outlined dense dark
+            <q-input v-model.number="form.altitude" type="number" outlined dense 
               label="Altitude" suffix="m" :disable="!form.altitudeAdjust" />
           </div>
           <div class="col-12 col-sm-6">
             <q-input
               :model-value="form.altitudeAdjust ? calcBoilTemp : form.boilTemperature"
               @update:model-value="v => { if (!form.altitudeAdjust) form.boilTemperature = +(v ?? 0) }"
-              type="number" step="0.1" outlined dense dark
+              type="number" step="0.1" outlined dense 
               :label="form.altitudeAdjust ? 'Temperatura de Fervura (calculada)' : 'Temperatura de Fervura'"
               suffix="°C" :disable="form.altitudeAdjust" />
           </div>
           <div class="col-12 col-sm-6">
             <q-input v-model.number="form.boilExpansion" type="number" step="0.1"
-              outlined dense dark label="Contração/Expansão por Fervura" suffix="%" />
+              outlined dense  label="Contração/Expansão por Fervura" suffix="%" />
           </div>
         </div>
       </div>
@@ -178,16 +178,16 @@
         <div class="row q-col-gutter-sm">
           <div class="col-12 col-sm-6">
             <q-input v-model.number="form.grainAbsorptionRate" type="number" step="0.01"
-              outlined dense dark label="Taxa de Absorção de Grãos" suffix="L/kg" />
+              outlined dense  label="Taxa de Absorção de Grãos" suffix="L/kg" />
           </div>
           <div class="col-12 col-sm-6">
             <q-input v-model.number="form.waterToGrainRatio" type="number" step="0.1"
-              outlined dense dark label="Relação Água/Grão" suffix="L/kg" />
+              outlined dense  label="Relação Água/Grão" suffix="L/kg" />
           </div>
           <div class="col-12">
             <q-select v-model="form.mashWaterMethod"
               :options="['Padrão', 'Por Relação Água/Grão', 'Manual']"
-              outlined dense dark options-dark
+              outlined dense 
               label="Método de Cálculo da Água Mostura/Lavagem" />
           </div>
         </div>

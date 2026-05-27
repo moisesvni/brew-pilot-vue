@@ -8,7 +8,10 @@
           @click="toggleLeftDrawer" />
 
         <q-toolbar-title shrink class="row items-center no-wrap">
-          <img :src="logoLoginImg" alt="BrewPilot" class="header-logo" />
+          <!-- Logo troca automaticamente com o tema:
+               Dark  → logo com letras claras (fundo escuro)
+               Light → logo com letras escuras (fundo claro) — substitua logoLightImg pelo arquivo correto -->
+          <img :src="$q.dark.isActive ? logoDarkImg : logoLightImg" alt="BrewPilot" class="header-logo" />
         </q-toolbar-title>
 
         <q-space />
@@ -53,9 +56,15 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import logoLoginImg from '../assets/logo-brew-right-only-label.png'
+import { useQuasar } from 'quasar'
+// Dark: logo com texto branco/claro (usa no fundo escuro)
+import logoDarkImg from '../assets/logo-brew-right-only-label.png'
+// Light: logo com texto preto/escuro — versão com letras escuras para fundo claro
+import logoLightImg from '../assets/logo-brew-right-only-label-dark.png'
 import UserAvatarMenu from './components/UserAvatarMenu.vue'
 import BrewPilotBreadcrumbs from './components/BrewPilotBreadcrumbs.vue'
+
+const $q = useQuasar()
 
 const leftDrawerOpen = ref(false)
 

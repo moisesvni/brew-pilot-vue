@@ -23,21 +23,21 @@
       <!-- Coluna volumes -->
       <div class="col-12 col-sm-6" style="font-size:12px; line-height:1.8">
         <div>
-          <span style="color:rgba(255,255,255,0.45)">Água de mostura</span>
-          <strong class="q-ml-xs" style="color:#90caf9">{{ mashWaterVol.toFixed(2) }} L</strong>
+          <span style="color: var(--bp-text-secondary)">Água de mostura</span>
+          <strong class="q-ml-xs" style="color: var(--bp-water-value)">{{ mashWaterVol.toFixed(2) }} L</strong>
         </div>
         <div>
-          <span style="color:rgba(255,255,255,0.45)">Água de lavagem</span>
-          <strong class="q-ml-xs" style="color:#90caf9">{{ spargeWaterVol.toFixed(2) }} L</strong>
+          <span style="color: var(--bp-text-secondary)">Água de lavagem</span>
+          <strong class="q-ml-xs" style="color: var(--bp-water-value)">{{ spargeWaterVol.toFixed(2) }} L</strong>
         </div>
         <div>
-          <span style="color:rgba(255,255,255,0.45)">Água total</span>
-          <strong class="q-ml-xs" style="color:#90caf9">{{ totalVolume.toFixed(2) }} L</strong>
+          <span style="color: var(--bp-text-secondary)">Água total</span>
+          <strong class="q-ml-xs" style="color: var(--bp-water-value)">{{ totalVolume.toFixed(2) }} L</strong>
         </div>
         <div>
-          <span style="color:rgba(255,255,255,0.45)">Volume da mostura</span>
-          <strong class="q-ml-xs" style="color:#90caf9">{{ mashVolume.toFixed(2) }} L</strong>
-          <span style="color:rgba(255,255,255,0.25); font-size:10px"> (água + grãos)</span>
+          <span style="color: var(--bp-text-secondary)">Volume da mostura</span>
+          <strong class="q-ml-xs" style="color: var(--bp-water-value)">{{ mashVolume.toFixed(2) }} L</strong>
+          <span style="color: var(--bp-text-muted); font-size:10px"> (água + grãos)</span>
         </div>
       </div>
 
@@ -46,13 +46,13 @@
         <div class="text-caption text-weight-medium text-grey-3 q-mb-xs">
           {{ targetWater ? targetWater.name : sourceWater.name }}
         </div>
-        <div class="row q-col-gutter-xs" style="font-size:11px; color:rgba(255,255,255,0.5)">
-          <div class="col-4">Ca²⁺ <strong style="color:#90caf9">{{ totalIons.calcium.toFixed(0) }}</strong></div>
-          <div class="col-4">Mg²⁺ <strong style="color:#90caf9">{{ totalIons.magnesium.toFixed(0) }}</strong></div>
-          <div class="col-4">Na⁺ <strong style="color:#90caf9">{{ totalIons.sodium.toFixed(0) }}</strong></div>
-          <div class="col-4">Cl⁻ <strong style="color:#90caf9">{{ totalIons.chloride.toFixed(0) }}</strong></div>
-          <div class="col-4">SO₄²⁻ <strong style="color:#90caf9">{{ totalIons.sulfate.toFixed(0) }}</strong></div>
-          <div class="col-4">HCO₃⁻ <strong style="color:#90caf9">{{ totalIons.bicarbonate.toFixed(0) }}</strong></div>
+        <div class="row q-col-gutter-xs" style="font-size:11px; color: var(--bp-text-secondary)">
+          <div class="col-4">Ca²⁺ <strong style="color: var(--bp-water-value)">{{ totalIons.calcium.toFixed(0) }}</strong></div>
+          <div class="col-4">Mg²⁺ <strong style="color: var(--bp-water-value)">{{ totalIons.magnesium.toFixed(0) }}</strong></div>
+          <div class="col-4">Na⁺ <strong style="color: var(--bp-water-value)">{{ totalIons.sodium.toFixed(0) }}</strong></div>
+          <div class="col-4">Cl⁻ <strong style="color: var(--bp-water-value)">{{ totalIons.chloride.toFixed(0) }}</strong></div>
+          <div class="col-4">SO₄²⁻ <strong style="color: var(--bp-water-value)">{{ totalIons.sulfate.toFixed(0) }}</strong></div>
+          <div class="col-4">HCO₃⁻ <strong style="color: var(--bp-water-value)">{{ totalIons.bicarbonate.toFixed(0) }}</strong></div>
         </div>
       </div>
 

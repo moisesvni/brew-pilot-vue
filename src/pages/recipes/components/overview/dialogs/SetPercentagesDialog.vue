@@ -16,19 +16,19 @@
     <q-card-section class="q-gutter-sm q-pt-xs">
       <div v-for="(f, i) in recipe.fermentables" :key="f.id">
         <div class="pct-hdr q-pa-sm q-mb-xs rounded-borders">
-          <div class="text-caption text-grey-3 text-weight-medium">{{ fmtAmt(f.amount) }}</div>
-          <div class="text-caption text-white">{{ f.name }}</div>
+          <div class="text-caption text-weight-medium" style="color: var(--bp-text-secondary)">{{ fmtAmt(f.amount) }}</div>
+          <div class="text-caption" style="color: var(--bp-text-primary)">{{ f.name }}</div>
           <div v-if="f.supplier" class="text-caption text-grey-5">{{ f.supplier }}</div>
         </div>
         <q-input v-model.number="pctValues[i]" type="number" step="0.1"
-          outlined dense dark prefix="%" bg-color="grey-9" />
+          outlined dense  prefix="%" />
       </div>
     </q-card-section>
 
     <template #footer>
       <q-card-section class="row items-center q-py-sm q-px-md" style="flex-shrink:0">
         <span class="text-caption text-grey-5">
-          TOTAL: <strong class="text-white">{{ totalWeightDisplay.toUpperCase() }}</strong>
+          TOTAL: <strong style="color: var(--bp-text-value)">{{ totalWeightDisplay.toUpperCase() }}</strong>
         </span>
         <q-space />
         <q-btn unelevated no-caps label="DEFINIR" color="positive"
@@ -95,7 +95,7 @@ function apply() {
 
 <style scoped>
 .pct-hdr {
-  background: rgba(255, 255, 255, 0.05);
-  border-left: 3px solid rgba(255, 180, 50, 0.4);
+  background: var(--bp-section-header-bg);
+  border-left: 3px solid rgba(193, 113, 14, 0.40);
 }
 </style>

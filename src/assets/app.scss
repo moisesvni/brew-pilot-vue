@@ -36,6 +36,18 @@ body.body--dark {
   --bp-text-stats-muted: rgba(255, 255, 255, 0.45);
   --bp-text-stats-value: #cccccc;
 
+  // Água
+  --bp-water-value: #90caf9;    // azul claro no escuro
+
+  // Menu popup — card de stats
+  --bp-menu-stat-bg: rgba(0, 0, 0, 0.35);
+
+  // Água
+  --bp-water-value: #90caf9;    // azul claro no escuro
+
+  // Menu popup — card de stats
+  --bp-menu-stat-bg: rgba(0, 0, 0, 0.35);
+
   // Cards
   --bp-card-bg:     rgba(255, 255, 255, 0.03);
   --bp-card-border: rgba(255, 255, 255, 0.08);
@@ -46,6 +58,11 @@ body.body--dark {
   --bp-section-body-bg:      rgba(0, 0, 0, 0.18);
   --bp-section-border:       rgba(255, 255, 255, 0.07);
   --bp-section-title:        rgba(255, 255, 255, 0.87);
+  --bp-section-btn:          rgba(255, 255, 255, 0.65);   // botão expand/collapse
+
+  // Header do editor de receita (Nova Receita) — mesmo tom das tabs = área unificada
+  --bp-editor-header-bg:   #EDE7DC;
+  --bp-editor-header-text: rgba(255, 255, 255, 0.87);   // herdado do dark geral
 
   // Tabs do editor
   --bp-editor-tabs-bg:   #1e1e1e;
@@ -76,12 +93,15 @@ body.body--light {
   --bp-scrollbar-h: rgba(0, 0, 0, 0.22);
 
   // Texto semântico
-  --bp-text-primary:     #1C1A14;
+  --bp-text-primary:     #2B1A06;
   --bp-text-secondary:   #705C3A;
-  --bp-text-muted:       rgba(28, 26, 20, 0.45);
-  --bp-text-value:       #2C2018;
+  --bp-text-muted:       rgba(43, 26, 6, 0.45);
+  --bp-text-value:       #4A3520;
   --bp-text-stats-muted: rgba(80, 60, 28, 0.60);
   --bp-text-stats-value: #3A2A12;
+
+  // Água
+  --bp-water-value: #1565C0;    // azul legível no fundo claro
 
   // Cards
   --bp-card-bg:     #FFFFFF;
@@ -93,6 +113,11 @@ body.body--light {
   --bp-section-body-bg:      #FDFCFA;
   --bp-section-border:       rgba(193, 113, 14, 0.15);
   --bp-section-title:        #1C1A14;
+  --bp-section-btn:          #8B6A3A;   // marrom quente para o botão expand/collapse
+
+  // Header do editor de receita (Nova Receita) — tom da seção, um pouco mais escuro
+  --bp-editor-header-bg:   #C8BFAF;  // claramente mais escuro que as tabs #EDE7DC
+  --bp-editor-header-text: #5C3A15;  // terracota / marrom quente
 
   // Tabs do editor
   --bp-editor-tabs-bg:   #EDE7DC;
@@ -100,6 +125,34 @@ body.body--light {
 
   // Botões neutros
   --bp-btn-neutral: rgba(107, 91, 64, 0.55);
+
+  // Menu popup — card de stats
+  --bp-menu-stat-bg: var(--bp-surface-alt);   // bege não-branco no light
+}
+// ──────────────────────────────────────────────────────────────────────────
+
+// ── Cor global do body por tema ────────────────────────────────────────────
+// Garante que todo texto sem classe explícita use a paleta correta
+body.body--dark  { color: rgba(255, 255, 255, 0.87); }
+body.body--light { color: var(--bp-text-primary); }
+
+// ── Version chip (botão de versão no editor) ────────────────────────────────
+.version-chip {
+  border-radius: 10px !important;
+  background: rgba(193, 113, 14, 0.12) !important;
+  color: #c1710e !important;
+  border: 1px solid rgba(193, 113, 14, 0.28) !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+  min-height: 26px !important;
+  padding: 2px 10px !important;
+}
+body.body--dark .version-chip {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: rgba(255, 255, 255, 0.50) !important;
+  border-color: rgba(255, 255, 255, 0.14) !important;
 }
 // ──────────────────────────────────────────────────────────────────────────
 
@@ -230,8 +283,14 @@ body.body--light {
     }
     .q-btn--flat { color: var(--bp-text-secondary) !important; }
     .q-btn--flat:hover { color: var(--bp-text-primary) !important; }
+  }  // Nova Receita toolbar — bg mais escuro que as tabs, fonte terracota
+  [style*="bp-editor-header-bg"],
+  .bp-recipe-header {
+    color: var(--bp-editor-header-text) !important;
+    .q-input .q-field__native,
+    .q-input .q-field__placeholder { color: var(--bp-editor-header-text) !important; }
+    .q-btn { color: var(--bp-editor-header-text) !important; }
   }
-
   // ── Cards da visão geral (card-dark) ──────────────────────────────────────
   .card-dark {
     background: var(--bp-card-bg) !important;
@@ -243,8 +302,8 @@ body.body--light {
     .text-grey-4 { color: var(--bp-text-secondary) !important; }
     .text-grey-5 { color: var(--bp-text-secondary) !important; }
     .text-grey-6 { color: var(--bp-text-muted) !important; }
-    // Ícones nos cards
-    .q-icon { color: inherit; }
+    // Ícones também seguem o tema
+    .q-icon { color: var(--bp-text-secondary) !important; }
   }
 
   // ── Quasar inputs dentro do editor ────────────────────────────────────────
@@ -333,6 +392,62 @@ body.body--light {
   }
   .stat-chip-root .stat-label,
   .stat-chip-root .stat-value { color: var(--bp-text-primary) !important; }
+
+  // ── Texto global: classes cinza do Quasar → tons terrosos ─────────────────
+  // Grey quase-branco (grey-1/2/3) → em fundos escuros ficam ok, em light ficam
+  // invisíveis → mapear para tons de valor/primário
+  .text-grey-1, .text-grey-2 {
+    color: var(--bp-text-primary) !important;
+  }
+  .text-grey-3 {
+    color: var(--bp-text-value) !important;
+  }
+  // Onde estava preto → marrom escuro (herda do body color: var(--bp-text-primary))
+  // Onde estava cinza escuro (grey-8/9) → marrom escuro
+  .text-grey-8, .text-grey-9, .text-grey-10 {
+    color: var(--bp-text-primary) !important;
+  }
+  // Cinza médio (grey-5/6/7) → terracota
+  .text-grey-5, .text-grey-6, .text-grey-7 {
+    color: var(--bp-text-secondary) !important;
+  }
+  // Cinza claro usado como label (grey-4) → terracota atenuado
+  .text-grey-4 {
+    color: var(--bp-text-secondary) !important;
+  }
+  // Quasar item labels sem classe explícita
+  .q-item__label { color: var(--bp-text-primary); }
+  .q-item__label--caption { color: var(--bp-text-secondary); }
+
+  // ── Botões com cor sólida (primary, etc) → texto warm cream ───────────────
+  // Substitui o branco frio por um branco quente/creme
+  .q-btn.bg-primary { color: #FFF3E0 !important; }
+
+  // ── Botões texto cinza em light → terracota ────────────────────────────────
+  // Botões de cancelar/secundários que usam color="grey-5/6" ficam visíveis
+  .q-btn.text-grey-5, .q-btn.text-grey-6, .q-btn.text-grey-7 {
+    color: var(--bp-text-secondary) !important;
+  }
+  .q-btn.text-grey-4 {
+    color: var(--bp-text-secondary) !important;
+  }
+
+  // ── Menu popup (UserAvatarMenu) ────────────────────────────────────────────
+  .q-menu {
+    border-color: var(--bp-border) !important;
+    // Card de stats (Receitas / Lotes) — era bg-dark preto
+    .bp-menu-stat {
+      background: var(--bp-menu-stat-bg) !important;
+    }
+    // Textos brancos → marrom
+    .text-white,
+    .q-item__label.text-white { color: var(--bp-text-primary) !important; }
+    // Captions cinza
+    .text-grey-5 { color: var(--bp-text-secondary) !important; }
+    .text-overline { color: var(--bp-text-muted) !important; }
+    // Botão de perfil cinza claro
+    .q-btn .q-icon, .q-btn .block { color: var(--bp-text-secondary) !important; }
+  }
 }
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -347,6 +462,7 @@ body.body--light {
 .bp-surface         { background: var(--bp-surface) !important; }
 .bp-surface-alt     { background: var(--bp-surface-alt) !important; }
 .bp-editor-toolbar  { background: var(--bp-toolbar-bg) !important; }
+.bp-menu-stat       { background: var(--bp-menu-stat-bg) !important; }
 
 // Utilitário legado
 .text-brand { color: $primary !important; }

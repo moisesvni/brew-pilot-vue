@@ -3,9 +3,9 @@
     icon-color="grey-5" width="380px">
 
     <q-card-section class="column q-gutter-md q-pt-md">
-      <q-input v-model.number="form.batchVolume" type="number" outlined dense dark
+      <q-input v-model.number="form.batchVolume" type="number" outlined dense 
         label="Volume do Lote (Fermentador)" suffix="L" />
-      <q-input v-model.number="form.efficiency" type="number" outlined dense dark
+      <q-input v-model.number="form.efficiency" type="number" outlined dense 
         label="Eficiência do Equipamento" suffix="%" />
     </q-card-section>
 

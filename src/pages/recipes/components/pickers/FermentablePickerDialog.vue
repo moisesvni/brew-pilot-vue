@@ -4,12 +4,10 @@
     <!-- ── Busca ──────────────────────────────────────────────────────────── -->
     <template v-if="step === 'search'">
       <q-card-section class="q-pb-xs">
-        <q-input v-model="query" outlined dense autofocus
+        <brew-pilot-search-input v-model="query" autofocus
           placeholder="Buscar fermentável na base de dados..."
-          bg-color="dark" clearable @update:model-value="onQueryChange">
-          <template #prepend><q-icon name="search" color="grey-5" /></template>
-          <template #append><q-spinner v-if="loading" color="primary" size="18px" /></template>
-        </q-input>
+          :loading="loading" spinner-color="primary"
+          @update:model-value="onQueryChange" />
       </q-card-section>
       <div class="overflow-auto" style="min-height:120px;max-height:340px">
         <div v-if="!loading && !results.length && query.length > 1"
@@ -24,7 +22,7 @@
           <q-item v-for="r in results" :key="r.id" clickable v-ripple class="q-py-sm"
             @click="selectResult(r)">
             <q-item-section>
-              <q-item-label class="text-white text-weight-medium">{{ r.name }}</q-item-label>
+              <q-item-label style="color: var(--bp-text-primary)" class="text-weight-medium">{{ r.name }}</q-item-label>
               <q-item-label caption class="text-grey-5">{{ resultCaption(r) }}</q-item-label>
             </q-item-section>
             <q-item-section side>
@@ -46,20 +44,20 @@
         <div class="row items-center q-mb-md">
           <q-btn flat round dense icon="arrow_back" size="sm" @click="step = 'search'" />
           <div class="q-ml-sm">
-            <div class="text-body1 text-weight-bold text-white">{{ selected!.name }}</div>
+            <div class="text-body1 text-weight-bold" style="color: var(--bp-text-primary)">{{ selected!.name }}</div>
             <div class="text-caption text-grey-5">{{ resultCaption(selected!) }}</div>
           </div>
         </div>
         <div class="row q-col-gutter-sm">
           <q-input v-model.number="cfg.amount" type="number" label="Quantidade"
-            suffix="kg" outlined dense dark class="col-12 col-sm-4" />
+            suffix="kg" outlined dense  class="col-12 col-sm-4" />
           <q-select v-model="cfg.use" :options="useOpts" emit-value map-options
-            label="Uso" outlined dense dark options-dark class="col-12 col-sm-4" />
+            label="Uso" outlined dense  class="col-12 col-sm-4" />
           <q-input v-model.number="cfg.colorEbc" type="number" label="Cor"
-            suffix="EBC" outlined dense dark class="col-12 col-sm-4" />
+            suffix="EBC" outlined dense  class="col-12 col-sm-4" />
         </div>
       </q-card-section>
-      <q-separator dark />
+      <q-separator  />
       <q-card-actions align="right" class="q-px-md q-pb-md">
         <q-btn flat no-caps label="Cancelar" color="grey-5" @click="open = false" />
         <q-btn unelevated no-caps color="primary" icon="add" label="Adicionar à receita" @click="confirmAdd" />
@@ -74,21 +72,21 @@
           <span class="text-body2 text-white q-ml-sm">Novo Fermentável</span>
         </div>
         <div class="row q-col-gutter-sm">
-          <q-input v-model="cfg.name" label="Nome" outlined dense dark class="col-12" autofocus
+          <q-input v-model="cfg.name" label="Nome" outlined dense  class="col-12" autofocus
             placeholder="Nome do fermentável" />
           <q-input v-model.number="cfg.amount" type="number" label="Quantidade"
-            suffix="kg" outlined dense dark class="col-12 col-sm-4" />
+            suffix="kg" outlined dense  class="col-12 col-sm-4" />
           <q-select v-model="cfg.use" :options="useOpts" emit-value map-options
-            label="Uso" outlined dense dark options-dark class="col-12 col-sm-4" />
+            label="Uso" outlined dense  class="col-12 col-sm-4" />
           <q-input v-model.number="cfg.colorEbc" type="number" label="Cor"
-            suffix="EBC" outlined dense dark class="col-12 col-sm-4" />
+            suffix="EBC" outlined dense  class="col-12 col-sm-4" />
           <q-input v-model.number="cfg.potential" type="number" label="PPG"
-            outlined dense dark class="col-12 col-sm-4" />
+            outlined dense  class="col-12 col-sm-4" />
           <q-select v-model="cfg.fermentableType" :options="typeOpts" emit-value map-options
-            label="Tipo" outlined dense dark options-dark class="col-12 col-sm-4" />
+            label="Tipo" outlined dense  class="col-12 col-sm-4" />
         </div>
       </q-card-section>
-      <q-separator dark />
+      <q-separator  />
       <q-card-actions align="right" class="q-px-md q-pb-md">
         <q-btn flat no-caps label="Cancelar" color="grey-5" @click="open = false" />
         <q-btn unelevated no-caps color="primary" icon="add" label="Criar e adicionar"
@@ -103,6 +101,7 @@
 import { computed, watch } from 'vue'
 import type { RecipeFermentable } from '../../../../types/recipe'
 import BrewPilotDialog from '../../../../components/BrewPilotDialog.vue'
+import BrewPilotSearchInput from '../../../../components/shared/BrewPilotSearchInput.vue'
 import { useIngredientPicker } from '../../../../composables/useIngredientPicker'
 
 const props = defineProps<{ modelValue: boolean }>()

@@ -9,34 +9,34 @@
     <q-card-section v-if="editItem" class="q-gutter-sm">
       <div class="row q-col-gutter-sm">
         <div class="col-12">
-          <q-input v-model="editItem.name" outlined dense dark label="Nome" />
+          <q-input v-model="editItem.name" outlined dense  label="Nome" />
         </div>
         <div class="col-12 col-sm-6">
-          <q-input v-model="editItem.supplier" outlined dense dark label="Fornecedor (opcional)" />
+          <q-input v-model="editItem.supplier" outlined dense  label="Fornecedor (opcional)" />
         </div>
         <div class="col-12 col-sm-6">
           <q-select v-model="editItem.type" :options="typeOptions" emit-value map-options
-            outlined dense dark options-dark label="Tipo" />
+            outlined dense  label="Tipo" />
         </div>
         <div class="col-6 col-sm-4">
           <q-input v-model.number="editItem.amount" type="number" step="0.01"
-            outlined dense dark label="Quantidade" suffix="kg" />
+            outlined dense  label="Quantidade" suffix="kg" />
         </div>
         <div class="col-6 col-sm-4">
           <q-input v-model.number="editItem.colorEbc" type="number"
-            outlined dense dark label="Cor" suffix="EBC" />
+            outlined dense  label="Cor" suffix="EBC" />
         </div>
         <div class="col-6 col-sm-4">
           <q-input v-model.number="editItem.potential" type="number" step="0.1"
-            outlined dense dark label="PPG" />
+            outlined dense  label="PPG" />
         </div>
         <div class="col-6 col-sm-6">
           <q-input v-model.number="editItem.yieldPercentage" type="number" step="0.1"
-            outlined dense dark label="Rendimento" suffix="%" />
+            outlined dense  label="Rendimento" suffix="%" />
         </div>
         <div class="col-6 col-sm-6">
           <q-select v-model="editItem.use" :options="useOptions" emit-value map-options
-            outlined dense dark options-dark label="Uso" />
+            outlined dense  label="Uso" />
         </div>
       </div>
     </q-card-section>

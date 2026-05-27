@@ -1,7 +1,7 @@
 <template>
   <q-page class="q-pa-none">
     <!-- Toolbar da receita -->
-    <q-toolbar class="bp-editor-toolbar q-py-sm" style="border-bottom: 1px solid var(--bp-border)">
+    <q-toolbar class="bp-editor-toolbar bp-recipe-header q-py-sm" style="background: var(--bp-editor-header-bg); border-bottom: 1px solid var(--bp-border)">
       <q-btn flat round dense icon="arrow_back" @click="$router.push('/recipes')" />
       <q-toolbar-title>
         <q-input v-if="recipe" v-model="recipe.name" borderless dense class="text-h6 text-weight-bold"
@@ -20,8 +20,9 @@
         <stat-chip label="Cal" :value="String(stats.calories)" unit="/355ml" />
       </div>
 
-      <q-btn v-if="recipe" no-caps dense unelevated round size="md" color="grey-8" :label="`v${recipe.version}`"
-        class="text-grey-3">
+      <q-btn v-if="recipe" no-caps dense unelevated size="sm"
+        class="version-chip q-ml-sm" :label="`v${recipe.version}`">
+        <q-tooltip>Versão da receita — clique para editar</q-tooltip>
         <q-popup-edit v-model="recipe.version" auto-save v-slot="scope">
           <q-input v-model.number="scope.value" type="number" dense autofocus label="Versão" @keyup.enter="scope.set" />
         </q-popup-edit>

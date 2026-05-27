@@ -1,36 +1,24 @@
 <template>
-  <q-dialog :model-value="modelValue" @update:model-value="$emit('update:modelValue', $event)">
-    <q-card
-      class="bg-dark-page column"
-      style="width: 560px; max-width: 95vw; max-height: 85vh"
-    >
-      <!-- ── Cabeçalho ─────────────────────────────────────────────────── -->
-      <q-card-section class="row items-center q-pb-none">
-        <q-icon :name="typeIcon" :color="typeColor" size="22px" class="q-mr-sm" />
-        <span class="text-h6 text-white">Adicionar {{ typeLabel }}</span>
-        <q-space />
-        <q-btn flat round dense icon="close" v-close-popup />
-      </q-card-section>
-
+  <brew-pilot-dialog
+    :model-value="modelValue"
+    @update:model-value="$emit('update:modelValue', $event)"
+    :title="`Adicionar ${typeLabel}`"
+    :icon="typeIcon"
+    :icon-color="typeColor"
+    width="560px"
+  >
       <!-- ── PASSO 1: Busca ─────────────────────────────────────────────── -->
       <template v-if="step === 'search'">
         <q-card-section class="q-pb-xs">
-          <q-input
+          <brew-pilot-search-input
             v-model="query"
             ref="searchInputRef"
-            outlined dense autofocus
+            autofocus
             :placeholder="`Buscar ${typeLabel.toLowerCase()} na base de dados...`"
-            bg-color="dark"
-            clearable
+            :loading="loading"
+            :spinner-color="typeColor"
             @update:model-value="onQueryChange"
-          >
-            <template #prepend>
-              <q-icon name="search" color="grey-5" />
-            </template>
-            <template #append>
-              <q-spinner v-if="loading" color="primary" size="18px" />
-            </template>
-          </q-input>
+          />
         </q-card-section>
 
         <!-- Resultados -->
@@ -53,7 +41,7 @@
               @click="selectResult(r)"
             >
               <q-item-section>
-                <q-item-label class="text-white text-weight-medium">{{ r.name }}</q-item-label>
+                <q-item-label class="text-weight-medium" style="color: var(--bp-text-primary)">{{ r.name }}</q-item-label>
                 <q-item-label caption class="text-grey-5">{{ resultCaption(r) }}</q-item-label>
               </q-item-section>
               <q-item-section side>
@@ -83,7 +71,7 @@
           <div class="row items-center q-mb-md">
             <q-btn flat round dense icon="arrow_back" size="sm" @click="step = 'search'" />
             <div class="q-ml-sm">
-              <div class="text-body1 text-weight-bold text-white">{{ selected!.name }}</div>
+              <div class="text-body1 text-weight-bold" style="color: var(--bp-text-primary)">{{ selected!.name }}</div>
               <div class="text-caption text-grey-5">{{ resultCaption(selected!) }}</div>
             </div>
           </div>
@@ -159,7 +147,7 @@
         <q-card-section class="q-pb-sm">
           <div class="row items-center q-mb-md">
             <q-btn flat round dense icon="arrow_back" size="sm" @click="step = 'search'" />
-            <span class="text-body2 text-white q-ml-sm">Novo {{ typeLabel }}</span>
+            <span class="text-body2 q-ml-sm" style="color: var(--bp-text-primary)">Novo {{ typeLabel }}</span>
           </div>
 
           <div class="row q-col-gutter-sm">
@@ -218,17 +206,18 @@
         </q-card-section>
 
         <q-card-actions align="right" class="q-px-md q-pb-md">
-          <q-btn flat label="Cancelar" v-close-popup />
+          <q-btn flat label="Cancelar" @click="$emit('update:modelValue', false)" />
           <q-btn unelevated :color="typeColor" icon="add" label="Criar e adicionar"
             :disable="!cfg.name?.trim()" @click="confirmAdd" />
         </q-card-actions>
       </template>
-    </q-card>
-  </q-dialog>
+  </brew-pilot-dialog>
 </template>
 
 <script setup lang="ts">
 import { ref, watch, computed } from 'vue'
+import BrewPilotDialog from '../../../components/BrewPilotDialog.vue'
+import BrewPilotSearchInput from '../../../components/shared/BrewPilotSearchInput.vue'
 import { ingredientsService, type IngredientCategory, type IngredientResult } from '../../../services/ingredients.service'
 import type {
   RecipeFermentable, RecipeHop, RecipeYeast, RecipeMisc

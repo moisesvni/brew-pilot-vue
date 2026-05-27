@@ -15,13 +15,13 @@
       <div class="column items-center">
         <div class="text-caption text-grey-5 q-mb-xs">Atual</div>
         <q-icon name="mdi-beer" size="52px" :style="{ color: ebcToHex(stats?.ebc ?? 20) }" />
-        <div class="text-caption text-white q-mt-xs">{{ stats?.ebc.toFixed(1) }} EBC</div>
+        <div class="text-caption q-mt-xs" style="color: var(--bp-text-value)">{{ stats?.ebc.toFixed(1) }} EBC</div>
       </div>
       <q-icon name="arrow_forward" color="grey-6" size="20px" />
       <div class="column items-center">
-        <div class="text-caption text-grey-5 q-mb-xs">Ajustado</div>
+        <div class="text-caption q-mb-xs" style="color: var(--bp-text-secondary)">Ajustado</div>
         <q-icon name="mdi-beer" size="52px" :style="{ color: ebcToHex(colorAchieved) }" />
-        <div class="text-caption text-white q-mt-xs">{{ colorAchieved.toFixed(1) }} EBC</div>
+        <div class="text-caption q-mt-xs" style="color: var(--bp-text-value)">{{ colorAchieved.toFixed(1) }} EBC</div>
       </div>
     </q-card-section>
 
@@ -29,10 +29,10 @@
     <q-card-section class="q-pt-xs">
       <div class="row items-center q-gutter-sm q-mb-sm">
         <span class="text-caption text-grey-6" style="min-width:44px">2 EBC</span>
-        <q-slider v-model="colorTarget" :min="2" :max="99" :step="0.1" color="primary" dark class="col" />
+        <q-slider v-model="colorTarget" :min="2" :max="99" :step="0.1" color="primary"  class="col" />
         <span class="text-caption text-grey-6" style="min-width:44px;text-align:right">99 EBC</span>
       </div>
-      <q-input v-model.number="colorTarget" type="number" step="0.1" outlined dense dark label="Cor Alvo (EBC)" />
+      <q-input v-model.number="colorTarget" type="number" step="0.1" outlined dense  label="Cor Alvo (EBC)" />
     </q-card-section>
 
     <!-- fermentables selection -->
@@ -41,7 +41,7 @@
       <q-list dense>
         <q-item v-for="(f, i) in recipe.fermentables" :key="f.id" class="q-px-none q-py-xs">
           <q-item-section side style="padding-right:8px">
-            <q-checkbox v-model="colorSelected[i]" dark dense color="positive" />
+            <q-checkbox v-model="colorSelected[i]"  dense color="positive" />
           </q-item-section>
           <q-item-section side style="min-width:52px;padding-right:8px">
             <div class="text-caption text-grey-4">{{ fmtAmt(f.amount) }}</div>
@@ -50,7 +50,7 @@
             <div class="text-caption text-grey-6">{{ pct(f.amount) }}%</div>
           </q-item-section>
           <q-item-section>
-            <q-item-label class="text-grey-3" style="font-size:12px">{{ f.name }}</q-item-label>
+            <q-item-label style="font-size:12px; color: var(--bp-text-primary)">{{ f.name }}</q-item-label>
             <q-item-label caption class="row items-center no-wrap text-grey-7" style="gap:3px;font-size:10.5px">
               <q-icon name="mdi-barley" size="10px" color="primary" />
               {{ f.colorEbc }} EBC
@@ -64,11 +64,11 @@
       <q-card-section class="q-py-sm q-px-md">
         <div class="row justify-between text-caption text-grey-5">
           <span>Cor Alcançada</span>
-          <strong class="text-white">{{ colorAchieved.toFixed(1) }} EBC</strong>
+          <strong style="color: var(--bp-text-value)">{{ colorAchieved.toFixed(1) }} EBC</strong>
         </div>
-        <div class="row justify-between text-caption text-grey-5 q-mt-xs">
+        <div class="row justify-between text-caption q-mt-xs" style="color: var(--bp-text-secondary)">
           <span>Mudança total da carga de grãos</span>
-          <strong class="text-white">{{ colorWeightDelta >= 0 ? '+' : '' }}{{ colorWeightDelta.toFixed(3) }} kg</strong>
+          <strong style="color: var(--bp-text-value)">{{ colorWeightDelta >= 0 ? '+' : '' }}{{ colorWeightDelta.toFixed(3) }} kg</strong>
         </div>
       </q-card-section>
       <q-card-actions align="right" class="q-px-md q-pb-md">

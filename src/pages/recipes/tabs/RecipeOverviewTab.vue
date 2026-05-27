@@ -46,8 +46,10 @@
           <q-card-section class="q-pa-sm">
             <!-- Header: ícone + nome + ações -->
             <div class="row items-center no-wrap q-mb-xs">
-              <q-icon name="mdi-kettle" color="grey-5" size="24px" class="q-mr-xs flex-shrink-0" />
-              <span class="text-caption text-weight-bold text-grey-2 ellipsis col">
+              <q-icon name="mdi-kettle" size="24px" class="q-mr-xs flex-shrink-0"
+                :style="{ color: 'var(--bp-text-secondary)' }" />
+              <span class="text-caption text-weight-bold ellipsis col"
+                style="color: var(--bp-text-primary)">
                 {{ recipe.equipmentProfile?.name ?? 'Equipamento não selecionado' }}
               </span>
               <div class="row q-gutter-xs flex-shrink-0">
@@ -71,34 +73,40 @@
             <!-- Dados do lote — texto compacto -->
             <div class="column q-gutter-none">
               <div class="row items-center no-wrap q-py-xs">
-                <q-icon name="mdi-cup" size="12px" color="grey-6" class="q-mr-xs flex-shrink-0" />
-                <span class="text-caption text-grey-6 col">Volume do Lote</span>
-                <span class="text-caption text-grey-3">{{ recipe.batchVolume }} L</span>
+                <q-icon name="mdi-cup" size="12px" class="q-mr-xs flex-shrink-0"
+                  :style="{ color: 'var(--bp-text-secondary)' }" />
+                <BrewPilotLabel variant="secondary" size="12px" class="col">Volume do Lote</BrewPilotLabel>
+                <BrewPilotLabel variant="value" size="12px">{{ recipe.batchVolume }} L</BrewPilotLabel>
               </div>
               <div class="row items-center no-wrap q-py-xs">
-                <q-icon name="mdi-timer-outline" size="12px" color="grey-6" class="q-mr-xs flex-shrink-0" />
-                <span class="text-caption text-grey-6 col">Tempo de Fervura</span>
-                <span class="text-caption text-grey-3">{{ recipe.boilTime }} min</span>
+                <q-icon name="mdi-timer-outline" size="12px" class="q-mr-xs flex-shrink-0"
+                  :style="{ color: 'var(--bp-text-secondary)' }" />
+                <BrewPilotLabel variant="secondary" size="12px" class="col">Tempo de Fervura</BrewPilotLabel>
+                <BrewPilotLabel variant="value" size="12px">{{ recipe.boilTime }} min</BrewPilotLabel>
               </div>
               <div class="row items-center no-wrap q-py-xs">
-                <q-icon name="mdi-cup-outline" size="12px" color="grey-6" class="q-mr-xs flex-shrink-0" />
-                <span class="text-caption text-grey-6 col">Volume Pré Fervura</span>
-                <span class="text-caption text-grey-3">{{ recipe.preBoilVolume }} L</span>
+                <q-icon name="mdi-cup-outline" size="12px" class="q-mr-xs flex-shrink-0"
+                  :style="{ color: 'var(--bp-text-secondary)' }" />
+                <BrewPilotLabel variant="secondary" size="12px" class="col">Volume Pré Fervura</BrewPilotLabel>
+                <BrewPilotLabel variant="value" size="12px">{{ recipe.preBoilVolume }} L</BrewPilotLabel>
               </div>
               <div class="row items-center no-wrap q-py-xs">
-                <q-icon name="mdi-percent" size="12px" color="grey-6" class="q-mr-xs flex-shrink-0" />
-                <span class="text-caption text-grey-6 col">Eficiência</span>
-                <span class="text-caption text-grey-3">{{ recipe.efficiency }} %</span>
+                <q-icon name="mdi-percent" size="12px" class="q-mr-xs flex-shrink-0"
+                  :style="{ color: 'var(--bp-text-secondary)' }" />
+                <BrewPilotLabel variant="secondary" size="12px" class="col">Eficiência</BrewPilotLabel>
+                <BrewPilotLabel variant="value" size="12px">{{ recipe.efficiency }} %</BrewPilotLabel>
               </div>
               <div v-if="recipe.equipmentProfile?.mashEfficiency" class="row items-center no-wrap q-py-xs">
-                <q-icon name="mdi-percent-outline" size="12px" color="grey-6" class="q-mr-xs flex-shrink-0" />
-                <span class="text-caption text-grey-6 col">Ef. da Mostura</span>
-                <span class="text-caption text-grey-3">{{ recipe.equipmentProfile.mashEfficiency }} %</span>
+                <q-icon name="mdi-percent-outline" size="12px" class="q-mr-xs flex-shrink-0"
+                  :style="{ color: 'var(--bp-text-secondary)' }" />
+                <BrewPilotLabel variant="secondary" size="12px" class="col">Ef. da Mostura</BrewPilotLabel>
+                <BrewPilotLabel variant="value" size="12px">{{ recipe.equipmentProfile.mashEfficiency }} %</BrewPilotLabel>
               </div>
               <div v-if="recipe.equipmentProfile?.boilTemperature" class="row items-center no-wrap q-py-xs">
-                <q-icon name="mdi-thermometer" size="12px" color="grey-6" class="q-mr-xs flex-shrink-0" />
-                <span class="text-caption text-grey-6 col">Temp. de Fervura</span>
-                <span class="text-caption text-grey-3">{{ recipe.equipmentProfile.boilTemperature }} °C</span>
+                <q-icon name="mdi-thermometer" size="12px" class="q-mr-xs flex-shrink-0"
+                  :style="{ color: 'var(--bp-text-secondary)' }" />
+                <BrewPilotLabel variant="secondary" size="12px" class="col">Temp. de Fervura</BrewPilotLabel>
+                <BrewPilotLabel variant="value" size="12px">{{ recipe.equipmentProfile.boilTemperature }} °C</BrewPilotLabel>
               </div>
             </div>
           </q-card-section>
@@ -115,7 +123,8 @@
                 <q-icon :name="recipe.styleGuide ? 'mdi-check-circle' : 'mdi-circle-outline'"
                   :color="recipe.styleGuide ? 'positive' : 'grey-6'" size="15px" class="q-mr-xs" />
                 <span class="text-caption text-weight-bold ellipsis"
-                  :class="recipe.styleGuide ? 'text-white' : 'text-grey-5'" style="max-width: 200px">
+                  :style="recipe.styleGuide ? 'color: var(--bp-text-primary)' : 'color: var(--bp-text-secondary)'"
+                  style="max-width: 200px">
                   {{ recipe.styleGuide
                     ? `${recipe.styleGuide.code} ${recipe.styleGuide.name}`
                     : 'Nenhum estilo selecionado' }}
@@ -219,6 +228,7 @@ import YeastCard from '../components/overview/YeastCard.vue'
 import MashCard from '../components/overview/MashCard.vue'
 import WaterCard from '../components/overview/WaterCard.vue'
 import OthersCard from '../components/overview/OthersCard.vue'
+import BrewPilotLabel from '../../../components/shared/BrewPilotLabel.vue'
 import { ebcToHex } from '../../../utils/brewColors'
 import RecipeImageDialog from '../components/overview/dialogs/RecipeImageDialog.vue'
 import ChangeEquipmentDialog from '../components/overview/dialogs/ChangeEquipmentDialog.vue'

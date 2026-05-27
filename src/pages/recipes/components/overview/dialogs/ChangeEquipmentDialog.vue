@@ -3,7 +3,7 @@
     icon-color="grey-5" width="480px">
 
     <q-card-section>
-      <q-list separator dark>
+      <q-list separator >
         <q-item v-for="p in equipStore.profiles" :key="p.id" clickable v-ripple
           :active="recipe.equipmentProfileId === p.id" active-class="text-amber"
           @click="applyEquipment(p.id)">
