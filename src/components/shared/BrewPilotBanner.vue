@@ -31,9 +31,38 @@
       </div>
       <q-separator style="border-color: var(--bp-border)" />
 
-      <!-- ── Lista de itens ── -->
+      <!-- ── Itens destacados (featured) ── -->
       <div
-        v-for="(item, i) in items"
+        v-for="(item, i) in featuredItems"
+        :key="'f'+i"
+        class="bp-banner__featured"
+        :class="`bp-banner__featured--${item.severity}`"
+      >
+        <div class="bp-banner__featured-header">
+          <q-icon
+            :name="severityIcon(item.severity)"
+            :style="{ color: severityColor(item.severity) }"
+            size="26px"
+          />
+          <div class="bp-banner__featured-body">
+            <span class="bp-banner__featured-msg">{{ item.message }}</span>
+            <span class="bp-banner__chip" :class="`bp-banner__chip--${item.severity}`">
+              {{ severityLabel(item.severity) }}
+            </span>
+          </div>
+        </div>
+        <q-btn v-if="item.action" dense unelevated no-caps
+          :icon="item.action.icon" :label="item.action.label"
+          class="bp-banner__featured-action q-mt-sm"
+          :class="`bp-banner__featured-action--${item.severity}`"
+          @click="router.push(item.action.route)"
+        />
+      </div>
+      <q-separator v-if="featuredItems.length && normalItems.length" style="border-color: var(--bp-border)" />
+
+      <!-- ── Itens normais ── -->
+      <div
+        v-for="(item, i) in normalItems"
         :key="i"
         class="bp-banner__item"
       >
@@ -58,6 +87,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useRouter } from 'vue-router'
 import { useQuasar } from 'quasar'
 
 // ── Tipo genérico exportável ───────────────────────────────────────────────
@@ -65,6 +95,10 @@ export interface BannerItem {
   severity: 'critical' | 'warning' | 'suggestion'
   message: string
   field?: string
+  /** Exibe este item com destaque visual acima dos demais */
+  featured?: boolean
+  /** Botão de ação exibido apenas em itens featured */
+  action?: { label: string; icon?: string; route: string }
 }
 
 const props = defineProps<{
@@ -80,7 +114,11 @@ const props = defineProps<{
 }>()
 
 const $q = useQuasar()
+const router = useRouter()
 const dark = computed(() => $q.dark.isActive)
+
+const featuredItems = computed(() => props.items.filter(i => i.featured))
+const normalItems   = computed(() => props.items.filter(i => !i.featured))
 
 const hasErrors = computed(() => props.items.some(i => i.severity === 'critical'))
 

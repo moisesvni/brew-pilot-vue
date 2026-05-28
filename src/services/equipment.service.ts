@@ -1,5 +1,5 @@
 import apiClient from './apiClient'
-import type { EquipmentProfile, CreateEquipmentProfileRequest } from '../types/equipment'
+import type { EquipmentProfile, CreateEquipmentProfileRequest } from '@/types/equipment'
 
 export const equipmentService = {
   getAll: () =>

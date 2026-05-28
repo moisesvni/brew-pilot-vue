@@ -271,10 +271,10 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { useRecipeStore } from '../../../../stores/recipeStore'
+import { useRecipeStore } from '@/stores/recipeStore'
 import RecipeSection from '../RecipeSection.vue'
-import BrewPilotButton from '../../../../components/shared/BrewPilotButton.vue'
-import type { RecipeYeast, YeastForm } from '../../../../types/recipe'
+import BrewPilotButton from '@/components/shared/BrewPilotButton.vue'
+import type { RecipeYeast, YeastForm } from '@/types/recipe'
 import YeastPickerDialog from '../pickers/YeastPickerDialog.vue'
 
 const store = useRecipeStore()

@@ -100,7 +100,7 @@
 
 <script setup lang="ts">
 import { ref, watch, computed } from 'vue'
-import { useRecipeStore } from '../../../../stores/recipeStore'
+import { useRecipeStore } from '@/stores/recipeStore'
 import RecipeSection from '../RecipeSection.vue'
 
 const store  = useRecipeStore()

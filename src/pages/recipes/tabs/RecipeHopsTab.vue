@@ -66,9 +66,9 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { useRecipeStore } from '../../../stores/recipeStore'
-import type { Recipe, RecipeHop, RecipeStats } from '../../../types/recipe'
-import { calculateIbuTinseth, calculateIbuWhirlpool } from '../../../composables/useBrewCalculator'
+import { useRecipeStore } from '@/stores/recipeStore'
+import type { Recipe, RecipeHop, RecipeStats } from '@/types/recipe'
+import { calculateIbuTinseth, calculateIbuWhirlpool } from '@/composables/useBrewCalculator'
 import HopPickerDialog from '../components/pickers/HopPickerDialog.vue'
 
 const store = useRecipeStore()

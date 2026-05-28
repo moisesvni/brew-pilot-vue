@@ -56,11 +56,11 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { useRecipeStore } from '../../../stores/recipeStore'
+import { useRecipeStore } from '@/stores/recipeStore'
 
 import FermentablePickerDialog from '../components/pickers/FermentablePickerDialog.vue'
 import { RecipeFermentable } from 'src/types/recipe'
-import { ebcToHex } from '../../../utils/brewColors'
+import { ebcToHex } from '@/utils/brewColors'
 
 const store = useRecipeStore()
 const recipe = computed(() => store.currentRecipe!)

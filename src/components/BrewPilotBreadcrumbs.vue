@@ -49,7 +49,6 @@ const crumbs = computed(() => {
 .brew-breadcrumbs {
   background: transparent;
   min-height: 36px;
-  border-bottom: 1px solid var(--bp-border, rgba(255,255,255,0.05));
 }
 
 .last-crumb {

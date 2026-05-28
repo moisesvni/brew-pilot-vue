@@ -216,12 +216,12 @@
 
 <script setup lang="ts">
 import { ref, watch, computed } from 'vue'
-import BrewPilotDialog from '../../../components/BrewPilotDialog.vue'
-import BrewPilotSearchInput from '../../../components/shared/BrewPilotSearchInput.vue'
-import { ingredientsService, type IngredientCategory, type IngredientResult } from '../../../services/ingredients.service'
+import BrewPilotDialog from '@/components/BrewPilotDialog.vue'
+import BrewPilotSearchInput from '@/components/shared/BrewPilotSearchInput.vue'
+import { ingredientsService, type IngredientCategory, type IngredientResult } from '@/services/ingredients.service'
 import type {
   RecipeFermentable, RecipeHop, RecipeYeast, RecipeMisc
-} from '../../../types/recipe'
+} from '@/types/recipe'
 
 // ── Props / Emits ────────────────────────────────────────────────────────────
 const props = defineProps<{

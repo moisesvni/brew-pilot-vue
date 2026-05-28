@@ -28,7 +28,7 @@
 </template>
 
 <script setup lang="ts">
-import type { EquipmentProfile } from '../../types/equipment'
+import type { EquipmentProfile } from '@/types/equipment'
 
 defineProps<{
   profile: EquipmentProfile

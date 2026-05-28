@@ -12,6 +12,34 @@
         no-caps unelevated tooltip="Criar nova receita" @click="createNew" />
     </div>
 
+    <!-- Alerta: sem perfil de equipamento -->
+    <q-banner
+      v-if="!equipStore.loading && equipStore.userProfiles.length === 0"
+      rounded
+      class="q-mb-md bp-equip-banner"
+      :style="{ background: 'rgba(193,113,14,0.12)', border: '1px solid rgba(193,113,14,0.35)' }"
+    >
+      <template #avatar>
+        <q-icon name="mdi-alert-circle-outline" color="warning" size="28px" />
+      </template>
+      <div class="text-weight-medium" style="color: var(--bp-text-primary); font-size: 14px">
+        Nenhum perfil de equipamento encontrado
+      </div>
+      <div class="text-caption q-mt-xs" style="color: var(--bp-text-secondary)">
+        Para criar receitas com cálculos precisos de volume e eficiência, você precisa de ao menos um perfil de equipamento.
+      </div>
+      <template #action>
+        <brew-pilot-button
+          variant="outline"
+          color="warning"
+          label="Criar Perfil"
+          icon="mdi-plus"
+          no-caps
+          @click="router.push('/profiles/equipment')"
+        />
+      </template>
+    </q-banner>
+
     <!-- Filtros -->
     <div class="row q-gutter-sm q-mb-md">
       <brew-pilot-search-input
@@ -82,17 +110,19 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useQuasar } from 'quasar'
-import { useRecipeStore } from '../../stores/recipeStore'
+import { useRecipeStore } from '@/stores/recipeStore'
+import { useEquipmentStore } from '@/stores/equipmentStore'
 import RecipeCard from './components/RecipeCard.vue'
-import BrewPilotButton from '../../components/shared/BrewPilotButton.vue'
-import BrewPilotSearchInput from '../../components/shared/BrewPilotSearchInput.vue'
-import BrewPilotSelect from '../../components/shared/BrewPilotSelect.vue'
-import BrewPilotDialog from '../../components/BrewPilotDialog.vue'
-import type { Recipe } from '../../types/recipe'
+import BrewPilotButton from '@/components/shared/BrewPilotButton.vue'
+import BrewPilotSearchInput from '@/components/shared/BrewPilotSearchInput.vue'
+import BrewPilotSelect from '@/components/shared/BrewPilotSelect.vue'
+import BrewPilotDialog from '@/components/BrewPilotDialog.vue'
+import type { Recipe } from '@/types/recipe'
 
 const store = useRecipeStore()
 const router = useRouter()
 const $q = useQuasar()
+const equipStore = useEquipmentStore()
 
 const search = ref('')
 const filterType = ref<string | null>(null)
@@ -113,7 +143,10 @@ const filteredRecipes = computed(() => {
   })
 })
 
-onMounted(() => store.loadRecipes())
+onMounted(() => {
+  store.loadRecipes()
+  if (!equipStore.profiles.length) equipStore.fetchAll()
+})
 
 function createNew () {
   store.newRecipe()

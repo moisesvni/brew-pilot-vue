@@ -81,10 +81,10 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import type { Recipe } from '../../../types/recipe'
-import { calculateRecipeStats } from '../../../composables/useBrewCalculator'
-import StatChip from '../../../components/shared/StatChip.vue'
-import { ebcToHex } from '../../../utils/brewColors'
+import type { Recipe } from '@/types/recipe'
+import { calculateRecipeStats } from '@/composables/useBrewCalculator'
+import StatChip from '@/components/shared/StatChip.vue'
+import { ebcToHex } from '@/utils/brewColors'
 
 const props = defineProps<{ recipe: Recipe }>()
 defineEmits<{

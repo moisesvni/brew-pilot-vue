@@ -18,7 +18,14 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
+import { useQuasar } from 'quasar'
+
 defineOptions({ inheritAttrs: false })
+const $q = useQuasar()
+const dark = computed(() => $q.dark.isActive)
+const placeholderColor = computed(() => dark.value ? 'rgba(255,255,255,0.38)' : 'rgba(43,26,6,0.38)')
+const clearIconColor = computed(() => dark.value ? 'rgba(255,255,255,0.55)' : '#705C3A')
 
 withDefaults(defineProps<{
   modelValue: string
@@ -46,6 +53,15 @@ defineEmits<{ 'update:modelValue': [v: string] }>()
 
 .theme-search :deep(.q-field__control:hover:before) {
   border-color: rgba(193, 113, 14, 0.45) !important;
+}
+/* Placeholder e hint */
+.theme-search :deep(input::placeholder) {
+  color: v-bind(placeholderColor) !important;
+  opacity: 1;
+}
+/* Ícone clear × */
+.theme-search :deep(.q-field__append .q-icon) {
+  color: v-bind(clearIconColor) !important;
 }
 
 .theme-search :deep(.q-field__control.q-field__control--focused:before) {

@@ -75,7 +75,7 @@ const cardStyle = computed(() => ({
 
 .brew-dialog-scroll {
   overflow-y: auto;
-  flex: 1 1 0;
+  flex: 1 1 auto;
   min-height: 0;
 }
 
@@ -84,9 +84,4 @@ const cardStyle = computed(() => ({
   border-bottom: 1px solid var(--bp-border);
 }
 
-.brew-dialog-scroll {
-  overflow-y: auto;
-  flex: 1 1 0;
-  min-height: 0;
-}
 </style>

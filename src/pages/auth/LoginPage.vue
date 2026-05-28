@@ -126,12 +126,12 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { useAuthStore } from '../../stores/authStore'
-import { useOAuth } from '../../composables/useOAuth'
-import bgDeskImg   from '../../assets/back-desk.png'
-import bgMobileImg from '../../assets/back-mobile.png'
-import logoImg      from '../../assets/logo-brew-right-full.png'
-import logoLoginImg from '../../assets/logo-brew-right-only-label.png'
+import { useAuthStore } from '@/stores/authStore'
+import { useOAuth } from '@/composables/useOAuth'
+import bgDeskImg   from '@/assets/back-desk.png'
+import bgMobileImg from '@/assets/back-mobile.png'
+import logoImg      from '@/assets/logo-brew-right-full.png'
+import logoLoginImg from '@/assets/logo-brew-right-only-label.png'
 
 const router    = useRouter()
 const route     = useRoute()

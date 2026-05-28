@@ -42,11 +42,11 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
-import BrewPilotDialog from '../../../../../components/BrewPilotDialog.vue'
-import { useRecipeStore } from '../../../../../stores/recipeStore'
-import type { StyleGuide } from '../../../../../types/recipe'
-import apiClient from '../../../../../services/apiClient'
-import { sampleStyles } from '../../../../../data/styles-sample'
+import BrewPilotDialog from '@/components/BrewPilotDialog.vue'
+import { useRecipeStore } from '@/stores/recipeStore'
+import type { StyleGuide } from '@/types/recipe'
+import apiClient from '@/services/apiClient'
+import { sampleStyles } from '@/data/styles-sample'
 
 const props = defineProps<{ modelValue: boolean }>()
 const emit = defineEmits<{ 'update:modelValue': [v: boolean] }>()

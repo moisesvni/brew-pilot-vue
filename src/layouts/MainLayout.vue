@@ -55,9 +55,9 @@
 import { ref } from 'vue'
 import { useQuasar } from 'quasar'
 // Dark: logo com texto branco/claro (usa no fundo escuro)
-import logoDarkImg from '../assets/logo-brew-right-only-label.png'
+import logoDarkImg from '@/assets/logo-brew-right-only-label.png'
 // Light: logo com texto preto/escuro — versão com letras escuras para fundo claro
-import logoLightImg from '../assets/logo-brew-right-only-label-dark.png'
+import logoLightImg from '@/assets/logo-brew-right-only-label-dark.png'
 import UserAvatarMenu from 'src/components/UserAvatarMenu.vue'
 import BrewPilotBreadcrumbs from 'src/components/BrewPilotBreadcrumbs.vue'
 
@@ -69,12 +69,6 @@ const navLinks = [
   { label: 'Receitas', icon: 'mdi-note-text', to: '/recipes' },
   { label: 'Lotes', icon: 'mdi-barrel', to: '/batches' },
   {
-    label: 'Equipamentos',
-    caption: 'Perfis e configurações',
-    icon: 'mdi-kettle',
-    to: '/equipment'
-  },
-  {
     label: 'Estilos BJCP',
     caption: 'Guia de estilos',
     icon: 'mdi-flask',
@@ -83,7 +77,7 @@ const navLinks = [
   { label: 'Dispositivos', icon: 'mdi-wifi', to: '/devices' },
   { label: 'Estoque', icon: 'mdi-package-variant', to: '/inventory' },
   { label: 'Biblioteca', icon: 'mdi-cloud-outline', to: '/library' },
-  { label: 'Perfis', icon: 'mdi-account-group', to: '/profiles' },
+  { label: 'Perfis', icon: 'mdi-tune-variant', to: '/profiles' },
   { label: 'Estilos', icon: 'mdi-book-open-variant', to: '/styles' },
   { label: 'Ferramentas', icon: 'mdi-tools', to: '/tools' },
   { label: 'Configurações', icon: 'mdi-cog', to: '/settings' },

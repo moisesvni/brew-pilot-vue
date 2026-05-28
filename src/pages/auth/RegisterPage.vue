@@ -147,8 +147,8 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import { useAuthStore } from '../../stores/authStore'
-import { useOAuth } from '../../composables/useOAuth'
+import { useAuthStore } from '@/stores/authStore'
+import { useOAuth } from '@/composables/useOAuth'
 
 const router    = useRouter()
 const authStore = useAuthStore()

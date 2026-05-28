@@ -100,8 +100,8 @@
 import { ref, computed } from 'vue'
 import { useQuasar } from 'quasar'
 import { useRouter } from 'vue-router'
-import { useAuthStore } from '../stores/authStore'
-import { useRecipeStore } from '../stores/recipeStore'
+import { useAuthStore } from '@/stores/authStore'
+import { useRecipeStore } from '@/stores/recipeStore'
 
 const $q = useQuasar()
 const router = useRouter()

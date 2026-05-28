@@ -1,4 +1,4 @@
-import type { StyleGuide } from '../types/recipe'
+import type { StyleGuide } from '@/types/recipe'
 
 export const sampleStyles: StyleGuide[] = [
   {

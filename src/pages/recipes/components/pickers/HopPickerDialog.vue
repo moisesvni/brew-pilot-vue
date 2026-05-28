@@ -77,7 +77,7 @@
       <q-card-section class="q-pb-sm">
         <div class="row items-center q-mb-md">
           <q-btn flat round dense icon="arrow_back" size="sm" @click="step = 'search'" />
-          <span class="text-body2 text-white q-ml-sm">Novo Lúpulo</span>
+          <brew-pilot-label class="q-ml-sm">Novo Lúpulo</brew-pilot-label>
         </div>
         <div class="row q-col-gutter-sm">
           <q-input v-model="cfg.name" label="Nome" outlined dense  class="col-12" autofocus
@@ -108,10 +108,10 @@
 
 <script setup lang="ts">
 import { computed, watch } from 'vue'
-import type { RecipeHop } from '../../../../types/recipe'
-import BrewPilotDialog from '../../../../components/BrewPilotDialog.vue'
-import BrewPilotSearchInput from '../../../../components/shared/BrewPilotSearchInput.vue'
-import { useIngredientPicker } from '../../../../composables/useIngredientPicker'
+import type { RecipeHop } from '@/types/recipe'
+import BrewPilotDialog from '@/components/BrewPilotDialog.vue'
+import BrewPilotSearchInput from '@/components/shared/BrewPilotSearchInput.vue'
+import { useIngredientPicker } from '@/composables/useIngredientPicker'
 
 const props = defineProps<{ modelValue: boolean }>()
 const emit = defineEmits<{

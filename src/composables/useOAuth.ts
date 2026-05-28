@@ -1,6 +1,6 @@
 import { ref } from 'vue'
-import { authService } from '../services/auth.service'
-import { useAuthStore } from '../stores/authStore'
+import { authService } from '@/services/auth.service'
+import { useAuthStore } from '@/stores/authStore'
 
 // ── Tipagens globais (carregadas via script tag) ───────────────────────────
 declare const google: {

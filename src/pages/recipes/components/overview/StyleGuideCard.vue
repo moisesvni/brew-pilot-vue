@@ -69,7 +69,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useQuasar } from 'quasar'
-import { useRecipeStore } from '../../../../stores/recipeStore'
+import { useRecipeStore } from '@/stores/recipeStore'
 import RecipeStyleRangeBar from '../RecipeStyleRangeBar.vue'
 import RecipeStyleDialog from './dialogs/RecipeStyleDialog.vue'
 

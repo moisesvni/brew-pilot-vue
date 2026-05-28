@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { authService } from '../services/auth.service'
-import type { AuthUser, LoginRequest, OAuthLoginRequest, RegisterRequest } from '../types/auth'
-import { UserPlan } from '../types/auth'
+import { authService } from '@/services/auth.service'
+import type { AuthUser, LoginRequest, OAuthLoginRequest, RegisterRequest } from '@/types/auth'
+import { UserPlan } from '@/types/auth'
 
 const ACCESS_TOKEN_KEY  = 'brew_access_token'
 const REFRESH_TOKEN_KEY = 'brew_refresh_token'

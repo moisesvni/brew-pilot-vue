@@ -10,8 +10,8 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import BrewPilotBanner, { type BannerItem } from '../../../components/shared/BrewPilotBanner.vue'
-import type { RecipeValidation } from '../../../types/recipe'
+import BrewPilotBanner, { type BannerItem } from '@/components/shared/BrewPilotBanner.vue'
+import type { RecipeValidation } from '@/types/recipe'
 
 const props = defineProps<{
   items: RecipeValidation[]
@@ -22,6 +22,10 @@ const bannerItems = computed<BannerItem[]>(() =>
     severity: v.severity,
     message:  v.message,
     field:    v.field,
+    ...(v.field === 'equipment' ? {
+      featured: true,
+      action: { label: 'Configurar Perfil de Equipamento', icon: 'mdi-tune-variant', route: '/profiles/equipment' },
+    } : {}),
   }))
 )
 </script>

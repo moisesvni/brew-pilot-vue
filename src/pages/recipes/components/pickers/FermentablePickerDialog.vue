@@ -1,6 +1,5 @@
 <template>
   <brew-pilot-dialog v-model="open" title="Adicionar Fermentável" icon="mdi-barley" icon-color="primary" width="560px">
-
     <!-- ── Busca ──────────────────────────────────────────────────────────── -->
     <template v-if="step === 'search'">
       <q-card-section class="q-pb-xs">
@@ -15,21 +14,28 @@
           <q-icon name="search_off" size="36px" class="q-mb-xs" /><br>
           Nenhum resultado para "<strong>{{ query }}</strong>"
         </div>
-        <div v-else-if="!query" class="text-center q-py-md text-grey-6 text-caption">
+        <div v-else-if="!query && !isShowingTopSearched" class="text-center q-py-md text-grey-6 text-caption">
           Digite para buscar na base de dados
         </div>
-        <q-list separator>
-          <q-item v-for="r in results" :key="r.id" clickable v-ripple class="q-py-sm"
-            @click="selectResult(r)">
-            <q-item-section>
-              <q-item-label style="color: var(--bp-text-primary)" class="text-weight-medium">{{ r.name }}</q-item-label>
-              <q-item-label caption class="text-grey-5">{{ resultCaption(r) }}</q-item-label>
-            </q-item-section>
-            <q-item-section side>
-              <q-btn flat dense size="sm" label="Usar" color="primary" icon="add" />
-            </q-item-section>
-          </q-item>
-        </q-list>
+        <template v-else>
+          <div v-if="isShowingTopSearched && !query"
+            class="q-px-md q-pt-sm q-pb-xs text-caption text-grey-6 row items-center" style="gap:4px">
+            <q-icon name="mdi-fire" color="orange-6" size="13px" />
+            Mais pesquisados
+          </div>
+          <q-list separator>
+            <q-item v-for="r in results" :key="r.id" clickable v-ripple class="q-py-sm"
+              @click="selectResult(r)">
+              <q-item-section>
+                <q-item-label style="color: var(--bp-text-primary)" class="text-weight-medium">{{ r.name }}</q-item-label>
+                <q-item-label caption class="text-grey-5">{{ resultCaption(r) }}</q-item-label>
+              </q-item-section>
+              <q-item-section side>
+                <q-btn flat dense size="sm" label="Usar" color="primary" icon="add" />
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </template>
       </div>
       <q-card-section class="q-pt-xs q-pb-sm">
         <q-btn flat class="full-width" icon="mdi-plus-circle-outline"
@@ -69,7 +75,7 @@
       <q-card-section class="q-pb-sm">
         <div class="row items-center q-mb-md">
           <q-btn flat round dense icon="arrow_back" size="sm" @click="step = 'search'" />
-          <span class="text-body2 text-white q-ml-sm">Novo Fermentável</span>
+          <brew-pilot-label class="q-ml-sm">Novo Fermentável</brew-pilot-label>
         </div>
         <div class="row q-col-gutter-sm">
           <q-input v-model="cfg.name" label="Nome" outlined dense  class="col-12" autofocus
@@ -99,10 +105,10 @@
 
 <script setup lang="ts">
 import { computed, watch } from 'vue'
-import type { RecipeFermentable } from '../../../../types/recipe'
-import BrewPilotDialog from '../../../../components/BrewPilotDialog.vue'
-import BrewPilotSearchInput from '../../../../components/shared/BrewPilotSearchInput.vue'
-import { useIngredientPicker } from '../../../../composables/useIngredientPicker'
+import type { RecipeFermentable } from '@/types/recipe'
+import BrewPilotDialog from '@/components/BrewPilotDialog.vue'
+import BrewPilotSearchInput from '@/components/shared/BrewPilotSearchInput.vue'
+import { useIngredientPicker } from '@/composables/useIngredientPicker'
 
 const props = defineProps<{ modelValue: boolean }>()
 const emit = defineEmits<{
@@ -112,7 +118,7 @@ const emit = defineEmits<{
 
 const open = computed({ get: () => props.modelValue, set: v => emit('update:modelValue', v) })
 
-const { step, query, results, loading, selected, cfg, reset, onQueryChange, selectResult, openCreateNew, resultCaption } =
+const { step, query, results, loading, selected, cfg, isShowingTopSearched, reset, onQueryChange, selectResult, openCreateNew, resultCaption } =
   useIngredientPicker('Fermentable')
 
 watch(() => props.modelValue, v => { if (v) reset() })

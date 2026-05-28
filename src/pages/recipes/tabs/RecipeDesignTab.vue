@@ -68,7 +68,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useRecipeStore } from '../../../stores/recipeStore'
+import { useRecipeStore } from '@/stores/recipeStore'
 
 import StyleBar from '../components/StyleBar.vue'
 

@@ -53,8 +53,10 @@
                 {{ recipe.equipmentProfile?.name ?? 'Equipamento não selecionado' }}
               </span>
               <div class="row q-gutter-xs flex-shrink-0">
-                <!-- Redimensionar -->
-                <q-btn round outline dense icon="mdi-resize" color="grey-5" size="md" @click="resizeEquipDialog = true">
+                <!-- Redimensionar (só quando há equipamento selecionado) -->
+                <q-btn round outline dense icon="mdi-resize" color="grey-5" size="md"
+                  v-if="recipe.equipmentProfile?.name"
+                  @click="resizeEquipDialog = true">
                   <q-tooltip>Redimensionar lote</q-tooltip>
                 </q-btn>
                 <!-- Alterar equipamento -->
@@ -63,15 +65,43 @@
                   <q-tooltip>Alterar equipamento</q-tooltip>
                 </q-btn>
                 <!-- Editar equipamento -->
-                <q-btn round outline dense icon="mdi-pencil" color="grey-5" size="md" @click="editEquipDialog = true">
+                <q-btn round outline dense icon="mdi-pencil" color="grey-5" size="md" @click="editEquipDialog = true"
+                 v-if="recipe.equipmentProfile?.name">
                   <q-tooltip>Editar equipamento</q-tooltip>
+                </q-btn>
+                <!-- Adicionar (quando nenhum perfil selecionado e há perfis disponíveis) -->
+                <q-btn round outline dense icon="mdi-plus" color="primary" size="md"
+                  v-if="!recipe.equipmentProfile?.name && !hasNoEquipProfiles"
+                  @click="changeEquipDialog = true">
+                  <q-tooltip>Selecionar equipamento</q-tooltip>
                 </q-btn>
               </div>
             </div>
             <q-separator class="q-mb-xs" />
 
+            <!-- Alerta: sem nenhum perfil de equipamento criado -->
+            <div v-if="hasNoEquipProfiles && !recipe.equipmentProfile"
+              class="column items-center q-py-sm q-gutter-sm text-center">
+              <q-icon name="mdi-alert-circle-outline" size="36px" color="warning" />
+              <div class="text-caption text-weight-medium" style="color: var(--bp-text-primary)">
+                Nenhum perfil de equipamento criado
+              </div>
+              <div class="text-caption" style="color: var(--bp-text-secondary)">
+                Crie um perfil para calcular volumes e eficiências corretamente.
+              </div>
+              <brew-pilot-button
+                variant="outline"
+                color="warning"
+                label="Criar Perfil"
+                icon="mdi-plus"
+                size="sm"
+                no-caps
+                @click="router.push('/profiles/equipment')"
+              />
+            </div>
+
             <!-- Dados do lote — texto compacto -->
-            <div class="column q-gutter-none">
+            <div v-else class="column q-gutter-none">
               <div class="row items-center no-wrap q-py-xs">
                 <q-icon name="mdi-cup" size="12px" class="q-mr-xs flex-shrink-0"
                   :style="{ color: 'var(--bp-text-secondary)' }" />
@@ -177,10 +207,10 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import { useRecipeStore } from '../../../stores/recipeStore'
-import { useEquipmentStore } from '../../../stores/equipmentStore'
-import BrewPilotButton from '../../../components/shared/BrewPilotButton.vue'
-import RecipeStyleRangeBar from '../components/RecipeStyleRangeBar.vue'
+import { useRouter } from 'vue-router'
+import { useRecipeStore } from '@/stores/recipeStore'
+import { useEquipmentStore } from '@/stores/equipmentStore'
+import BrewPilotButton from '@/components/shared/BrewPilotButton.vue'
 import RecipeSection from '../components/RecipeSection.vue'
 import RecipeMiscTab from './RecipeMiscTab.vue'
 import FermentablesCard from '../components/overview/FermentablesCard.vue'
@@ -190,8 +220,8 @@ import MashCard from '../components/overview/MashCard.vue'
 import WaterCard from '../components/overview/WaterCard.vue'
 import OthersCard from '../components/overview/OthersCard.vue'
 import StyleGuideCard from '../components/overview/StyleGuideCard.vue'
-import BrewPilotLabel from '../../../components/shared/BrewPilotLabel.vue'
-import { ebcToHex } from '../../../utils/brewColors'
+import BrewPilotLabel from '@/components/shared/BrewPilotLabel.vue'
+import { ebcToHex } from '@/utils/brewColors'
 import RecipeImageDialog from '../components/overview/dialogs/RecipeImageDialog.vue'
 import ChangeEquipmentDialog from '../components/overview/dialogs/ChangeEquipmentDialog.vue'
 import ResizeEquipDialog from '../components/overview/dialogs/ResizeEquipDialog.vue'
@@ -201,11 +231,14 @@ import RecipeStyleDialog from '../components/overview/dialogs/RecipeStyleDialog.
 const store = useRecipeStore()
 const recipe = computed(() => store.currentRecipe!)
 const stats = computed(() => store.stats)
+const router = useRouter()
 
 const miscTabRef = ref<InstanceType<typeof RecipeMiscTab> | null>(null)
 
 const equipStore = useEquipmentStore()
 onMounted(() => { if (!equipStore.profiles.length) equipStore.fetchAll() })
+
+const hasNoEquipProfiles = computed(() => !equipStore.loading && equipStore.userProfiles.length === 0)
 
 const typeOptions = [
   { label: 'All Grain', value: 'AllGrain' },

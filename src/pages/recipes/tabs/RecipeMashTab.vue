@@ -64,7 +64,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useRecipeStore } from '../../../stores/recipeStore'
+import { useRecipeStore } from '@/stores/recipeStore'
 
 const store  = useRecipeStore()
 const recipe = computed(() => store.currentRecipe!)

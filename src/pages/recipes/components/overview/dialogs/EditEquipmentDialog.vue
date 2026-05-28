@@ -1,6 +1,6 @@
 <template>
-  <brew-pilot-dialog v-model="open" title="Editar Perfil de Equipamento" icon="mdi-kettle"
-    icon-color="grey-5" width="680px" scrollable>
+  <brew-pilot-dialog v-model="open" :title="dialogTitle" icon="mdi-kettle"
+    icon-color="orange-6" width="680px" scrollable>
 
     <template #header-actions>
       <q-btn flat round dense icon="mdi-help-circle-outline" color="grey-5">
@@ -18,19 +18,22 @@
     <div class="q-pa-md">
 
       <!-- Nome + Tempo + Descrição -->
-      <div class="row q-col-gutter-sm q-mb-sm">
-        <div class="col-12 col-sm-7">
-          <q-input v-model="form.name" outlined dense  label="Nome" />
+       <div class="eq-card q-mb-sm">
+        <div class="eq-card-title">Nome + Tempo + Descrição</div>
+          <div class="row q-col-gutter-sm q-mb-sm">
+            <div class="col-12 col-sm-7">
+              <q-input v-model="form.name" outlined dense  label="Nome" />
+            </div>
+            <div class="col-12 col-sm-5">
+              <q-input v-model.number="form.boilTime" type="number" outlined dense 
+                label="Tempo de Fervura" suffix="min" />
+            </div>
+            <div class="col-12">
+              <q-input v-model="form.notes" type="textarea" :rows="3" outlined dense 
+                label="Descrição" />
+            </div>
+          </div>
         </div>
-        <div class="col-12 col-sm-5">
-          <q-input v-model.number="form.boilTime" type="number" outlined dense 
-            label="Tempo de Fervura" suffix="min" />
-        </div>
-        <div class="col-12">
-          <q-input v-model="form.notes" type="textarea" :rows="3" outlined dense 
-            label="Descrição" autogrow />
-        </div>
-      </div>
 
       <!-- ─ Volumes ─────────────────────────────────────────────────── -->
       <div class="eq-card q-mb-sm">
@@ -196,11 +199,14 @@
     </div>
 
     <template #footer>
-      <div class="row items-center q-px-md q-py-sm">
-        <q-btn flat no-caps label="COPIAR" color="grey-5" @click="copyEquip" />
+      <div class="row items-center q-px-md q-py-sm" style="gap:8px">
+        <brew-pilot-button v-if="isEditing" variant="outline" no-caps label="Copiar"
+          icon="mdi-content-copy" size="sm" @click="copyEquip" />
         <q-space />
-        <q-btn flat no-caps label="ALTERAR" color="grey-4" @click="open = false" />
-        <q-btn unelevated no-caps label="SALVAR" color="positive" @click="save" />
+        <brew-pilot-button variant="flat" no-caps label="Cancelar" @click="open = false" />
+        <brew-pilot-button variant="filled" color="positive" no-caps
+          :label="isEditing ? 'Salvar' : 'Criar Perfil'"
+          icon="mdi-content-save" :loading="saving" @click="save" />
       </div>
     </template>
 
@@ -209,16 +215,33 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
-import BrewPilotDialog from '../../../../../components/BrewPilotDialog.vue'
-import { useRecipeStore } from '../../../../../stores/recipeStore'
+import BrewPilotDialog from '@/components/BrewPilotDialog.vue'
+import BrewPilotButton from '@/components/shared/BrewPilotButton.vue'
+import { useRecipeStore } from '@/stores/recipeStore'
+import { useEquipmentStore } from '@/stores/equipmentStore'
+import type { EquipmentProfile } from '@/types/equipment'
 
-const props = defineProps<{ modelValue: boolean }>()
-const emit = defineEmits<{ 'update:modelValue': [v: boolean] }>()
+const props = defineProps<{
+  modelValue: boolean
+  /** Perfil base para criar/editar. null = formulário em branco. isDefault=true = criar cópia. */
+  baseProfile?: EquipmentProfile | null
+}>()
+const emit = defineEmits<{
+  'update:modelValue': [v: boolean]
+  'saved': [profile: EquipmentProfile]
+}>()
 
 const open = computed({ get: () => props.modelValue, set: v => emit('update:modelValue', v) })
 
-const store = useRecipeStore()
-const recipe = computed(() => store.currentRecipe!)
+const recipeStore = useRecipeStore()
+const equipStore  = useEquipmentStore()
+const recipe      = computed(() => recipeStore.currentRecipe!)
+
+/** Se tem id próprio (não é global) → estamos editando; senão criando */
+const editingId = ref<string | null>(null)
+const isEditing = computed(() => !!editingId.value)
+const dialogTitle = computed(() => isEditing.value ? 'Editar Perfil de Equipamento' : 'Criar Perfil de Equipamento')
+const saving = ref(false)
 
 const defaultForm = () => ({
   name: '',
@@ -227,6 +250,7 @@ const defaultForm = () => ({
   trubLoss: 2, fermentorLoss: 1, deadSpace: 1,
   notes: '' as string | undefined,
   isDefault: false,
+  mashTunVolume: 30,
   mashLoss: 0,
   spargeDeadSpace: undefined as number | undefined,
   fermenterWater: undefined as number | undefined,
@@ -247,21 +271,30 @@ const defaultForm = () => ({
 
 const form = ref(defaultForm())
 
-watch(() => props.modelValue, (v) => {
-  if (v) initForm()
-})
+watch(() => props.modelValue, (v) => { if (v) initForm() }, { immediate: true })
 
 function initForm() {
-  const p = recipe.value.equipmentProfile
-  form.value = p
-    ? { ...defaultForm(), ...p, notes: p.notes ?? '' }
-    : {
+  const base = props.baseProfile
+
+  if (base && !base.isDefault) {
+    // Editando perfil próprio do usuário
+    editingId.value = base.id
+    form.value = { ...defaultForm(), ...base, notes: base.notes ?? '' }
+  } else if (base && base.isDefault) {
+    // Criando cópia a partir de perfil global
+    editingId.value = null
+    form.value = { ...defaultForm(), ...base, name: base.name + ' (Meu)', notes: base.notes ?? '', isDefault: false }
+  } else {
+    // Novo do zero
+    editingId.value = null
+    form.value = {
       ...defaultForm(),
-      batchVolume: recipe.value.batchVolume,
+      batchVolume:   recipe.value.batchVolume,
       preBoilVolume: recipe.value.preBoilVolume ?? 24,
-      boilTime: recipe.value.boilTime,
-      efficiency: recipe.value.efficiency,
+      boilTime:      recipe.value.boilTime,
+      efficiency:    recipe.value.efficiency,
     }
+  }
 }
 
 // Computed de volumes
@@ -297,27 +330,39 @@ watch(calcPreBoilVol, (v) => {
   if (form.value.calculateBoilVolume) form.value.preBoilVolume = v
 })
 
-function save() {
-  recipe.value.batchVolume = form.value.batchVolume
-  recipe.value.preBoilVolume = form.value.calculateBoilVolume
-    ? calcPreBoilVol.value
-    : form.value.preBoilVolume
-  recipe.value.boilTime = form.value.boilTime
-  recipe.value.efficiency = form.value.efficiency
-  if (recipe.value.equipmentProfile) {
-    Object.assign(recipe.value.equipmentProfile, form.value)
+async function save() {
+  saving.value = true
+  try {
+    const payload = {
+      ...form.value,
+      preBoilVolume: form.value.calculateBoilVolume ? calcPreBoilVol.value : form.value.preBoilVolume,
+      isDefault: false,
+    }
+    let saved: EquipmentProfile
+    if (editingId.value) {
+      saved = await equipStore.update(editingId.value, payload)
+    } else {
+      saved = await equipStore.create(payload)
+    }
+    emit('saved', saved)
+    open.value = false
+  } catch (e) {
+    console.error('Erro ao salvar perfil de equipamento:', e)
+  } finally {
+    saving.value = false
   }
-  open.value = false
 }
 
 function copyEquip() {
   form.value.name = form.value.name + ' (Cópia)'
+  editingId.value = null
 }
 </script>
 
 <style scoped>
 .eq-card {
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--bp-surface-alt);
+  border: 1px solid var(--bp-border);
   border-radius: 8px;
   padding: 10px 12px 14px;
 }
@@ -327,7 +372,7 @@ function copyEquip() {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: rgba(255, 255, 255, 0.38);
+  color: var(--bp-text-muted);
   margin-bottom: 10px;
 }
 
@@ -336,6 +381,6 @@ function copyEquip() {
   flex-wrap: wrap;
   gap: 4px 16px;
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.48);
+  color: var(--bp-text-muted);
 }
 </style>

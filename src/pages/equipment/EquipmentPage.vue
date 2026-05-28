@@ -125,10 +125,10 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import { useEquipmentStore } from '../../stores/equipmentStore'
-import { useAuthStore }      from '../../stores/authStore'
-import EquipmentCard         from '../../components/shared/EquipmentCard.vue'
-import type { EquipmentProfile } from '../../types/equipment'
+import { useEquipmentStore } from '@/stores/equipmentStore'
+import { useAuthStore }      from '@/stores/authStore'
+import EquipmentCard         from '@/components/shared/EquipmentCard.vue'
+import type { EquipmentProfile } from '@/types/equipment'
 
 const FREE_LIMIT = 2
 

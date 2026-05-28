@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import type { Recipe, RecipeStats, RecipeValidation } from '../types/recipe'
-import { calculateRecipeStats } from '../composables/useBrewCalculator'
-import { recipeService } from '../services/recipe.service'
-import { sampleStyles } from '../data/styles-sample'
+import type { Recipe, RecipeStats, RecipeValidation } from '@/types/recipe'
+import { calculateRecipeStats } from '@/composables/useBrewCalculator'
+import { recipeService } from '@/services/recipe.service'
+import { sampleStyles } from '@/data/styles-sample'
 
 export const useRecipeStore = defineStore('recipe', () => {
   // ─── State ─────────────────────────────────────────────────────────────────
@@ -133,6 +133,15 @@ export const useRecipeStore = defineStore('recipe', () => {
 // ─── Validador de receita ─────────────────────────────────────────────────────
 function validateRecipe (recipe: Recipe, stats: RecipeStats): RecipeValidation[] {
   const results: RecipeValidation[] = []
+
+  // Crítico (SEMPRE PRIMEIRO): sem perfil de equipamento
+  if (!recipe.equipmentProfile) {
+    results.push({
+      severity: 'critical',
+      message: 'Nenhum perfil de equipamento selecionado. Sem ele os cálculos de volume e eficiência ficam incorretos.',
+      field: 'equipment',
+    })
+  }
 
   // Critico: sem fermentáveis
   if (!recipe.fermentables.length) {

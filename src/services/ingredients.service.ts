@@ -9,9 +9,23 @@ export interface IngredientResult {
   notes?: string
   // Fermentable
   fermentableType?: string
+  category?: string
+  origin?: string
   colorEbc?: number
   potential?: number
   yieldPercentage?: number
+  diastaticPower?: number
+  description?: string
+  usedIn?: string
+  substitutes?: string
+  moisture?: number
+  protein?: number
+  coarseFineGrind?: number
+  fineGroundExtract?: number
+  acid?: number
+  friability?: number
+  freeAminoNitrogen?: number
+  maxInBatch?: number
   // Hop
   alphaAcid?: number
   // Yeast

@@ -11,7 +11,7 @@
     </template>
 
     <!-- preview -->
-    <q-card-section class="row items-center justify-center q-gutter-xl q-pt-xs">
+    <div class="row items-center justify-center q-gutter-xl q-pt-sm">
       <div class="column items-center">
         <div class="text-caption text-grey-5 q-mb-xs">Atual</div>
         <q-icon name="mdi-beer" size="52px" :style="{ color: ebcToHex(stats?.ebc ?? 20) }" />
@@ -23,7 +23,7 @@
         <q-icon name="mdi-beer" size="52px" :style="{ color: ebcToHex(colorAchieved) }" />
         <div class="text-caption q-mt-xs" style="color: var(--bp-text-value)">{{ colorAchieved.toFixed(1) }} EBC</div>
       </div>
-    </q-card-section>
+    </div>
 
     <!-- slider + input -->
     <q-card-section class="q-pt-xs">
@@ -81,10 +81,10 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
-import { useRecipeStore } from '../../../../../stores/recipeStore'
-import { calculateEbc } from '../../../../../composables/useBrewCalculator'
-import BrewPilotDialog from '../../../../../components/BrewPilotDialog.vue'
-import { ebcToHex } from '../../../../../utils/brewColors'
+import { useRecipeStore } from '@/stores/recipeStore'
+import { calculateEbc } from '@/composables/useBrewCalculator'
+import BrewPilotDialog from '@/components/BrewPilotDialog.vue'
+import { ebcToHex } from '@/utils/brewColors'
 
 const props = defineProps<{ modelValue: boolean }>()
 const emit = defineEmits<{ (e: 'update:modelValue', v: boolean): void }>()
