@@ -27,7 +27,7 @@ app.use(Quasar, {
       secondary: '#455a64',
       accent: '#f4c842',
       dark: '#181818',
-      positive: '#21ba45',
+      positive: '#268b3e',
       negative: '#c10015',
       info: '#31ccec',
       warning: '#f2c037'

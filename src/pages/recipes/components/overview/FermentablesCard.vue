@@ -2,12 +2,12 @@
   <div style="display:contents">
     <recipe-section title="Fermentáveis" icon="mdi-barley" icon-color="primary" :badge="totalWeightDisplay">
       <template #actions>
-        <brew-pilot-button variant="outline" round dense icon="mdi-palette"
+        <brew-pilot-button v-if="recipe.fermentables.length >= 1" variant="outline" round dense icon="mdi-palette"
           class="palette-btn" :style="{ '--palette-color': ebcToHex(stats?.ebc ?? 20) }"
           tooltip="Ajustar Cor da Receita" @click.stop="colorDialog = true" />
-        <brew-pilot-button variant="outline" round dense icon="mdi-percent"
+        <brew-pilot-button v-if="recipe.fermentables.length >= 2" variant="outline" round dense icon="mdi-percent"
           tooltip="Definir Porcentagens" @click.stop="pctDialog = true" />
-        <brew-pilot-button variant="outline" round dense label="OG"
+        <brew-pilot-button v-if="recipe.fermentables.length >= 1" variant="outline" round dense label="OG"
           class="circle-btn" tooltip="Redimensionar por OG" @click.stop="ogDialog = true" />
         <brew-pilot-button variant="outline" round dense icon="mdi-plus" primary
           tooltip="Adicionar Fermentável" @click.stop="pickerOpen = true" />
@@ -84,7 +84,7 @@
     </recipe-section>
 
     <!-- ═══════════════════════ DIALOGS ═══════════════════════════════════ -->
-    <edit-fermentable-dialog v-model="editDialog"
+    <fermentable-form-dialog v-model="editDialog"
       :item="selectedForEdit"
       @save="handleSaveEdit"
       @remove="handleRemoveEdit"
@@ -103,7 +103,7 @@ import RecipeSection from '../RecipeSection.vue'
 import BrewPilotButton from '@/components/shared/BrewPilotButton.vue'
 import type { RecipeFermentable, FermentableType } from '@/types/recipe'
 import FermentablePickerDialog from '../pickers/FermentablePickerDialog.vue'
-import EditFermentableDialog from './dialogs/EditFermentableDialog.vue'
+import FermentableFormDialog from './dialogs/FermentableFormDialog.vue'
 import ColorAdjustDialog from './dialogs/ColorAdjustDialog.vue'
 import SetPercentagesDialog from './dialogs/SetPercentagesDialog.vue'
 import ResizeByOgDialog from './dialogs/ResizeByOgDialog.vue'

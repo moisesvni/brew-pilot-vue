@@ -1,6 +1,13 @@
 <template>
   <q-page class="q-pa-md">
-    <div class="text-h5 text-weight-bold q-mb-md">Biblioteca de Ingredientes</div>
-    <div class="text-grey-5 text-body2">Em breve — Maltes, lúpulos, leveduras e adjuntos.</div>
+    <brew-pilot-page-header
+      icon="mdi-barley"
+      title="Ingredientes"
+      subtitle="Maltes, lúpulos, leveduras e adjuntos."
+    />
   </q-page>
 </template>
+
+<script setup lang="ts">
+import BrewPilotPageHeader from '@/components/shared/BrewPilotPageHeader.vue'
+</script>

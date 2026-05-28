@@ -49,26 +49,26 @@
           </div>
         </div>
         <div class="row q-col-gutter-sm">
-          <q-input v-model.number="cfg.amount" type="number" label="Quantidade"
-            suffix="g" outlined dense  class="col-12 col-sm-3" />
-          <q-input v-model.number="cfg.alphaAcid" type="number" label="AA"
-            suffix="%" outlined dense  class="col-12 col-sm-3" />
-          <q-select v-model="cfg.use" :options="useOpts" emit-value map-options
-            label="Uso" outlined dense  class="col-12 col-sm-3"
+          <brew-pilot-input v-model.number="cfg.amount" type="number" label="Quantidade"
+            suffix="g" class="col-12 col-sm-3" />
+          <brew-pilot-input v-model.number="cfg.alphaAcid" type="number" label="AA"
+            suffix="%" class="col-12 col-sm-3" />
+          <brew-pilot-select v-model="cfg.use" :options="useOpts" emit-value map-options
+            label="Uso" class="col-12 col-sm-3"
             @update:model-value="onUseChange" />
-          <q-input v-model.number="cfg.time" type="number"
+          <brew-pilot-input v-model.number="cfg.time" type="number"
             :label="cfg.use === 'DryHop' ? 'Dias' : 'Minutos'"
             :suffix="cfg.use === 'DryHop' ? 'dias' : 'min'"
-            outlined dense  class="col-12 col-sm-3" />
-          <q-input v-if="cfg.use === 'Whirlpool' || cfg.use === 'Hopstand'"
+            class="col-12 col-sm-3" />
+          <brew-pilot-input v-if="cfg.use === 'Whirlpool' || cfg.use === 'Hopstand'"
             v-model.number="cfg.temperature" type="number"
-            label="Temperatura" suffix="°C" outlined dense  class="col-12 col-sm-4" />
+            label="Temperatura" suffix="°C" class="col-12 col-sm-4" />
         </div>
       </q-card-section>
       <q-separator  />
       <q-card-actions align="right" class="q-px-md q-pb-md">
-        <q-btn flat no-caps label="Cancelar" color="grey-5" @click="open = false" />
-        <q-btn unelevated no-caps color="green" icon="add" label="Adicionar à receita" @click="confirmAdd" />
+        <brew-pilot-button variant="flat" no-caps label="Cancelar" @click="open = false" />
+        <brew-pilot-button variant="filled" no-caps color="green" icon="add" label="Adicionar à receita" @click="confirmAdd" />
       </q-card-actions>
     </template>
 
@@ -79,26 +79,28 @@
           <q-btn flat round dense icon="arrow_back" size="sm" @click="step = 'search'" />
           <brew-pilot-label class="q-ml-sm">Novo Lúpulo</brew-pilot-label>
         </div>
-        <div class="row q-col-gutter-sm">
-          <q-input v-model="cfg.name" label="Nome" outlined dense  class="col-12" autofocus
-            placeholder="Nome do lúpulo" />
-          <q-input v-model.number="cfg.amount" type="number" label="Quantidade"
-            suffix="g" outlined dense  class="col-12 col-sm-3" />
-          <q-input v-model.number="cfg.alphaAcid" type="number" label="AA %"
-            suffix="%" outlined dense  class="col-12 col-sm-3" />
-          <q-select v-model="cfg.use" :options="useOpts" emit-value map-options
-            label="Uso" outlined dense  class="col-12 col-sm-3"
-            @update:model-value="onUseChange" />
-          <q-input v-model.number="cfg.time" type="number"
-            :label="cfg.use === 'DryHop' ? 'Dias' : 'Minutos'"
-            :suffix="cfg.use === 'DryHop' ? 'dias' : 'min'"
-            outlined dense  class="col-12 col-sm-3" />
-        </div>
+        <brew-pilot-form-section title="Novo Lúpulo">
+          <div class="row q-col-gutter-sm">
+            <brew-pilot-input v-model="cfg.name" label="Nome" class="col-12" autofocus
+              placeholder="Nome do lúpulo" />
+            <brew-pilot-input v-model.number="cfg.amount" type="number" label="Quantidade"
+              suffix="g" class="col-12 col-sm-3" />
+            <brew-pilot-input v-model.number="cfg.alphaAcid" type="number" label="AA %"
+              suffix="%" class="col-12 col-sm-3" />
+            <brew-pilot-select v-model="cfg.use" :options="useOpts" emit-value map-options
+              label="Uso" class="col-12 col-sm-3"
+              @update:model-value="onUseChange" />
+            <brew-pilot-input v-model.number="cfg.time" type="number"
+              :label="cfg.use === 'DryHop' ? 'Dias' : 'Minutos'"
+              :suffix="cfg.use === 'DryHop' ? 'dias' : 'min'"
+              class="col-12 col-sm-3" />
+          </div>
+        </brew-pilot-form-section>
       </q-card-section>
       <q-separator  />
       <q-card-actions align="right" class="q-px-md q-pb-md">
-        <q-btn flat no-caps label="Cancelar" color="grey-5" @click="open = false" />
-        <q-btn unelevated no-caps color="green" icon="add" label="Criar e adicionar"
+        <brew-pilot-button variant="flat" no-caps label="Cancelar" @click="open = false" />
+        <brew-pilot-button variant="filled" no-caps color="green" icon="add" label="Criar e adicionar"
           :disable="!cfg.name.trim()" @click="confirmAdd" />
       </q-card-actions>
     </template>
@@ -111,6 +113,11 @@ import { computed, watch } from 'vue'
 import type { RecipeHop } from '@/types/recipe'
 import BrewPilotDialog from '@/components/BrewPilotDialog.vue'
 import BrewPilotSearchInput from '@/components/shared/BrewPilotSearchInput.vue'
+import BrewPilotLabel from '@/components/shared/BrewPilotLabel.vue'
+import BrewPilotInput from '@/components/shared/BrewPilotInput.vue'
+import BrewPilotSelect from '@/components/shared/BrewPilotSelect.vue'
+import BrewPilotButton from '@/components/shared/BrewPilotButton.vue'
+import BrewPilotFormSection from '@/components/shared/BrewPilotFormSection.vue'
 import { useIngredientPicker } from '@/composables/useIngredientPicker'
 
 const props = defineProps<{ modelValue: boolean }>()

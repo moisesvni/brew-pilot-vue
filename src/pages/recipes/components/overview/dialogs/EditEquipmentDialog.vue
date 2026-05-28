@@ -217,6 +217,9 @@
 import { ref, computed, watch } from 'vue'
 import BrewPilotDialog from '@/components/BrewPilotDialog.vue'
 import BrewPilotButton from '@/components/shared/BrewPilotButton.vue'
+import BrewPilotInput from '@/components/shared/BrewPilotInput.vue'
+import BrewPilotSelect from '@/components/shared/BrewPilotSelect.vue'
+import BrewPilotFormSection from '@/components/shared/BrewPilotFormSection.vue'
 import { useRecipeStore } from '@/stores/recipeStore'
 import { useEquipmentStore } from '@/stores/equipmentStore'
 import type { EquipmentProfile } from '@/types/equipment'
@@ -360,22 +363,6 @@ function copyEquip() {
 </script>
 
 <style scoped>
-.eq-card {
-  background: var(--bp-surface-alt);
-  border: 1px solid var(--bp-border);
-  border-radius: 8px;
-  padding: 10px 12px 14px;
-}
-
-.eq-card-title {
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--bp-text-muted);
-  margin-bottom: 10px;
-}
-
 .eq-info-row {
   display: flex;
   flex-wrap: wrap;

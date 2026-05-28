@@ -39,24 +39,23 @@
       <!-- ── Uso na receita ─────────────────────────────────────────────── -->
       <div class="efv-section-label">Uso na receita</div>
       <div class="row q-col-gutter-sm q-mb-xs">
-        <div class="col-12 col-sm-4">
-          <q-input v-model.number="amountDisplay" type="number" step="0.001"
-            outlined dense :label="amountUnit === 'kg' ? 'Quantidade (kg)' : 'Quantidade (g)'"
-            :suffix="amountUnit"
-            @update:model-value="onAmountChange">
-            <template #append>
-              <q-btn-toggle v-model="amountUnit" flat no-caps dense size="xs"
-                toggle-color="primary" color="grey-6"
-                :options="[{ label: 'kg', value: 'kg' }, { label: 'g', value: 'g' }]"
-                style="border: 1px solid var(--bp-border); border-radius: 4px; overflow: hidden" />
-            </template>
-          </q-input>
+        <!-- Quantidade em kg -->
+        <div class="col-6 col-sm-3">
+          <q-input v-model.number="amountKg" type="number" step="0.001" min="0"
+            outlined dense label="Quantidade" suffix="kg"
+            @update:model-value="v => syncAmount(Number(v), 'kg')" />
         </div>
-        <div class="col-12 col-sm-4">
+        <!-- Quantidade em g (espelho) -->
+        <div class="col-6 col-sm-3">
+          <q-input v-model.number="amountG" type="number" step="1" min="0"
+            outlined dense label="Quantidade" suffix="g"
+            @update:model-value="v => syncAmount(Number(v), 'g')" />
+        </div>
+        <div class="col-12 col-sm-3">
           <q-select v-model="editItem.use" :options="useOptions" emit-value map-options
             outlined dense label="Uso" />
         </div>
-        <div class="col-12 col-sm-4">
+        <div class="col-12 col-sm-3">
           <q-input v-model.number="editItem.colorEbc" type="number"
             outlined dense label="Cor" suffix="EBC">
             <template #prepend>
@@ -106,40 +105,120 @@
         placeholder="Anotações adicionais sobre este fermentável..."
         class="q-mb-sm" input-style="min-height: 52px; font-size: 13px" />
 
-      <!-- ── Informações do fabricante ──────────────────────────────────── -->
-      <template v-if="editItem.description || editItem.usedIn">
-        <div class="efv-section-label row items-center" style="gap:4px">
-          <q-icon name="mdi-information-outline" size="13px" color="grey-6" />
-          Informações do Fabricante
-        </div>
+      <!-- ── Informações do Fabricante ──────────────────────────────────── -->
+      <div class="row items-center no-wrap q-mt-sm q-mb-xs">
+        <q-icon name="mdi-information-outline" size="15px" color="grey-6" class="q-mr-xs flex-shrink-0" />
+        <span class="efv-section-label efv-section-label--inline">Informações do Fabricante</span>
+        <q-space />
+        <brew-pilot-button flat round dense size="sm"
+          :icon="showInfo ? 'mdi-eye-off-outline' : 'mdi-eye-outline'"
+          @click="showInfo = !showInfo">
+          <q-tooltip>{{ showInfo ? 'Ocultar' : 'Mostrar' }}</q-tooltip>
+        </brew-pilot-button>
+      </div>
+
+      <!-- Descrição: sempre visível -->
+      <template v-if="editItem.ingredientId">
         <div v-if="editItem.description" class="efv-info-box q-mb-xs">
           <div class="text-caption text-grey-5 q-mb-xs">Descrição</div>
           <div class="efv-info-text">{{ editItem.description }}</div>
         </div>
-        <div v-if="editItem.usedIn" class="efv-info-box q-mb-xs">
-          <div class="text-caption text-grey-5 q-mb-xs">Usado em</div>
-          <div class="efv-info-text">{{ editItem.usedIn }}</div>
-        </div>
-        <div v-if="editItem.substitutes" class="efv-info-box q-mb-sm">
-          <div class="text-caption text-grey-5 q-mb-xs">Substitutos</div>
-          <div class="efv-info-text">{{ editItem.substitutes }}</div>
-        </div>
+      </template>
+      <template v-else>
+        <q-input v-model="editItem.description" outlined dense autogrow type="textarea"
+          label="Descrição" placeholder="Descrição do fermentável e suas características..."
+          class="q-mb-xs" input-style="min-height: 52px; font-size: 13px" />
       </template>
 
-      <!-- ── Ver dados técnicos ─────────────────────────────────────────── -->
-      <div v-if="hasTechnicalData" class="q-mt-xs">
-        <q-btn flat no-caps size="sm" color="grey-5" class="full-width efv-details-btn"
-          :icon-right="showDetails ? 'mdi-chevron-up' : 'mdi-chevron-down'"
-          :label="showDetails ? 'Ocultar dados técnicos' : 'Ver dados técnicos do fabricante'"
-          @click="showDetails = !showDetails" />
-
-        <transition name="efv-slide">
-          <div v-if="showDetails" class="efv-details-panel q-mt-sm">
-            <div class="efv-section-label row items-center" style="gap:4px">
-              <q-icon name="mdi-flask-outline" size="13px" color="grey-6" />
-              Dados Técnicos
+      <!-- Usado em e Substitutos: controlados pelo toggle -->
+      <transition name="efv-slide">
+        <div v-if="showInfo">
+          <template v-if="editItem.ingredientId">
+            <div v-if="editItem.usedIn" class="efv-info-box q-mb-xs">
+              <div class="text-caption text-grey-5 q-mb-xs">Usado em</div>
+              <div class="efv-info-text">{{ editItem.usedIn }}</div>
             </div>
+            <div v-if="editItem.substitutes" class="efv-info-box q-mb-sm">
+              <div class="text-caption text-grey-5 q-mb-xs">Substitutos</div>
+              <div class="efv-info-text">{{ editItem.substitutes }}</div>
+            </div>
+          </template>
+          <template v-else>
+            <div class="row q-col-gutter-sm q-mb-xs">
+              <div class="col-12">
+                <q-input v-model="editItem.usedIn" outlined dense autogrow type="textarea"
+                  label="Usado em" placeholder="Estilos de cerveja em que é utilizado..."
+                  input-style="min-height: 42px; font-size: 13px" />
+              </div>
+              <div class="col-12">
+                <q-input v-model="editItem.substitutes" outlined dense
+                  label="Substitutos" placeholder="Ex: Maris Otter, Pale Ale Malt..." />
+              </div>
+            </div>
+          </template>
+        </div>
+      </transition>
+
+      <!-- ── Botão: Exibir / Ocultar dados técnicos ─────────────────────── -->
+      <div class="q-mt-sm">
+        <brew-pilot-button variant="outline" no-caps class="full-width efv-details-btn"
+          :icon="showDetails ? 'mdi-chevron-up' : 'mdi-flask-outline'"
+          :label="showDetails ? 'Ocultar dados técnicos' : 'Exibir dados técnicos'"
+          @click="showDetails = !showDetails" />
+      </div>
+
+      <!-- ── Dados técnicos (expandível) ───────────────────────────────── -->
+      <transition name="efv-slide">
+        <div v-if="showDetails" class="efv-details-panel q-mt-sm">
+          <div class="efv-section-label row items-center q-mb-sm" style="gap:4px">
+            <q-icon name="mdi-flask-outline" size="13px" color="grey-6" />
+            Dados Técnicos
+          </div>
+
+          <!-- campos editáveis para itens personalizados, chips para DB -->
+          <template v-if="!editItem.ingredientId">
             <div class="row q-col-gutter-sm">
+              <div class="col-6 col-sm-3">
+                <q-input v-model.number="editItem.moisture" type="number" outlined dense
+                  clearable label="Umidade" suffix="%" />
+              </div>
+              <div class="col-6 col-sm-3">
+                <q-input v-model.number="editItem.protein" type="number" outlined dense
+                  clearable label="Proteína" suffix="%" />
+              </div>
+              <div class="col-6 col-sm-3">
+                <q-input v-model.number="editItem.coarseFineGrind" type="number" outlined dense
+                  clearable label="Dif. Fina/Grossa" suffix="%" />
+              </div>
+              <div class="col-6 col-sm-3">
+                <q-input v-model.number="editItem.fineGroundExtract" type="number" outlined dense
+                  clearable label="Extrato (fina)" suffix="%" />
+              </div>
+              <div class="col-6 col-sm-3">
+                <q-input v-model.number="editItem.acid" type="number" outlined dense
+                  clearable label="Ácido" suffix="%" />
+              </div>
+              <div class="col-6 col-sm-3">
+                <q-input v-model.number="editItem.friability" type="number" outlined dense
+                  clearable label="Friabilidade" suffix="%" />
+              </div>
+              <div class="col-6 col-sm-3">
+                <q-input v-model.number="editItem.freeAminoNitrogen" type="number" outlined dense
+                  clearable label="FAN" suffix="mg/L" />
+              </div>
+              <div class="col-6 col-sm-3">
+                <q-input v-model.number="editItem.maxInBatch" type="number" outlined dense
+                  clearable label="Máx. na receita" suffix="%" />
+              </div>
+            </div>
+          </template>
+
+          <!-- chips read-only para itens da base -->
+          <template v-else>
+            <div v-if="!hasTechnicalData" class="text-caption text-grey-6 text-center q-py-sm">
+              Nenhum dado técnico disponível para este ingrediente
+            </div>
+            <div v-else class="row q-col-gutter-sm">
               <div v-if="editItem.moisture != null" class="col-6 col-sm-3">
                 <div class="efv-spec-chip">
                   <div class="efv-spec-label">Umidade</div>
@@ -189,18 +268,20 @@
                 </div>
               </div>
             </div>
-          </div>
-        </transition>
-      </div>
+          </template>
+        </div>
+      </transition>
 
     </q-card-section>
 
     <template #footer>
-      <q-card-actions class="q-px-md q-py-sm">
-        <q-btn flat no-caps label="Remover" icon="mdi-delete-outline" color="negative" size="sm" @click="remove" />
+      <q-card-actions class="q-px-md q-py-sm row items-center">
+        <brew-pilot-button variant="flat" no-caps icon="mdi-delete-outline" label="Remover"
+          style="color: var(--q-negative) !important" @click="remove" />
         <q-space />
-        <q-btn flat no-caps label="Cancelar" color="grey-5" size="sm" @click="open = false" />
-        <q-btn unelevated no-caps label="Salvar" icon="mdi-check" color="positive" size="sm" @click="save" />
+        <brew-pilot-button variant="outline" no-caps label="Cancelar" @click="open = false" />
+        <brew-pilot-button variant="filled" no-caps color="primary" icon="mdi-check"
+          label="Salvar" class="q-ml-sm" @click="save" />
       </q-card-actions>
     </template>
   </brew-pilot-dialog>
@@ -210,6 +291,7 @@
 import { ref, computed, watch } from 'vue'
 import type { RecipeFermentable } from '@/types/recipe'
 import BrewPilotDialog from '@/components/BrewPilotDialog.vue'
+import BrewPilotButton from '@/components/shared/BrewPilotButton.vue'
 import { ebcToHex } from '@/utils/brewColors'
 
 const props = defineProps<{
@@ -230,22 +312,24 @@ const open = computed({
 
 const editItem = ref<RecipeFermentable | null>(null)
 const showDetails = ref(false)
-const amountUnit = ref<'kg' | 'g'>('kg')
+const showInfo = ref(false)
 
-const amountDisplay = computed({
-  get: () => {
-    if (!editItem.value) return 0
-    return amountUnit.value === 'g'
-      ? parseFloat((editItem.value.amount * 1000).toFixed(1))
-      : parseFloat(editItem.value.amount.toFixed(4))
-  },
-  set: () => { /* handled by onAmountChange */ }
-})
+// ── Campos kg / g sincronizados ───────────────────────────────────────────
+const amountKg = ref(0)
+const amountG  = ref(0)
 
-function onAmountChange(val: string | number | null) {
+function syncAmount(val: number, from: 'kg' | 'g') {
   if (!editItem.value) return
-  const n = Number(val ?? 0)
-  editItem.value.amount = amountUnit.value === 'g' ? n / 1000 : n
+  const n = isNaN(val) ? 0 : val
+  if (from === 'kg') {
+    editItem.value.amount = n
+    amountKg.value = n
+    amountG.value = parseFloat((n * 1000).toFixed(2))
+  } else {
+    editItem.value.amount = n / 1000
+    amountG.value = n
+    amountKg.value = parseFloat((n / 1000).toFixed(4))
+  }
 }
 
 const swatchColor = computed(() =>
@@ -265,8 +349,10 @@ const hasTechnicalData = computed(() => {
 watch(() => props.item, item => {
   if (item) {
     editItem.value = { ...item }
-    amountUnit.value = item.amount < 0.1 ? 'g' : 'kg'
+    amountKg.value = parseFloat(item.amount.toFixed(4))
+    amountG.value = parseFloat((item.amount * 1000).toFixed(2))
     showDetails.value = false
+    showInfo.value = !!(item.usedIn || item.substitutes)
   }
 }, { immediate: true })
 
@@ -324,6 +410,17 @@ const useOptions = [
   margin-bottom: 8px;
 }
 
+.efv-section-label--inline {
+  margin-bottom: 0;
+  line-height: 1;
+}
+
+.efv-info-toggle-btn {
+  font-size: 11px;
+  min-height: 24px;
+  padding: 2px 10px;
+}
+
 .efv-color-swatch {
   width: 16px;
   height: 16px;
@@ -346,8 +443,7 @@ const useOptions = [
 }
 
 .efv-details-btn {
-  border: 1px dashed var(--bp-border, #333);
-  border-radius: 6px;
+  border-style: dashed !important;
   font-size: 12px;
 }
 
@@ -391,7 +487,7 @@ const useOptions = [
 .efv-slide-leave-active {
   transition: max-height 0.25s ease, opacity 0.2s ease;
   overflow: hidden;
-  max-height: 500px;
+  max-height: 600px;
 }
 
 .efv-slide-enter-from,

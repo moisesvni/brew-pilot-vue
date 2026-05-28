@@ -1,11 +1,12 @@
 <template>
-  <q-page padding>
-    <div class="row items-center q-mb-lg">
-      <q-icon name="mdi-wifi" size="32px" color="primary" class="q-mr-sm" />
-      <span class="text-h5 text-weight-bold text-white">Dispositivos</span>
-    </div>
+  <q-page class="q-pa-md">
+    <brew-pilot-page-header icon="mdi-wifi" title="Dispositivos" />
     <q-banner rounded class="bg-dark text-grey-5">
       Em construção — em breve disponível.
     </q-banner>
   </q-page>
 </template>
+
+<script setup lang="ts">
+import BrewPilotPageHeader from '@/components/shared/BrewPilotPageHeader.vue'
+</script>

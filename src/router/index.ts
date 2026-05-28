@@ -99,32 +99,8 @@ const routes = [
       {
         path: 'profiles/equipment',
         name: 'ProfilesEquipment',
-        component: () => import('@/pages/profiles/ProfilesPage.vue'),
+        component: () => import('@/pages/profiles/EquipmentProfilesPage.vue'),
         meta: { title: 'Equipamento' }
-      },
-      {
-        path: 'profiles/mash',
-        name: 'ProfilesMash',
-        component: () => import('@/pages/profiles/ProfilesPage.vue'),
-        meta: { title: 'Mostura' }
-      },
-      {
-        path: 'profiles/ferment',
-        name: 'ProfilesFerment',
-        component: () => import('@/pages/profiles/ProfilesPage.vue'),
-        meta: { title: 'Fermentação' }
-      },
-      {
-        path: 'profiles/water',
-        name: 'ProfilesWater',
-        component: () => import('@/pages/profiles/ProfilesPage.vue'),
-        meta: { title: 'Água' }
-      },
-      {
-        path: 'profiles/styles',
-        name: 'ProfilesStyles',
-        component: () => import('@/pages/profiles/ProfilesPage.vue'),
-        meta: { title: 'Estilos Personalizados' }
       },
       {
         path: 'tools',
