@@ -1,9 +1,10 @@
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { ingredientsService, type IngredientCategory, type IngredientResult } from '@/services/ingredients.service'
 
 // ── localStorage helpers para "top 5 mais pesquisados" ───────────────────────
 const TOP_COUNT = 5
 const storageKey = (cat: IngredientCategory) => `bp_top_searched_${cat}`
+const filterKey  = (cat: IngredientCategory) => `bp_filters_${cat}`
 
 type StoredResult = IngredientResult & { _count: number }
 
@@ -27,7 +28,7 @@ function recordSearched(cat: IngredientCategory, r: IngredientResult) {
     const existing = arr.find(x => x.id === r.id)
     if (existing) {
       existing._count++
-      Object.assign(existing, r) // atualiza dados do item
+      Object.assign(existing, r)
     } else {
       arr.push({ ...r, _count: 1 })
     }
@@ -36,8 +37,24 @@ function recordSearched(cat: IngredientCategory, r: IngredientResult) {
   } catch { /* silencioso */ }
 }
 
+// ── Helpers de filtros ────────────────────────────────────────────────────────
+interface FilterPrefs { onlyMyStock: boolean; disabledSuppliers: string[] }
+
+function loadFilterPrefs(cat: IngredientCategory): FilterPrefs {
+  try {
+    const raw = localStorage.getItem(filterKey(cat))
+    if (!raw) return { onlyMyStock: false, disabledSuppliers: [] }
+    return JSON.parse(raw)
+  } catch { return { onlyMyStock: false, disabledSuppliers: [] } }
+}
+
+function saveFilterPrefs(cat: IngredientCategory, prefs: FilterPrefs) {
+  try { localStorage.setItem(filterKey(cat), JSON.stringify(prefs)) } catch { /* silencioso */ }
+}
+
 export type PickerCfg = {
   name: string
+  supplier: string
   // fermentable
   amount: number
   use: string
@@ -87,9 +104,58 @@ export function useIngredientPicker(category: IngredientCategory) {
   const cfg = ref<PickerCfg>(makeCfg())
   const isShowingTopSearched = ref(false)
 
+  // ── Filtros ─────────────────────────────────────────────────────────────────
+  const availableSuppliers = ref<string[]>([])
+  const loadingSuppliers = ref(false)
+  const disabledSuppliers = ref<string[]>([])
+  const onlyMyStock = ref(false)
+
+  const hasSupplierFilter = computed(() => disabledSuppliers.value.length > 0)
+  const hasAnyFilter = computed(() => onlyMyStock.value || hasSupplierFilter.value)
+
+  function isSupplierEnabled(s: string) {
+    return !disabledSuppliers.value.includes(s)
+  }
+
+  function toggleSupplier(s: string) {
+    const idx = disabledSuppliers.value.indexOf(s)
+    if (idx >= 0) disabledSuppliers.value.splice(idx, 1)
+    else disabledSuppliers.value.push(s)
+    saveFilterPrefs(category, { onlyMyStock: onlyMyStock.value, disabledSuppliers: disabledSuppliers.value })
+  }
+
+  function toggleAllSuppliers(enable: boolean) {
+    disabledSuppliers.value = enable ? [] : [...availableSuppliers.value]
+    saveFilterPrefs(category, { onlyMyStock: onlyMyStock.value, disabledSuppliers: disabledSuppliers.value })
+  }
+
+  function toggleMyStock() {
+    onlyMyStock.value = !onlyMyStock.value
+    saveFilterPrefs(category, { onlyMyStock: onlyMyStock.value, disabledSuppliers: disabledSuppliers.value })
+  }
+
+  function clearFilters() {
+    disabledSuppliers.value = []
+    onlyMyStock.value = false
+    saveFilterPrefs(category, { onlyMyStock: false, disabledSuppliers: [] })
+  }
+
+  async function loadSuppliers() {
+    if (availableSuppliers.value.length > 0 || loadingSuppliers.value) return
+    loadingSuppliers.value = true
+    try {
+      availableSuppliers.value = await ingredientsService.getSuppliers(category)
+    } catch {
+      availableSuppliers.value = []
+    } finally {
+      loadingSuppliers.value = false
+    }
+  }
+
   function makeCfg(): PickerCfg {
     return {
       name: '',
+      supplier: '',
       amount: 1,
       use: category === 'Hop' || category === 'Misc' ? 'Boil' : 'Mash',
       colorEbc: 5,
@@ -131,6 +197,13 @@ export function useIngredientPicker(category: IngredientCategory) {
     loading.value = false
     selected.value = null
     cfg.value = makeCfg()
+    // Restaurar preferências de filtro
+    const prefs = loadFilterPrefs(category)
+    onlyMyStock.value = prefs.onlyMyStock
+    disabledSuppliers.value = prefs.disabledSuppliers
+    // Carregar fornecedores disponíveis (em background)
+    loadSuppliers()
+    // Top pesquisados
     const top = loadTopSearched(category)
     results.value = top
     isShowingTopSearched.value = top.length > 0
@@ -152,7 +225,13 @@ export function useIngredientPicker(category: IngredientCategory) {
     loading.value = true
     debounceTimer = setTimeout(async () => {
       try {
-        results.value = await ingredientsService.search(category, q)
+        const extra: Record<string, unknown> = {}
+        if (onlyMyStock.value) extra.myStock = true
+        if (disabledSuppliers.value.length > 0) {
+          const enabled = availableSuppliers.value.filter(s => !disabledSuppliers.value.includes(s))
+          if (enabled.length > 0) extra.suppliers = enabled.join(',')
+        }
+        results.value = await ingredientsService.search(category, q, extra)
       } catch {
         results.value = []
       } finally {
@@ -166,6 +245,7 @@ export function useIngredientPicker(category: IngredientCategory) {
     selected.value = r
     cfg.value = makeCfg()
     cfg.value.name = r.name
+    if (r.producer)                         cfg.value.supplier = r.producer
     if (r.colorEbc !== undefined)           cfg.value.colorEbc = r.colorEbc
     if (r.potential !== undefined)          cfg.value.potential = r.potential
     if (r.yieldPercentage !== undefined)    cfg.value.yieldPercentage = r.yieldPercentage
@@ -212,6 +292,10 @@ export function useIngredientPicker(category: IngredientCategory) {
 
   return {
     step, query, results, loading, selected, cfg, isShowingTopSearched,
+    // filtros
+    availableSuppliers, loadingSuppliers, disabledSuppliers, onlyMyStock,
+    hasSupplierFilter, hasAnyFilter,
+    isSupplierEnabled, toggleSupplier, toggleAllSuppliers, toggleMyStock, clearFilters,
     reset, onQueryChange, selectResult, openCreateNew, resultCaption,
   }
 }

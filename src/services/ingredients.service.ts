@@ -37,8 +37,13 @@ export interface IngredientResult {
 }
 
 export const ingredientsService = {
-  search: (category: IngredientCategory, q: string) =>
+  search: (category: IngredientCategory, q: string, extra?: Record<string, unknown>) =>
     apiClient
-      .get<IngredientResult[]>('/ingredients', { params: { category, q, limit: 25 } })
-      .then(r => r.data)
+      .get<IngredientResult[]>('/ingredients', { params: { category, q, limit: 25, ...extra } })
+      .then(r => r.data),
+
+  getSuppliers: (category: IngredientCategory) =>
+    apiClient
+      .get<string[]>('/ingredients/suppliers', { params: { category } })
+      .then(r => r.data),
 }
