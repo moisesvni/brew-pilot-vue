@@ -83,8 +83,7 @@
 import { ref, computed, watch } from 'vue'
 import { useRecipeStore } from '@/stores/recipeStore'
 import { calculateEbc } from '@/composables/useBrewCalculator'
-import BrewPilotDialog from '@/components/BrewPilotDialog.vue'
-import { ebcToHex } from '@/utils/brewColors'
+import { ebcToHex } from '@/core/utils/brewColors'
 
 const props = defineProps<{ modelValue: boolean }>()
 const emit = defineEmits<{ (e: 'update:modelValue', v: boolean): void }>()

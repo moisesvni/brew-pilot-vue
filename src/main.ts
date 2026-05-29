@@ -4,6 +4,7 @@ import * as QuasarAll from 'quasar'
 import { createPinia } from 'pinia'
 import router from './router'
 import App from './App.vue'
+import brewPilot from './plugin'
 
 // Quasar styles
 import '@quasar/extras/material-icons/material-icons.css'
@@ -16,12 +17,18 @@ const app = createApp(App)
 
 app.use(createPinia())
 app.use(router)
+app.use(brewPilot)
 app.use(Quasar, {
   components: QuasarAll,
   directives: QuasarAll,
   plugins: { Notify, Dialog, Loading, LocalStorage },
   config: {
-    dark: 'auto',
+    dark: (() => {
+      const saved = localStorage.getItem('bp-theme')
+      if (saved === 'dark') return true
+      if (saved === 'light') return false
+      return 'auto'
+    })(),
     brand: {
       primary: '#c1710e',
       secondary: '#455a64',

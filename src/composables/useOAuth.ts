@@ -12,16 +12,7 @@ declare const google: {
     }
   }
 }
-declare const AppleID: {
-  auth: {
-    init: (config: object) => void
-    signIn: () => Promise<{ authorization: { id_token: string } }>
-  }
-}
-
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID as string
-const APPLE_CLIENT_ID  = import.meta.env.VITE_APPLE_CLIENT_ID  as string
-const APPLE_REDIRECT   = import.meta.env.VITE_APPLE_REDIRECT_URI ?? window.location.origin
 
 // ── Loader de scripts externos ────────────────────────────────────────────
 function loadScript(src: string, id: string): Promise<void> {
@@ -37,6 +28,26 @@ function loadScript(src: string, id: string): Promise<void> {
   })
 }
 
+// ── Google: inicializa uma única vez ──────────────────────────────────────
+let googleInitialized = false
+
+async function ensureGoogleInitialized() {
+  if (!GOOGLE_CLIENT_ID) return false
+  await loadScript('https://accounts.google.com/gsi/client', 'gsi-script')
+  if (!googleInitialized) {
+    google.accounts.id.initialize({
+      client_id: GOOGLE_CLIENT_ID,
+      callback:  ({ credential }: { credential: string }) => {
+        const authStore = useAuthStore()
+        loginWithOAuthInternal(authStore, credential)
+      },
+      ux_mode: 'popup',
+    })
+    googleInitialized = true
+  }
+  return true
+}
+
 // ── Composable ─────────────────────────────────────────────────────────────
 export function useOAuth() {
   const loading  = ref(false)
@@ -45,55 +56,22 @@ export function useOAuth() {
 
   // ── Google ────────────────────────────────────────────────────────────────
   async function initGoogle(buttonEl: HTMLElement) {
-    await loadScript('https://accounts.google.com/gsi/client', 'gsi-script')
-    google.accounts.id.initialize({
-      client_id: GOOGLE_CLIENT_ID,
-      callback:  ({ credential }: { credential: string }) => loginWithOAuth('google', credential),
-      ux_mode:   'popup',
-    })
+    const ok = await ensureGoogleInitialized()
+    if (!ok) return
     google.accounts.id.renderButton(buttonEl, {
       type:  'standard',
       theme: 'outline',
       size:  'large',
       text:  'continue_with',
       shape: 'rectangular',
-      width: '100%',
+      width: 320,
     })
   }
 
   async function googleOneTap() {
-    await loadScript('https://accounts.google.com/gsi/client', 'gsi-script')
-    google.accounts.id.initialize({
-      client_id: GOOGLE_CLIENT_ID,
-      callback:  ({ credential }: { credential: string }) => loginWithOAuth('google', credential),
-    })
+    const ok = await ensureGoogleInitialized()
+    if (!ok) return
     google.accounts.id.prompt()
-  }
-
-  // ── Apple ─────────────────────────────────────────────────────────────────
-  async function loginWithApple() {
-    await loadScript(
-      'https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js',
-      'apple-script'
-    )
-    AppleID.auth.init({
-      clientId:    APPLE_CLIENT_ID,
-      scope:       'name email',
-      redirectURI: APPLE_REDIRECT,
-      usePopup:    true,
-    })
-    loading.value = true
-    error.value   = ''
-    try {
-      const res = await AppleID.auth.signIn()
-      await loginWithOAuth('apple', res.authorization.id_token)
-    } catch (e: unknown) {
-      if ((e as { error?: string })?.error !== 'popup_closed_by_user') {
-        error.value = 'Falha ao entrar com Apple.'
-      }
-    } finally {
-      loading.value = false
-    }
   }
 
   // ── Envio para o backend ──────────────────────────────────────────────────
@@ -110,5 +88,24 @@ export function useOAuth() {
     }
   }
 
-  return { loading, error, initGoogle, googleOneTap, loginWithApple, loginWithOAuth }
+  return { loading, error, initGoogle, googleOneTap, loginWithOAuth }
+}
+
+// Função interna usada pelo callback do Google (fora do composable)
+async function loginWithOAuthInternal(
+  authStore: ReturnType<typeof useAuthStore>,
+  credential: string
+) {
+  try {
+    await authStore.oauthLogin({ provider: 'google', idToken: credential })
+    // Extrai foto do JWT do Google como fallback caso o backend não retorne
+    if (!authStore.user?.avatarUrl) {
+      try {
+        const payload = JSON.parse(atob(credential.split('.')[1]!)) as { picture?: string }
+        if (payload.picture) authStore.setAvatarUrl(payload.picture)
+      } catch { /* ignore */ }
+    }
+  } catch {
+    // erro já tratado pelo interceptor do apiClient
+  }
 }

@@ -15,10 +15,11 @@
             : 'Nenhum estilo selecionado' }}
         </span>
         <div class="row flex-shrink-0">
-          <q-btn round outline dense icon="mdi-pencil" color="grey-5" size="md"
+          <brew-pilot-button round outline dense primary
+            :icon="recipe.styleGuide ? 'mdi-swap-horizontal' : 'mdi-plus'" size="md"
             @click="styleDialog = true">
-            <q-tooltip>Alterar estilo</q-tooltip>
-          </q-btn>
+            <q-tooltip>{{ recipe.styleGuide ? 'Alterar estilo' : 'Selecionar estilo' }}</q-tooltip>
+          </brew-pilot-button>
         </div>
       </div>
       <q-separator class="q-mb-xs" />
@@ -55,7 +56,7 @@
       <div v-else class="column items-center q-py-md" style="gap: 6px">
         <q-icon name="mdi-chart-bar" size="32px" :style="{ color: 'var(--bp-text-muted)' }" />
         <span class="text-caption" style="color: var(--bp-text-secondary)">
-          Selecione um estilo para ver a comparação
+          Selecione um estilo
         </span>
       </div>
 
@@ -70,8 +71,6 @@
 import { ref, computed } from 'vue'
 import { useQuasar } from 'quasar'
 import { useRecipeStore } from '@/stores/recipeStore'
-import RecipeStyleRangeBar from '../RecipeStyleRangeBar.vue'
-import RecipeStyleDialog from './dialogs/RecipeStyleDialog.vue'
 
 const $q    = useQuasar()
 const store = useRecipeStore()

@@ -242,11 +242,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useRecipeStore } from '@/stores/recipeStore'
-import RecipeSection from '../RecipeSection.vue'
-import BrewPilotButton from '@/components/shared/BrewPilotButton.vue'
-import BrewPilotDialog from '@/components/BrewPilotDialog.vue'
-import BrewPilotSelect from '@/components/shared/BrewPilotSelect.vue'
-import BrewPilotLabel from '@/components/shared/BrewPilotLabel.vue'
 import type { RecipeMashStep, FermentationStep } from '@/types/recipe'
 
 const props = defineProps<{ section: 'mash' | 'fermentation' }>()

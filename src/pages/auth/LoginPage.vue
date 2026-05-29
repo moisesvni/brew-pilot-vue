@@ -96,16 +96,6 @@
               />
             </q-btn>
 
-            <q-btn
-              round
-              outline
-              size="md"
-              color="grey-5"
-              :loading="oauthLoading"
-              @click="loginWithApple"
-            >
-              <q-icon name="mdi-apple" color="grey-3" size="22px" />
-            </q-btn>
           </div>
 
           <q-banner v-if="oauthError" rounded class="bg-negative text-white q-py-xs q-mt-sm">
@@ -137,7 +127,7 @@ const router    = useRouter()
 const route     = useRoute()
 const authStore = useAuthStore()
 
-const { loading: oauthLoading, error: oauthError, initGoogle, googleOneTap, loginWithApple } = useOAuth()
+const { loading: oauthLoading, error: oauthError, initGoogle, googleOneTap } = useOAuth()
 
 const form     = ref({ email: '', password: '' })
 const showPwd  = ref(false)

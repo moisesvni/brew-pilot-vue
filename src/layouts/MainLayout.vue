@@ -18,7 +18,7 @@
             <q-badge color="negative" floating transparent />
             <q-tooltip>Notificações</q-tooltip>
           </q-btn>
-          <user-avatar-menu />
+          <brew-pilot-user-avatar-menu />
         </div>
       </q-toolbar>
     </q-header>
@@ -58,8 +58,7 @@ import { useQuasar } from 'quasar'
 import logoDarkImg from '@/assets/logo-brew-right-only-label.png'
 // Light: logo com texto preto/escuro — versão com letras escuras para fundo claro
 import logoLightImg from '@/assets/logo-brew-right-only-label-dark.png'
-import UserAvatarMenu from 'src/components/UserAvatarMenu.vue'
-import BrewPilotBreadcrumbs from 'src/components/BrewPilotBreadcrumbs.vue'
+
 
 const $q = useQuasar()
 

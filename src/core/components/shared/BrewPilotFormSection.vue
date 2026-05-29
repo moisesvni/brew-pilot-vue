@@ -1,12 +1,11 @@
 <template>
   <div class="bp-form-section q-mb-sm">
-    <brew-pilot-label class="bp-form-section__title">{{ title }}</brew-pilot-label>
+    <brew-pilot-label tag="div" class="bp-form-section__title">{{ title }}</brew-pilot-label>
     <slot />
   </div>
 </template>
 
 <script setup lang="ts">
-import BrewPilotLabel from '@/components/shared/BrewPilotLabel.vue'
 
 defineProps<{ title: string }>()
 </script>

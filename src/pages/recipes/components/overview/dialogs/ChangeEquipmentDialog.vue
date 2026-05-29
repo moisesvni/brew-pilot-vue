@@ -105,7 +105,12 @@
   <edit-equipment-dialog
     v-model="editDialog"
     :base-profile="editBase"
+    :show-back-to-picker="fromPicker"
+    @back-to-picker="backToPicker"
     @saved="onSaved" />
+
+  <!-- Picker de base -->
+  <equipment-base-picker-dialog v-model="pickerDialog" @select="onPickerSelect" />
 
   <!-- Confirmação de exclusão -->
   <brew-pilot-dialog v-model="deleteDialog" title="Excluir Perfil"
@@ -129,11 +134,6 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
-import BrewPilotDialog from '@/components/BrewPilotDialog.vue'
-import BrewPilotButton from '@/components/shared/BrewPilotButton.vue'
-import BrewPilotLabel from '@/components/shared/BrewPilotLabel.vue'
-import BrewPilotSearchInput from '@/components/shared/BrewPilotSearchInput.vue'
-import EditEquipmentDialog from './EditEquipmentDialog.vue'
 import { useRecipeStore } from '@/stores/recipeStore'
 import { useEquipmentStore } from '@/stores/equipmentStore'
 import type { EquipmentProfile } from '@/types/equipment'
@@ -152,6 +152,8 @@ const equipStore = useEquipmentStore()
 const search = ref('')
 const editDialog = ref(false)
 const editBase = ref<EquipmentProfile | null>(null)
+const fromPicker = ref(false)
+const pickerDialog = ref(false)
 const deleteDialog = ref(false)
 const deleteTarget = ref<EquipmentProfile | null>(null)
 const deleting = ref(false)
@@ -185,13 +187,25 @@ function selectProfile(p: EquipmentProfile) {
 }
 
 function openEdit(p: EquipmentProfile) {
+  fromPicker.value = false
   editBase.value = p
   editDialog.value = true
 }
 
 function openCreateFromBase(p: EquipmentProfile | null) {
-  editBase.value = p
+  // Abre o picker de base em vez de criar direto
+  pickerDialog.value = true
+}
+
+function onPickerSelect(base: EquipmentProfile | null) {
+  fromPicker.value = true
+  editBase.value = base
   editDialog.value = true
+}
+
+function backToPicker() {
+  editDialog.value = false
+  pickerDialog.value = true
 }
 
 function onSaved(saved: EquipmentProfile) {

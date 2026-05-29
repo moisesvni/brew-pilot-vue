@@ -26,7 +26,6 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import BrewPilotDialog from '@/components/BrewPilotDialog.vue'
 import { useRecipeStore } from '@/stores/recipeStore'
 
 const props = defineProps<{ modelValue: boolean }>()

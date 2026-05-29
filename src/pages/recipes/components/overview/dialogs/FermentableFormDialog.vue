@@ -34,9 +34,6 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import type { RecipeFermentable } from '@/types/recipe'
-import BrewPilotDialog from '@/components/BrewPilotDialog.vue'
-import BrewPilotButton from '@/components/shared/BrewPilotButton.vue'
-import FermentableFormContent from './FermentableFormContent.vue'
 
 const props = defineProps<{
   modelValue: boolean

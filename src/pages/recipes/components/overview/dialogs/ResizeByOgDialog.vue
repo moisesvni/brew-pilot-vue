@@ -22,7 +22,6 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import { useRecipeStore } from '@/stores/recipeStore'
-import BrewPilotDialog from '@/components/BrewPilotDialog.vue'
 
 const props = defineProps<{ modelValue: boolean }>()
 const emit = defineEmits<{ (e: 'update:modelValue', v: boolean): void }>()

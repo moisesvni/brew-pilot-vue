@@ -50,12 +50,6 @@
       </div>
     </q-card-section>
 
-    <q-separator />
-
-    <q-card-actions align="right" class="q-px-md q-pb-md">
-      <brew-pilot-button variant="flat" no-caps label="Cancelar" @click="emit('cancel')" />
-      <brew-pilot-button variant="filled" no-caps color="primary" icon="add" label="Adicionar à receita" @click="confirmAdd" />
-    </q-card-actions>
   </div>
 </template>
 
@@ -64,10 +58,7 @@ import { ref, computed } from 'vue'
 import type { IngredientResult } from '@/services/ingredients.service'
 import type { PickerCfg } from '@/composables/useIngredientPicker'
 import type { RecipeFermentable } from '@/types/recipe'
-import { ebcToHex } from '@/utils/brewColors'
-import BrewPilotInput from '@/components/shared/BrewPilotInput.vue'
-import BrewPilotSelect from '@/components/shared/BrewPilotSelect.vue'
-import BrewPilotButton from '@/components/shared/BrewPilotButton.vue'
+import { ebcToHex } from '@/core/utils/brewColors'
 
 const props = defineProps<{
   selected: IngredientResult
@@ -77,6 +68,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   'add': [item: RecipeFermentable]
   'cancel': []
+  'back': []
 }>()
 
 const cfgAmountUnit = ref<'kg' | 'g'>('kg')
@@ -140,6 +132,8 @@ function confirmAdd() {
   }
   emit('add', item)
 }
+
+defineExpose({ confirmAdd })
 </script>
 
 <style scoped>

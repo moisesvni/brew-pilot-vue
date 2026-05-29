@@ -228,8 +228,6 @@
 <script setup lang="ts">
 import { ref, computed, reactive, watch } from 'vue'
 import { useRecipeStore } from '@/stores/recipeStore'
-import RecipeSection from '../RecipeSection.vue'
-import BrewPilotButton from '@/components/shared/BrewPilotButton.vue'
 import type { WaterProfile, WaterMinerals } from '@/types/recipe'
 
 const store = useRecipeStore()

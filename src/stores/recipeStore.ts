@@ -3,7 +3,6 @@ import { ref, computed } from 'vue'
 import type { Recipe, RecipeStats, RecipeValidation } from '@/types/recipe'
 import { calculateRecipeStats } from '@/composables/useBrewCalculator'
 import { recipeService } from '@/services/recipe.service'
-import { sampleStyles } from '@/data/styles-sample'
 
 export const useRecipeStore = defineStore('recipe', () => {
   // ─── State ─────────────────────────────────────────────────────────────────
@@ -55,8 +54,8 @@ export const useRecipeStore = defineStore('recipe', () => {
       preBoilVolume: 24,
       boilTime: 60,
       efficiency: 72,
-      styleGuideId: sampleStyles[0].id,
-      styleGuide: sampleStyles[0],
+      styleGuideId: '',
+      styleGuide: undefined,
       fermentables: [],
       hops: [],
       yeasts: [],
@@ -133,6 +132,15 @@ export const useRecipeStore = defineStore('recipe', () => {
 // ─── Validador de receita ─────────────────────────────────────────────────────
 function validateRecipe (recipe: Recipe, stats: RecipeStats): RecipeValidation[] {
   const results: RecipeValidation[] = []
+
+  // Aviso: sem estilo selecionado
+  if (!recipe.styleGuide) {
+    results.push({
+      severity: 'warning',
+      message: 'Nenhum estilo selecionado. Selecione um estilo para comparar os parâmetros da receita.',
+      field: 'style',
+    })
+  }
 
   // Crítico (SEMPRE PRIMEIRO): sem perfil de equipamento
   if (!recipe.equipmentProfile) {

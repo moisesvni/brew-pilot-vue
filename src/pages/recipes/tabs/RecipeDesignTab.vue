@@ -45,7 +45,7 @@
       <style-bar v-if="recipe.styleGuide" label="OG" :value="(stats.og - 1) * 1000" :min="(recipe.styleGuide.ogMin - 1) * 1000" :max="(recipe.styleGuide.ogMax - 1) * 1000" />
       <style-bar v-if="recipe.styleGuide" label="IBU" :value="stats.ibu" :min="recipe.styleGuide.ibuMin" :max="recipe.styleGuide.ibuMax" />
       <style-bar v-if="recipe.styleGuide" label="EBC" :value="stats.ebc" :min="recipe.styleGuide.ebcMin" :max="recipe.styleGuide.ebcMax" />
-      <div v-if="!recipe.styleGuide" class="text-grey-6 text-caption">Selecione um estilo para ver a comparação.</div>
+      <div v-if="!recipe.styleGuide" class="text-grey-6 text-caption">Selecione um estilo.</div>
 
       <q-separator class="q-my-sm" />
       <div class="row q-gutter-sm justify-around">
@@ -70,7 +70,6 @@
 import { computed } from 'vue'
 import { useRecipeStore } from '@/stores/recipeStore'
 
-import StyleBar from '../components/StyleBar.vue'
 
 const store = useRecipeStore()
 const recipe = computed(() => store.currentRecipe!)

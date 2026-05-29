@@ -64,7 +64,6 @@
 import { ref, computed } from 'vue'
 import { useRecipeStore } from '@/stores/recipeStore'
 import type { Recipe, RecipeYeast, RecipeStats } from '@/types/recipe'
-import YeastPickerDialog from '../components/pickers/YeastPickerDialog.vue'
 
 const store = useRecipeStore()
 const recipe = computed(() => store.currentRecipe!)

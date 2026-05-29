@@ -41,12 +41,9 @@
     <!-- ── Configurar ────────────────────────────────────────────────────── -->
     <template v-else-if="step === 'configure'">
       <q-card-section class="q-pb-sm">
-        <div class="row items-center q-mb-md">
-          <q-btn flat round dense icon="arrow_back" size="sm" @click="step = 'search'" />
-          <div class="q-ml-sm">
-            <div class="text-body1 text-weight-bold" style="color: var(--bp-text-primary)">{{ selected!.name }}</div>
-            <div class="text-caption text-grey-5">{{ resultCaption(selected!) }}</div>
-          </div>
+        <div class="q-mb-md">
+          <div class="text-body1 text-weight-bold" style="color: var(--bp-text-primary)">{{ selected!.name }}</div>
+          <div class="text-caption text-grey-5">{{ resultCaption(selected!) }}</div>
         </div>
         <div class="row q-col-gutter-sm">
           <brew-pilot-input v-model.number="cfg.amount" type="number" label="Quantidade"
@@ -66,7 +63,9 @@
         </div>
       </q-card-section>
       <q-separator  />
-      <q-card-actions align="right" class="q-px-md q-pb-md">
+      <q-card-actions class="q-px-md q-pb-md">
+        <brew-pilot-button variant="flat" round dense icon="arrow_back" @click="step = 'search'" />
+        <q-space />
         <brew-pilot-button variant="flat" no-caps label="Cancelar" @click="open = false" />
         <brew-pilot-button variant="filled" no-caps color="green" icon="add" label="Adicionar à receita" @click="confirmAdd" />
       </q-card-actions>
@@ -75,10 +74,6 @@
     <!-- ── Criar novo ────────────────────────────────────────────────────── -->
     <template v-else>
       <q-card-section class="q-pb-sm">
-        <div class="row items-center q-mb-md">
-          <q-btn flat round dense icon="arrow_back" size="sm" @click="step = 'search'" />
-          <brew-pilot-label class="q-ml-sm">Novo Lúpulo</brew-pilot-label>
-        </div>
         <brew-pilot-form-section title="Novo Lúpulo">
           <div class="row q-col-gutter-sm">
             <brew-pilot-input v-model="cfg.name" label="Nome" class="col-12" autofocus
@@ -98,7 +93,9 @@
         </brew-pilot-form-section>
       </q-card-section>
       <q-separator  />
-      <q-card-actions align="right" class="q-px-md q-pb-md">
+      <q-card-actions class="q-px-md q-pb-md">
+        <brew-pilot-button variant="flat" round dense icon="arrow_back" @click="step = 'search'" />
+        <q-space />
         <brew-pilot-button variant="flat" no-caps label="Cancelar" @click="open = false" />
         <brew-pilot-button variant="filled" no-caps color="green" icon="add" label="Criar e adicionar"
           :disable="!cfg.name.trim()" @click="confirmAdd" />
@@ -111,13 +108,6 @@
 <script setup lang="ts">
 import { computed, watch } from 'vue'
 import type { RecipeHop } from '@/types/recipe'
-import BrewPilotDialog from '@/components/BrewPilotDialog.vue'
-import BrewPilotSearchInput from '@/components/shared/BrewPilotSearchInput.vue'
-import BrewPilotLabel from '@/components/shared/BrewPilotLabel.vue'
-import BrewPilotInput from '@/components/shared/BrewPilotInput.vue'
-import BrewPilotSelect from '@/components/shared/BrewPilotSelect.vue'
-import BrewPilotButton from '@/components/shared/BrewPilotButton.vue'
-import BrewPilotFormSection from '@/components/shared/BrewPilotFormSection.vue'
 import { useIngredientPicker } from '@/composables/useIngredientPicker'
 
 const props = defineProps<{ modelValue: boolean }>()

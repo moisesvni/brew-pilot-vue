@@ -1,4 +1,4 @@
-export { UserPlan } from './UserPlan'
+export { UserPlan, planAtLeast } from './UserPlan'
 export type { AuthUser } from './AuthUser'
 export type { AuthTokens } from './AuthTokens'
 export type { AuthResult } from './AuthResult'

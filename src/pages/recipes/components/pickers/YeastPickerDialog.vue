@@ -41,12 +41,9 @@
     <!-- ── Configurar ────────────────────────────────────────────────────── -->
     <template v-else-if="step === 'configure'">
       <q-card-section class="q-pb-sm">
-        <div class="row items-center q-mb-md">
-          <q-btn flat round dense icon="arrow_back" size="sm" @click="step = 'search'" />
-          <div class="q-ml-sm">
-            <div class="text-body1 text-weight-bold" style="color: var(--bp-text-primary)">{{ selected!.name }}</div>
-            <div class="text-caption text-grey-5">{{ resultCaption(selected!) }}</div>
-          </div>
+        <div class="q-mb-md">
+          <div class="text-body1 text-weight-bold" style="color: var(--bp-text-primary)">{{ selected!.name }}</div>
+          <div class="text-caption text-grey-5">{{ resultCaption(selected!) }}</div>
         </div>
         <div class="row q-col-gutter-sm">
           <q-input v-model="cfg.laboratory" label="Laboratório"
@@ -62,7 +59,9 @@
         </div>
       </q-card-section>
       <q-separator  />
-      <q-card-actions align="right" class="q-px-md q-pb-md">
+      <q-card-actions class="q-px-md q-pb-md">
+        <q-btn flat round dense icon="arrow_back" @click="step = 'search'" />
+        <q-space />
         <q-btn flat no-caps label="Cancelar" color="grey-5" @click="open = false" />
         <q-btn unelevated no-caps color="deep-purple-4" icon="add" label="Adicionar à receita" @click="confirmAdd" />
       </q-card-actions>
@@ -71,10 +70,6 @@
     <!-- ── Criar novo ────────────────────────────────────────────────────── -->
     <template v-else>
       <q-card-section class="q-pb-sm">
-        <div class="row items-center q-mb-md">
-          <q-btn flat round dense icon="arrow_back" size="sm" @click="step = 'search'" />
-          <brew-pilot-label class="q-ml-sm">Nova Levedura</brew-pilot-label>
-        </div>
         <div class="row q-col-gutter-sm">
           <q-input v-model="cfg.name" label="Nome" outlined dense  class="col-12" autofocus
             placeholder="Nome da levedura" />
@@ -91,7 +86,9 @@
         </div>
       </q-card-section>
       <q-separator  />
-      <q-card-actions align="right" class="q-px-md q-pb-md">
+      <q-card-actions class="q-px-md q-pb-md">
+        <q-btn flat round dense icon="arrow_back" @click="step = 'search'" />
+        <q-space />
         <q-btn flat no-caps label="Cancelar" color="grey-5" @click="open = false" />
         <q-btn unelevated no-caps color="deep-purple-4" icon="add" label="Criar e adicionar"
           :disable="!cfg.name.trim()" @click="confirmAdd" />
@@ -104,8 +101,6 @@
 <script setup lang="ts">
 import { computed, watch } from 'vue'
 import type { RecipeYeast } from '@/types/recipe'
-import BrewPilotDialog from '@/components/BrewPilotDialog.vue'
-import BrewPilotSearchInput from '@/components/shared/BrewPilotSearchInput.vue'
 import { useIngredientPicker } from '@/composables/useIngredientPicker'
 
 const props = defineProps<{ modelValue: boolean }>()

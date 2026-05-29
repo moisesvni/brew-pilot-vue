@@ -29,7 +29,7 @@
       </q-btn>
 
       <!-- Alertas -->
-      <recipe-validation-banner :items="store.validations" />
+      <recipe-validation-banner :items="store.validations" @open-style-dialog="styleDialog = true" />
 
       <brew-pilot-button variant="filled" color="primary" no-caps label="Salvar"
         unelevated class="q-ml-sm" icon="mdi-content-save" :loading="store.saving"
@@ -114,6 +114,9 @@
       </q-tab-panel>
     </q-tab-panels>
 
+    <!-- ── Dialog de seleção de estilo (acionado pelo banner) ──────────── -->
+    <recipe-style-dialog v-model="styleDialog" />
+
     <!-- ── Dialog de versão ─────────────────────────────────────────────── -->
     <brew-pilot-dialog v-model="versionDialog" title="Versão da Receita"
       icon="mdi-source-branch" icon-color="primary" width="420px">
@@ -196,16 +199,6 @@ import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useQuasar } from 'quasar'
 import { useRecipeStore } from '@/stores/recipeStore'
-import StatChip from '@/components/shared/StatChip.vue'
-import BrewPilotButton from '@/components/shared/BrewPilotButton.vue'
-import RecipeOverviewTab from './tabs/RecipeOverviewTab.vue'
-import RecipeFermentablesTab from './tabs/RecipeFermentablesTab.vue'
-import RecipeHopsTab from './tabs/RecipeHopsTab.vue'
-import RecipeYeastTab from './tabs/RecipeYeastTab.vue'
-import RecipeMashTab from './tabs/RecipeMashTab.vue'
-import RecipeMiscTab from './tabs/RecipeMiscTab.vue'
-import RecipeValidationBanner from './components/RecipeValidationBanner.vue'
-import BrewPilotDialog from '@/components/BrewPilotDialog.vue'
 import { useAuthStore } from '@/stores/authStore'
 
 const route = useRoute()
@@ -216,6 +209,7 @@ const authStore = useAuthStore()
 
 const isPro = computed(() => authStore.user?.plan === 'Pro')
 const versionDialog = ref(false)
+const styleDialog   = ref(false)
 
 const versionProFeatures = [
   'Histórico completo de versões por receita',

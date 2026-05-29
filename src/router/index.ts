@@ -134,10 +134,10 @@ router.beforeEach((to) => {
   const isPublic     = to.matched.some(r => r.meta.public)
 
   if (requiresAuth && !auth.isAuthenticated) {
-    //return { path: '/login', query: { redirect: to.fullPath } }
+    return { path: '/login', query: { redirect: to.fullPath } }
   }
   if (isPublic && auth.isAuthenticated) {
-    return { path: '/' }
+    return { name: 'RecipeList' }
   }
 })
 

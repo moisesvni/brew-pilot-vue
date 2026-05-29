@@ -99,15 +99,8 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useRecipeStore } from '@/stores/recipeStore'
-import RecipeSection from '../RecipeSection.vue'
-import BrewPilotButton from '@/components/shared/BrewPilotButton.vue'
 import type { RecipeFermentable, FermentableType } from '@/types/recipe'
-import FermentablePickerDialog from '../pickers/FermentablePickerDialog.vue'
-import FermentableFormDialog from './dialogs/FermentableFormDialog.vue'
-import ColorAdjustDialog from './dialogs/ColorAdjustDialog.vue'
-import SetPercentagesDialog from './dialogs/SetPercentagesDialog.vue'
-import ResizeByOgDialog from './dialogs/ResizeByOgDialog.vue'
-import { ebcToHex } from '@/utils/brewColors'
+import { ebcToHex } from '@/core/utils/brewColors'
 
 const store = useRecipeStore()
 const recipe = computed(() => store.currentRecipe!)

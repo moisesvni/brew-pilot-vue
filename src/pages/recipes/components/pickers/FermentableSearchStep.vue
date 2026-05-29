@@ -114,17 +114,21 @@
     </div>
 
     <!-- ── Criar novo ───────────────────────────────────────────────── -->
-    <q-card-section class="q-pt-xs q-pb-sm">
-      <q-btn flat class="full-width" icon="mdi-plus-circle-outline"
-        label="Criar novo (não está na base)" color="grey-4" size="sm"
+    <div class="q-px-md q-pb-md q-pt-xs">
+      <q-separator class="q-mb-sm" />
+      <brew-pilot-button
+        variant="outline"
+        no-caps
+        class="full-width"
+        icon="mdi-plus-circle-outline"
+        label="Criar novo (não está na base)"
         @click="emit('create-new')" />
-    </q-card-section>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import type { IngredientResult } from '@/services/ingredients.service'
-import BrewPilotSearchInput from '@/components/shared/BrewPilotSearchInput.vue'
 
 const props = defineProps<{
   query: string

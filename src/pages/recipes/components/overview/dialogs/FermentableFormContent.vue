@@ -26,12 +26,12 @@
         <div class="col-6 col-sm-3">
           <brew-pilot-input v-model.number="amountKg" type="number" step="0.001" min="0"
             label="Quantidade" suffix="kg"
-            @update:model-value="v => syncAmount(Number(v), 'kg')" />
+            @update:model-value="(v: string | number | null) => syncAmount(Number(v), 'kg')" />
         </div>
         <div class="col-6 col-sm-3">
           <brew-pilot-input v-model.number="amountG" type="number" step="1" min="0"
             label="Quantidade" suffix="g"
-            @update:model-value="v => syncAmount(Number(v), 'g')" />
+            @update:model-value="(v: string | number | null) => syncAmount(Number(v), 'g')" />
         </div>
         <div class="col-12 col-sm-3">
           <brew-pilot-select v-model="editItem.use" :options="useOptions" emit-value map-options
@@ -104,7 +104,7 @@
           :icon="showInfo ? 'mdi-eye-off-outline' : 'mdi-eye-outline'"
           :color="showInfo ? 'primary' : 'grey-6'"
           @click="showInfo = !showInfo">
-          <q-tooltip>{{ showInfo ? 'Ocultar' : 'Mostrar' }}</q-tooltip>
+          <q-tooltip>{{ showInfo ? 'Ocultar' : 'Mostrar mais informações' }}</q-tooltip>
         </q-btn>
       </div>
 
@@ -268,11 +268,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import type { RecipeFermentable } from '@/types/recipe'
-import BrewPilotButton from '@/components/shared/BrewPilotButton.vue'
-import BrewPilotInput from '@/components/shared/BrewPilotInput.vue'
-import BrewPilotSelect from '@/components/shared/BrewPilotSelect.vue'
-import BrewPilotFormSection from '@/components/shared/BrewPilotFormSection.vue'
-import { ebcToHex } from '@/utils/brewColors'
+import { ebcToHex } from '@/core/utils/brewColors'
 
 const props = defineProps<{
   item?: RecipeFermentable | null
@@ -420,14 +416,15 @@ const useOptions = [
 }
 
 .efv-details-panel {
-  border: 1px solid var(--bp-border, #333);
+  border: 1px solid var(--bp-border);
   border-radius: 6px;
   padding: 12px;
-  background: rgba(255,255,255,0.025);
+  background: var(--bp-surface-alt);
 }
 
 .efv-spec-chip {
-  background: rgba(255,255,255,0.05);
+  background: var(--bp-surface);
+  border: 1px solid var(--bp-border);
   border-radius: 6px;
   padding: 8px 10px;
   text-align: center;

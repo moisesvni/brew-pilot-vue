@@ -26,6 +26,14 @@
         <q-spinner color="primary" size="36px" />
       </div>
 
+      <template v-else-if="equipStore.error">
+        <div class="eq-error-banner q-mb-md">
+          <q-icon name="mdi-alert-circle-outline" size="14px" class="q-mr-xs" />
+          {{ equipStore.error }}
+          <span class="eq-limit-link q-ml-xs cursor-pointer" @click="equipStore.fetchAll()">Tentar novamente</span>
+        </div>
+      </template>
+
       <template v-else>
         <!-- Meus Perfis -->
         <div class="section-label q-mb-sm">Meus Perfis</div>
@@ -51,6 +59,9 @@
                 <div v-if="p.notes" class="eq-notes q-mt-xs">{{ p.notes }}</div>
               </div>
               <div class="row q-gutter-xs flex-shrink-0 q-ml-sm">
+                <q-btn flat round dense size="sm" icon="mdi-export-variant" color="grey-5" @click="equipStore.exportProfile(p)">
+                  <q-tooltip>Exportar como JSON</q-tooltip>
+                </q-btn>
                 <q-btn flat round dense size="sm" icon="mdi-pencil" color="grey-5" @click="openEdit(p)">
                   <q-tooltip>Editar</q-tooltip>
                 </q-btn>
@@ -105,7 +116,10 @@
 
     <!-- Dialogs -->
     <equipment-base-picker-dialog v-model="pickerDialog" @select="onPickerSelect" />
-    <edit-equipment-dialog v-model="editDialog" :base-profile="editBase" @saved="onSaved" />
+    <edit-equipment-dialog v-model="editDialog" :base-profile="editBase"
+      :show-back-to-picker="fromPicker"
+      @back-to-picker="backToPicker"
+      @saved="onSaved" />
 
     <brew-pilot-dialog v-model="deleteDialog" title="Excluir Perfil" icon="mdi-delete" icon-color="negative" width="360px">
       <q-card-section class="q-pt-sm">
@@ -126,15 +140,12 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
+import { useQuasar } from 'quasar'
 import { useEquipmentStore } from '@/stores/equipmentStore'
 import type { EquipmentProfile } from '@/types/equipment'
-import BrewPilotButton from '@/components/shared/BrewPilotButton.vue'
-import BrewPilotPageHeader from '@/components/shared/BrewPilotPageHeader.vue'
-import BrewPilotDialog from '@/components/BrewPilotDialog.vue'
-import EditEquipmentDialog from '../recipes/components/overview/dialogs/EditEquipmentDialog.vue'
-import EquipmentBasePickerDialog from './EquipmentBasePickerDialog.vue'
 
 const FREE_LIMIT = 2
+const $q = useQuasar()
 const equipStore = useEquipmentStore()
 
 onMounted(() => { if (!equipStore.profiles.length) equipStore.fetchAll() })
@@ -142,6 +153,7 @@ onMounted(() => { if (!equipStore.profiles.length) equipStore.fetchAll() })
 const pickerDialog = ref(false)
 const editDialog = ref(false)
 const editBase = ref<EquipmentProfile | null>(null)
+const fromPicker = ref(false)
 const deleteDialog = ref(false)
 const deleteTarget = ref<EquipmentProfile | null>(null)
 const deleting = ref(false)
@@ -150,9 +162,10 @@ const filteredUserProfiles = computed(() => equipStore.userProfiles)
 const filteredGlobalProfiles = computed(() => equipStore.globalProfiles)
 
 function openCreate() { pickerDialog.value = true }
-function onPickerSelect(base: EquipmentProfile | null) { editBase.value = base; editDialog.value = true }
-function openEdit(p: EquipmentProfile) { editBase.value = p; editDialog.value = true }
-function openCreateFromBase(p: EquipmentProfile) { editBase.value = p; editDialog.value = true }
+function onPickerSelect(base: EquipmentProfile | null) { fromPicker.value = true; editBase.value = base; editDialog.value = true }
+function backToPicker() { editDialog.value = false; pickerDialog.value = true }
+function openEdit(p: EquipmentProfile) { fromPicker.value = false; editBase.value = p; editDialog.value = true }
+function openCreateFromBase(p: EquipmentProfile) { fromPicker.value = false; editBase.value = p; editDialog.value = true }
 function onSaved(_: EquipmentProfile) { /* store updated inside dialog */ }
 
 function confirmDelete(p: EquipmentProfile) { deleteTarget.value = p; deleteDialog.value = true }
@@ -164,6 +177,9 @@ async function doDelete() {
     await equipStore.remove(deleteTarget.value.id)
     deleteDialog.value = false
     deleteTarget.value = null
+    $q.notify({ type: 'positive', message: 'Perfil excluído.', timeout: 2000 })
+  } catch {
+    $q.notify({ type: 'negative', message: 'Erro ao excluir perfil. Tente novamente.', timeout: 4000 })
   } finally {
     deleting.value = false
   }
@@ -265,5 +281,16 @@ async function doDelete() {
 
 .eq-limit-link:hover {
   text-decoration: underline;
+}
+
+.eq-error-banner {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  color: var(--bp-text-secondary);
+  background: color-mix(in srgb, var(--q-negative) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--q-negative) 30%, transparent);
+  border-radius: 6px;
+  padding: 8px 12px;
 }
 </style>

@@ -77,13 +77,6 @@ import { useRouter } from 'vue-router'
 import { useQuasar } from 'quasar'
 import { useRecipeStore } from '@/stores/recipeStore'
 import { useEquipmentStore } from '@/stores/equipmentStore'
-import RecipeCard from './components/RecipeCard.vue'
-import BrewPilotButton from '@/components/shared/BrewPilotButton.vue'
-import BrewPilotLabel from '@/components/shared/BrewPilotLabel.vue'
-import BrewPilotPageHeader from '@/components/shared/BrewPilotPageHeader.vue'
-import BrewPilotSearchInput from '@/components/shared/BrewPilotSearchInput.vue'
-import BrewPilotSelect from '@/components/shared/BrewPilotSelect.vue'
-import BrewPilotDialog from '@/components/BrewPilotDialog.vue'
 import type { Recipe } from '@/types/recipe'
 
 const store = useRecipeStore()

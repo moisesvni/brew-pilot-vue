@@ -1,7 +1,8 @@
 <template>
   <q-dialog
     :model-value="modelValue"
-    @update:model-value="emit('update:modelValue', $event)">
+    :persistent="loading"
+    @update:model-value="!loading && emit('update:modelValue', $event)">
     <q-card :dark="$q.dark.isActive" class="brew-dialog-card" :style="cardStyle">
       <!-- Header -->
       <q-card-section
@@ -14,6 +15,7 @@
         <q-space />
         <slot name="header-actions" />
         <q-btn flat round dense icon="close" :color="$q.dark.isActive ? 'grey-5' : 'grey-7'"
+          :disable="loading"
           @click="emit('update:modelValue', false)" />
       </q-card-section>
 
@@ -46,10 +48,12 @@ const props = withDefaults(defineProps<{
   iconColor?: string
   width?: string
   scrollable?: boolean
+  loading?: boolean
 }>(), {
   width: '440px',
   iconColor: 'grey-5',
-  scrollable: false
+  scrollable: false,
+  loading: false
 })
 
 const emit = defineEmits<{

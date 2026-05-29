@@ -290,9 +290,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import type { RecipeFermentable } from '@/types/recipe'
-import BrewPilotDialog from '@/components/BrewPilotDialog.vue'
-import BrewPilotButton from '@/components/shared/BrewPilotButton.vue'
-import { ebcToHex } from '@/utils/brewColors'
+import { ebcToHex } from '@/core/utils/brewColors'
 
 const props = defineProps<{
   modelValue: boolean

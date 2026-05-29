@@ -55,7 +55,7 @@
           :icon="item.action.icon" :label="item.action.label"
           class="bp-banner__featured-action q-mt-sm"
           :class="`bp-banner__featured-action--${item.severity}`"
-          @click="router.push(item.action.route)"
+          @click="item.action.route ? router.push(item.action.route) : emit('action-clicked', item.action.emit)"
         />
       </div>
       <q-separator v-if="featuredItems.length && normalItems.length" style="border-color: var(--bp-border)" />
@@ -98,7 +98,7 @@ export interface BannerItem {
   /** Exibe este item com destaque visual acima dos demais */
   featured?: boolean
   /** Botão de ação exibido apenas em itens featured */
-  action?: { label: string; icon?: string; route: string }
+  action?: { label: string; icon?: string; route?: string; emit?: string }
 }
 
 const props = defineProps<{
@@ -112,6 +112,8 @@ const props = defineProps<{
   /** Rótulo no cabeçalho quando só há avisos (plural) */
   warningLabelPlural?: string
 }>()
+
+const emit = defineEmits<{ 'action-clicked': [emitKey: string | undefined] }>()
 
 const $q = useQuasar()
 const router = useRouter()

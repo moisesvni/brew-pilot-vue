@@ -55,7 +55,7 @@ const tooltipMap: Record<string, { name: string; desc: string }> = {
 }
 const labelInfo = computed(() => tooltipMap[props.label] ?? { name: props.label, desc: '' })
 
-// Escala: 30% de padding em cada lado
+// Escala: 30% de padding em cada lado → zona ocupa ~55% da trilha
 const pad        = computed(() => (props.max - props.min) * 0.3 || 0.1)
 const scaleMin   = computed(() => props.min - pad.value)
 const scaleRange = computed(() => (props.max - props.min) + pad.value * 2)

@@ -5,8 +5,8 @@
       <span v-else class="text-caption text-weight-bold">{{ userInitials }}</span>
     </q-avatar>
     <q-menu transition-show="scale" transition-hide="scale" :offset="[0, 0]"
-      class="bg-dark-page" :style="{ border: '1px solid var(--bp-border)', borderRadius: '12px', minWidth: '480px' }">
-      <div class="row no-wrap q-pa-md" style="gap: 0; min-width: 460px">
+      class="bg-dark-page" :style="{ border: '1px solid var(--bp-border)', borderRadius: '12px', minWidth: '520px' }">
+      <div class="row no-wrap q-pa-md" style="gap: 0; min-width: 500px">
 
         <!-- ── Coluna esquerda: configurações ──────────────────────────────── -->
         <div class="column" style="min-width: 210px">
@@ -66,23 +66,23 @@
         <q-separator vertical class="q-mx-md" />
 
         <!-- ── Coluna direita: perfil ──────────────────────────────────────── -->
-        <div class="column items-center justify-between" style="min-width: 140px">
+        <div class="column items-center justify-center" style="min-width: 180px; gap: 16px">
           <div class="column items-center">
             <q-avatar size="64px" :color="avatarColor" text-color="white" class="q-mb-sm shadow-4">
               <img v-if="user?.avatarUrl" :src="user.avatarUrl" referrerpolicy="no-referrer" />
               <span v-else class="text-h6 text-weight-bold">{{ userInitials }}</span>
             </q-avatar>
-            <div class="text-body2 text-weight-bold bp-text-primary text-center" style="max-width: 120px; line-height: 1.2">
+            <div class="text-body2 text-weight-bold bp-text-primary text-center" style="max-width: 170px; line-height: 1.3; word-break: break-word">
               {{ user?.name }}
             </div>
-            <div class="text-caption text-grey-5 text-center q-mt-xs" style="max-width: 120px; word-break: break-all">
+            <div class="text-caption text-grey-5 text-center q-mt-xs" style="max-width: 170px; word-break: break-all">
               {{ user?.email }}
             </div>
             <q-badge :color="user?.plan === 'Pro' ? 'amber' : 'grey-7'" :label="user?.plan ?? 'Free'"
               class="q-mt-sm" />
           </div>
 
-          <div class="column items-center q-mt-md" style="width: 100%">
+          <div class="column items-center" style="width: 100%">
             <q-btn flat no-caps size="sm" icon="mdi-account-circle-outline" label="Perfil"
               :color="$q.dark.isActive ? 'grey-4' : 'grey-7'" class="full-width q-mb-xs" v-close-popup @click="$router.push('/profiles')" />
             <q-btn flat no-caps size="sm" icon="mdi-logout" label="Sair"
@@ -129,6 +129,7 @@ const batchCount = ref(0)
 
 function toggleDark() {
   $q.dark.toggle()
+  localStorage.setItem('bp-theme', $q.dark.isActive ? 'dark' : 'light')
 }
 
 async function handleLogout() {

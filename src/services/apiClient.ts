@@ -1,11 +1,28 @@
 import axios from 'axios'
+import { Notify } from 'quasar'
 
-/**
- * Instância axios compartilhada por todos os serviços.
- * Injeta automaticamente o Bearer token e tenta renovar em 401.
- */
+// ---------------------------------------------------------------------------
+// Notificações globais — pode ser usado em qualquer lugar do app
+// ---------------------------------------------------------------------------
+
+export const notifyError = (message: string, type: 'error' | 'warning' = 'error') => {
+  Notify.create({
+    progress: true,
+    message,
+    color: type === 'error' ? 'negative' : 'warning',
+    textColor: 'white',
+    position: 'top-right',
+    icon: type === 'error' ? 'mdi-alert-circle' : 'mdi-information',
+    html: true,
+  })
+}
+
+// ---------------------------------------------------------------------------
+// Instância axios compartilhada por todos os serviços
+// ---------------------------------------------------------------------------
+
 const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_URL ?? '/api',
+  baseURL: import.meta.env.VITE_API_URL ?? import.meta.env.VITE_BASE_URL ?? '/api',
   timeout: 10000,
 })
 
@@ -16,32 +33,48 @@ apiClient.interceptors.request.use(config => {
   return config
 })
 
-// Renova o access token automaticamente em caso de 401
+// Trata respostas de erro: renova token em 401, notifica os demais
 apiClient.interceptors.response.use(
   res => res,
   async error => {
     const original = error.config
-    if (error.response?.status === 401 && !original._retry) {
+    const status: number | undefined = error.response?.status
+    const serverMessage: string | undefined = error.response?.data?.message
+
+    // 401 — tenta renovar token antes de notificar
+    if (status === 401 && !original._retry) {
       original._retry = true
       const refreshToken = localStorage.getItem('brew_refresh_token')
       if (refreshToken) {
         try {
           const { data } = await axios.post(
-            `${import.meta.env.VITE_API_URL ?? '/api'}/auth/refresh`,
+            `${import.meta.env.VITE_API_URL ?? import.meta.env.VITE_BASE_URL ?? '/api'}/auth/refresh`,
             { refreshToken }
           )
-          localStorage.setItem('brew_access_token',  data.accessToken)
+          localStorage.setItem('brew_access_token', data.accessToken)
           localStorage.setItem('brew_refresh_token', data.refreshToken)
           original.headers.Authorization = `Bearer ${data.accessToken}`
           return apiClient(original)
         } catch {
+          // refresh falhou — limpa sessão e redireciona
           localStorage.removeItem('brew_access_token')
           localStorage.removeItem('brew_refresh_token')
           localStorage.removeItem('brew_user')
           window.location.hash = '/login'
+          return Promise.reject(error)
         }
       }
+      notifyError('Sessão expirada. Faça login novamente.')
+    } else if (status === 400) {
+      notifyError(serverMessage ?? 'Requisição inválida.', 'warning')
+    } else if (status === 403) {
+      notifyError('Acesso negado.')
+    } else if (status !== undefined && status >= 500) {
+      notifyError('Erro no servidor. Tente novamente mais tarde.')
+    } else if (status === undefined) {
+      notifyError(`Falha de conexão: ${error.message}`)
     }
+
     return Promise.reject(error)
   }
 )

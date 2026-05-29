@@ -8,5 +8,4 @@
 </template>
 
 <script setup lang="ts">
-import BrewPilotPageHeader from '@/components/shared/BrewPilotPageHeader.vue'
 </script>

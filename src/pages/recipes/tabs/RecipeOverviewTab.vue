@@ -206,34 +206,18 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, type ComponentPublicInstance } from 'vue'
 import { useRouter } from 'vue-router'
 import { useRecipeStore } from '@/stores/recipeStore'
 import { useEquipmentStore } from '@/stores/equipmentStore'
-import BrewPilotButton from '@/components/shared/BrewPilotButton.vue'
-import RecipeSection from '../components/RecipeSection.vue'
-import RecipeMiscTab from './RecipeMiscTab.vue'
-import FermentablesCard from '../components/overview/FermentablesCard.vue'
-import HopsCard from '../components/overview/HopsCard.vue'
-import YeastCard from '../components/overview/YeastCard.vue'
-import MashCard from '../components/overview/MashCard.vue'
-import WaterCard from '../components/overview/WaterCard.vue'
-import OthersCard from '../components/overview/OthersCard.vue'
-import StyleGuideCard from '../components/overview/StyleGuideCard.vue'
-import BrewPilotLabel from '@/components/shared/BrewPilotLabel.vue'
-import { ebcToHex } from '@/utils/brewColors'
-import RecipeImageDialog from '../components/overview/dialogs/RecipeImageDialog.vue'
-import ChangeEquipmentDialog from '../components/overview/dialogs/ChangeEquipmentDialog.vue'
-import ResizeEquipDialog from '../components/overview/dialogs/ResizeEquipDialog.vue'
-import EditEquipmentDialog from '../components/overview/dialogs/EditEquipmentDialog.vue'
-import RecipeStyleDialog from '../components/overview/dialogs/RecipeStyleDialog.vue'
+import { ebcToHex } from '@/core/utils/brewColors'
 
 const store = useRecipeStore()
 const recipe = computed(() => store.currentRecipe!)
 const stats = computed(() => store.stats)
 const router = useRouter()
 
-const miscTabRef = ref<InstanceType<typeof RecipeMiscTab> | null>(null)
+const miscTabRef = ref<ComponentPublicInstance | null>(null)
 
 const equipStore = useEquipmentStore()
 onMounted(() => { if (!equipStore.profiles.length) equipStore.fetchAll() })

@@ -2,21 +2,26 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { authService } from '@/services/auth.service'
 import type { AuthUser, LoginRequest, OAuthLoginRequest, RegisterRequest } from '@/types/auth'
-import { UserPlan } from '@/types/auth'
+import { UserPlan, planAtLeast } from '@/types/auth'
 
 const ACCESS_TOKEN_KEY  = 'brew_access_token'
 const REFRESH_TOKEN_KEY = 'brew_refresh_token'
 const USER_KEY          = 'brew_user'
 
 export const useAuthStore = defineStore('auth', () => {
-  // ── State ──────────────────────────────────────────────────────────────────
+  // ── State ──────────────────────────────────────────────────────────────────────────
   const user         = ref<AuthUser | null>(loadUser())
   const accessToken  = ref<string | null>(localStorage.getItem(ACCESS_TOKEN_KEY))
   const refreshToken = ref<string | null>(localStorage.getItem(REFRESH_TOKEN_KEY))
 
-  // ── Getters ────────────────────────────────────────────────────────────────
+  // ── Getters ──────────────────────────────────────────────────────────────────
   const isAuthenticated = computed(() => !!accessToken.value && !!user.value)
-  const isPro           = computed(() => user.value?.plan === UserPlan.Pro)
+  /** Plus ou acima (Plus, Pro, Owner) */
+  const isPlus  = computed(() => planAtLeast(user.value?.plan, UserPlan.Plus))
+  /** Pro ou acima (Pro, Owner) */
+  const isPro   = computed(() => planAtLeast(user.value?.plan, UserPlan.Pro))
+  /** Owner */
+  const isOwner = computed(() => user.value?.plan === UserPlan.Owner)
 
   // ── Actions ────────────────────────────────────────────────────────────────
   async function login(credentials: LoginRequest) {
@@ -52,11 +57,11 @@ export const useAuthStore = defineStore('auth', () => {
     accessToken.value  = result.accessToken
     refreshToken.value = result.refreshToken
     user.value = {
-      userId: result.userId,
-      email:  result.email,
-      name:   result.name,
-      avatarUrl: null, 
-      plan:   result.plan as UserPlan,
+      userId:    result.userId,
+      email:     result.email,
+      name:      result.name,
+      avatarUrl: result.avatarUrl ?? null,
+      plan:      result.plan as UserPlan,
     }
     localStorage.setItem(ACCESS_TOKEN_KEY,  result.accessToken)
     localStorage.setItem(REFRESH_TOKEN_KEY, result.refreshToken)
@@ -72,7 +77,13 @@ export const useAuthStore = defineStore('auth', () => {
     localStorage.removeItem(USER_KEY)
   }
 
-  return { user, accessToken, isAuthenticated, isPro, login, register, oauthLogin, refresh, logout }
+  function setAvatarUrl(url: string) {
+    if (!user.value) return
+    user.value.avatarUrl = url
+    localStorage.setItem(USER_KEY, JSON.stringify(user.value))
+  }
+
+  return { user, accessToken, isAuthenticated, isPlus, isPro, isOwner, login, register, oauthLogin, refresh, logout, setAvatarUrl }
 })
 
 function loadUser(): AuthUser | null {

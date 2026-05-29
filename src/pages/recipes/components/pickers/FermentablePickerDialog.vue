@@ -1,11 +1,7 @@
 <template>
-  <brew-pilot-dialog v-model="open" icon="mdi-barley" icon-color="primary" width="560px">
+  <brew-pilot-dialog v-model="open" icon="mdi-barley" icon-color="primary" width="560px" scrollable>
     <template #title>
-      <div class="row items-center no-wrap" style="gap: 4px">
-        <q-btn v-if="step !== 'search'" flat round dense icon="arrow_back" size="xs" color="grey-5"
-          style="margin-left: -4px" @click="goBack" />
-        <span>{{ dialogTitle }}</span>
-      </div>
+      <span>{{ dialogTitle }}</span>
     </template>
     <div class="fpd-steps-outer">
       <transition :name="'fpd-' + transitionDir" mode="out-in">
@@ -23,7 +19,7 @@
           :only-my-stock="onlyMyStock"
           :has-supplier-filter="hasSupplierFilter"
           :has-any-filter="hasAnyFilter"
-          @update:query="val => { query = val; onQueryChange(val) }"
+          @update:query="(val: string) => { query = val; onQueryChange(val) }"
           @select="selectResult"
           @create-new="openCreateNew"
           @toggle-supplier="toggleSupplier"
@@ -35,11 +31,13 @@
         <!-- ── Configurar ────────────────────────────────────────────── -->
         <fermentable-configure-step
           v-else-if="step === 'configure'"
+          ref="configureStepRef"
           key="configure"
           :selected="selected!"
           :cfg="cfg"
           @add="onAddFromConfigure"
           @cancel="open = false"
+          @back="goBack"
         />
 
         <!-- ── Criar novo ────────────────────────────────────────────── -->
@@ -47,17 +45,34 @@
           <q-card-section class="q-pb-sm">
             <fermentable-form-content ref="createFormRef" />
           </q-card-section>
-          <q-separator />
-          <q-card-actions class="q-px-md q-py-sm row items-center">
-            <q-space />
-            <brew-pilot-button variant="outline" no-caps label="Cancelar" @click="step = 'search'" />
-            <brew-pilot-button variant="filled" no-caps color="primary" icon="add" label="Criar e adicionar"
-              class="q-ml-sm" :disable="!createCanSubmit" @click="confirmCreate" />
-          </q-card-actions>
         </div>
 
       </transition>
     </div>
+
+
+    <template #footer>
+      <q-card-actions class="q-px-md q-py-sm row items-center">
+        <brew-pilot-button
+          v-if="step !== 'search'"
+          variant="flat" round dense icon="arrow_back"
+          tooltip="Voltar"
+          @click="goBack" />
+        <q-space />
+        <brew-pilot-button variant="outline" no-caps label="Cancelar" @click="open = false" />
+        <brew-pilot-button
+          v-if="step === 'configure'"
+          variant="filled" no-caps color="primary" icon="add" label="Adicionar à receita"
+          class="q-ml-sm"
+          @click="triggerConfirmAdd" />
+        <brew-pilot-button
+          v-else-if="step === 'create'"
+          variant="filled" no-caps color="primary" icon="add" label="Criar e adicionar"
+          class="q-ml-sm"
+          :disable="!createCanSubmit"
+          @click="confirmCreate" />
+      </q-card-actions>
+    </template>
 
   </brew-pilot-dialog>
 </template>
@@ -65,11 +80,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import type { RecipeFermentable } from '@/types/recipe'
-import BrewPilotDialog from '@/components/BrewPilotDialog.vue'
-import BrewPilotButton from '@/components/shared/BrewPilotButton.vue'
 import FermentableFormContent from '@/pages/recipes/components/overview/dialogs/FermentableFormContent.vue'
-import FermentableSearchStep from './FermentableSearchStep.vue'
-import FermentableConfigureStep from './FermentableConfigureStep.vue'
 import { useIngredientPicker } from '@/composables/useIngredientPicker'
 
 const props = defineProps<{ modelValue: boolean }>()
@@ -105,7 +116,12 @@ function goBack() {
   step.value = 'search'
 }
 
+const configureStepRef = ref<{ confirmAdd: () => void } | null>(null)
 const createFormRef = ref<InstanceType<typeof FermentableFormContent> | null>(null)
+
+function triggerConfirmAdd() {
+  (configureStepRef.value as any)?.confirmAdd()
+}
 const createCanSubmit = computed(() => createFormRef.value?.isValid ?? false)
 
 function confirmCreate() {

@@ -2,7 +2,7 @@
   <q-page class="profiles-page">
     <brew-pilot-page-header
       icon="mdi-tune-variant"
-      title="Perfis da Receita"
+      title="Perfis"
       subtitle="Configure os perfis abaixo para ter todos os parâmetros prontos ao criar suas receitas."
       :bleed="false"
     />
@@ -48,7 +48,6 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 import { useEquipmentStore } from '@/stores/equipmentStore'
-import BrewPilotPageHeader from '@/components/shared/BrewPilotPageHeader.vue'
 
 const equipStore = useEquipmentStore()
 
