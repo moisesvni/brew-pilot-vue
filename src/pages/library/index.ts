@@ -1,9 +1,7 @@
 import type { BrewPilotParameters } from '@/core/types'
 
 const library = {
-  install(_vue: any, parameters: BrewPilotParameters) {
-    parameters.putComponent('library-page', () => import('./LibraryPage.vue'))
-  }
+  install(_vue: any, _parameters: BrewPilotParameters) {}
 }
 
 export default library

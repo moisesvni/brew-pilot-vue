@@ -24,11 +24,20 @@ import type BrewPilotSearchInput from '@/core/components/shared/BrewPilotSearchI
 import type BrewPilotSelect from '@/core/components/shared/BrewPilotSelect.vue'
 import type EquipmentCard from '@/core/components/shared/EquipmentCard.vue'
 import type StatChip from '@/core/components/shared/StatChip.vue'
+import type BrewPilotLoading from '@/core/components/shared/BrewPilotLoading.vue'
+import type UpgradeButton from '@/core/components/shared/UpgradeButton.vue'
+// Profiles module
+import type BrewPilotEquipmentBasePickerDialog from '@/pages/profiles/equipment/EquipmentBasePickerDialog.vue'
+import type BrewPilotEditEquipmentDialog from '@/pages/profiles/equipment/EditEquipmentDialog.vue'
+import type EditMashProfileDialog from '@/pages/profiles/mash/EditMashProfileDialog.vue'
+import type MashProfileCard from '@/pages/profiles/mash/MashProfileCard.vue'
+import type MashGuideDialog from '@/pages/profiles/mash/MashGuideDialog.vue'
 
 declare module 'vue' {
   export interface GlobalComponents {
     BrewPilotBanner: typeof BrewPilotBanner
     BrewPilotBreadcrumbs: typeof BrewPilotBreadcrumbs
+    BrewPilotLoading: typeof BrewPilotLoading
     BrewPilotButton: typeof BrewPilotButton
     BrewPilotDialog: typeof BrewPilotDialog
     BrewPilotFormSection: typeof BrewPilotFormSection
@@ -39,5 +48,12 @@ declare module 'vue' {
     BrewPilotSelect: typeof BrewPilotSelect
     EquipmentCard: typeof EquipmentCard
     StatChip: typeof StatChip
+    UpgradeButton: typeof UpgradeButton
+    // Profiles module
+    BrewPilotEquipmentBasePickerDialog: typeof BrewPilotEquipmentBasePickerDialog
+    BrewPilotEditEquipmentDialog: typeof BrewPilotEditEquipmentDialog
+    EditMashProfileDialog: typeof EditMashProfileDialog
+    MashProfileCard: typeof MashProfileCard
+    MashGuideDialog: typeof MashGuideDialog
   }
 }

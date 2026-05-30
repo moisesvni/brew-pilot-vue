@@ -1,5 +1,5 @@
 <template>
-  <q-page class="q-pa-md">
+  <brew-pilot-page class="q-pa-md">
     <!-- Cabeçalho ──────────────────────────────────────────────────────────── -->
     <div class="row items-center q-mb-md">
       <div class="text-h5 text-weight-bold col">Perfis de Equipamento</div>
@@ -120,7 +120,7 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-  </q-page>
+  </brew-pilot-page>
 </template>
 
 <script setup lang="ts">
@@ -151,7 +151,7 @@ const emptyForm = () => ({
   name: '', batchVolume: 20, preBoilVolume: 25, boilTime: 60,
   efficiency: 75, mashEfficiency: 80, boilOffRate: 10,
   trubLoss: 1, fermentorLoss: 1, deadSpace: 2, mashTunVolume: 30,
-  boilTemperature: 100, notes: '',
+  boilTemperature: 100, notes: '', isDefault: false,
 })
 const form = ref(emptyForm())
 

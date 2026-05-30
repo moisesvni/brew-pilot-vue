@@ -99,13 +99,13 @@ const routes = [
       {
         path: 'profiles/equipment',
         name: 'ProfilesEquipment',
-        component: () => import('@/pages/profiles/EquipmentProfilesPage.vue'),
+        component: () => import('@/pages/profiles/equipment/EquipmentProfilesPage.vue'),
         meta: { title: 'Equipamento' }
       },
       {
         path: 'profiles/mash',
         name: 'ProfilesMash',
-        component: () => import('@/pages/profiles/MashProfilesPage.vue'),
+        component: () => import('@/pages/profiles/mash/MashProfilesPage.vue'),
         meta: { title: 'Mostura' }
       },
       {

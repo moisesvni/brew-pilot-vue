@@ -1,9 +1,7 @@
 import type { BrewPilotParameters } from '@/core/types'
 
 const settings = {
-  install(_vue: any, parameters: BrewPilotParameters) {
-    parameters.putComponent('settings-page', () => import('./SettingsPage.vue'))
-  }
+  install(_vue: any, _parameters: BrewPilotParameters) {}
 }
 
 export default settings

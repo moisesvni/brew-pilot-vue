@@ -1,9 +1,7 @@
 import type { BrewPilotParameters } from '@/core/types'
 
 const styles = {
-  install(_vue: any, parameters: BrewPilotParameters) {
-    parameters.putComponent('styles-page', () => import('./StylesPage.vue'))
-  }
+  install(_vue: any, _parameters: BrewPilotParameters) {}
 }
 
 export default styles

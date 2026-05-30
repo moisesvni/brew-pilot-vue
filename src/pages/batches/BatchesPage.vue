@@ -1,10 +1,10 @@
 <template>
-  <q-page class="q-pa-md">
+  <brew-pilot-page class="q-pa-md">
     <brew-pilot-page-header icon="mdi-barrel" title="Lotes" />
     <q-banner rounded class="bg-dark text-grey-5">
       Em construção — em breve disponível.
     </q-banner>
-  </q-page>
+  </brew-pilot-page>
 </template>
 
 <script setup lang="ts">

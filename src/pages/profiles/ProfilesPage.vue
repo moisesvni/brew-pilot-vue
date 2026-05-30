@@ -1,5 +1,5 @@
 <template>
-  <q-page class="profiles-page">
+  <brew-pilot-page class="profiles-page">
     <brew-pilot-page-header
       icon="mdi-tune-variant"
       title="Perfis"
@@ -49,7 +49,7 @@
         </div>
       </div>
     </div>
-  </q-page>
+  </brew-pilot-page>
 </template>
 
 <script setup lang="ts">

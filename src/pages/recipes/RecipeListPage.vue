@@ -1,5 +1,5 @@
 <template>
-  <q-page class="q-pa-md">
+  <brew-pilot-page class="q-pa-md">
     <!-- Cabeçalho -->
     <brew-pilot-page-header
       icon="mdi-note-text"
@@ -68,7 +68,7 @@
         </q-card-actions>
       </template>
     </brew-pilot-dialog>
-  </q-page>
+  </brew-pilot-page>
 </template>
 
 <script setup lang="ts">

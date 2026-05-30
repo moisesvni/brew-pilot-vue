@@ -2,7 +2,7 @@ import { defineAsyncComponent } from 'vue'
 import type { App } from 'vue'
 import type { BrewPilotParameters } from '@/core/types'
 
-const DEFAULT_PREFIX = 'BrewPilot'
+const DEFAULT_PREFIX = 'brew-pilot'
 const _components: Record<string, () => Promise<any>> = {}
 
 const component = {
@@ -22,15 +22,17 @@ const component = {
   }
 }
 
+function toPascal(str: string): string {
+  return str.split('-').map(part => part.charAt(0).toUpperCase() + part.slice(1)).join('')
+}
+
 function convertName(prefix: string, name: string): string {
-  const formatted = name
-    .split('-')
-    .map(part => part.charAt(0).toUpperCase() + part.slice(1))
-    .join('')
-  if (!prefix) return formatted
-  return formatted.startsWith(prefix)
-    ? formatted
-    : `${prefix}${formatted.charAt(0).toUpperCase()}${formatted.slice(1)}`
+  const formattedName = toPascal(name)
+  if (!prefix) return formattedName
+  const formattedPrefix = toPascal(prefix)
+  return formattedName.startsWith(formattedPrefix)
+    ? formattedName
+    : `${formattedPrefix}${formattedName}`
 }
 
 export function putComponent(
@@ -38,14 +40,17 @@ export function putComponent(
   nameOrFactory: string | (() => Promise<any>),
   factory?: () => Promise<any>
 ): void {
-  let prefix = prefixOrName
+  let prefix: string
   let name: string
 
   if (typeof nameOrFactory === 'function') {
+    // putComponent('grid', factory) → auto-prefix brew-pilot → BrewPilotGrid
     factory = nameOrFactory
     name = prefixOrName
-    prefix = ''
+    prefix = DEFAULT_PREFIX
   } else {
+    // putComponent('grid', 'body', factory) → prefix=grid → GridBody
+    prefix = prefixOrName
     name = nameOrFactory
   }
 

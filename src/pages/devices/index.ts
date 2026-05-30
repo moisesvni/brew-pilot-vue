@@ -1,9 +1,7 @@
 import type { BrewPilotParameters } from '@/core/types'
 
 const devices = {
-  install(_vue: any, parameters: BrewPilotParameters) {
-    parameters.putComponent('devices-page', () => import('./DevicesPage.vue'))
-  }
+  install(_vue: any, _parameters: BrewPilotParameters) {}
 }
 
 export default devices

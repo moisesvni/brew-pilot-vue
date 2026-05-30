@@ -1,9 +1,7 @@
 import type { BrewPilotParameters } from '@/core/types'
 
 const batches = {
-  install(_vue: any, parameters: BrewPilotParameters) {
-    parameters.putComponent('batches-page', () => import('./BatchesPage.vue'))
-  }
+  install(_vue: any, _parameters: BrewPilotParameters) {}
 }
 
 export default batches

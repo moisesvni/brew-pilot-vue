@@ -20,7 +20,7 @@ export const useMashProfileStore = defineStore('mashProfile', () => {
   const canAddMore = computed(() => {
     const auth = useAuthStore()
     if (auth.isPro) return true
-    return userProfiles.value.length < FREE_MASH_LIMIT
+    return profiles.value.length < FREE_MASH_LIMIT
   })
 
   // ── Actions ────────────────────────────────────────────────────────────────

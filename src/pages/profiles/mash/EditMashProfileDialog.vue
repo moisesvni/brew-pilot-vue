@@ -1,24 +1,13 @@
 <template>
-  <brew-pilot-dialog
-    v-model="open"
-    :title="dialogTitle"
-    icon="mdi-thermometer"
-    icon-color="red-4"
-    width="680px"
-    scrollable
-    :loading="saving"
-    persistent
-  >
+  <brew-pilot-dialog v-model="open" :title="dialogTitle" icon="mdi-thermometer" icon-color="red-4" width="680px"
+    scrollable :loading="saving" persistent>
     <template #header-actions>
-      <q-btn flat round dense icon="mdi-information-outline" color="grey-5"
-        :disable="saving" @click="guideDialog = true">
+      <q-btn flat round dense icon="mdi-information-outline" color="grey-5" :disable="saving"
+        @click="guideDialog = true">
         <q-tooltip>Guia de Mostura</q-tooltip>
       </q-btn>
-      <q-btn flat round dense
-        :icon="form.isDefault ? 'mdi-star' : 'mdi-star-outline'"
-        :color="form.isDefault ? 'amber' : 'grey-5'"
-        :disable="saving"
-        @click="form.isDefault = !form.isDefault">
+      <q-btn flat round dense :icon="form.isDefault ? 'mdi-star' : 'mdi-star-outline'"
+        :color="form.isDefault ? 'amber' : 'grey-5'" :disable="saving" @click="form.isDefault = !form.isDefault">
         <q-tooltip>{{ form.isDefault ? 'Perfil padrão' : 'Definir como padrão' }}</q-tooltip>
       </q-btn>
 
@@ -29,12 +18,8 @@
           <div style="min-width: 260px">
             <div class="q-px-md q-pt-sm q-pb-xs mash-preset-header">Presets de Mostura</div>
             <q-list dense>
-              <q-item
-                v-for="preset in mashPresets"
-                :key="preset.label"
-                clickable v-ripple dense
-                style="min-height: 44px"
-                @click="applyPreset(preset)">
+              <q-item v-for="preset in mashPresets" :key="preset.label" clickable v-ripple dense
+                style="min-height: 44px" @click="applyPreset(preset)">
                 <q-item-section avatar style="min-width: 32px">
                   <q-icon :name="preset.icon" size="16px" color="primary" />
                 </q-item-section>
@@ -49,11 +34,8 @@
       </q-btn>
     </template>
 
-    <div
-      class="q-pa-md"
-      :inert="saving ? true : undefined"
-      :style="saving ? 'opacity: 0.55; pointer-events: none; transition: opacity 0.2s' : 'transition: opacity 0.2s'"
-    >
+    <div class="q-pa-md" :inert="saving ? true : undefined"
+      :style="saving ? 'opacity: 0.55; pointer-events: none; transition: opacity 0.2s' : 'transition: opacity 0.2s'">
 
       <!-- ── Identificação ─────────────────────────────────────────── -->
       <brew-pilot-form-section title="Identificação">
@@ -62,13 +44,8 @@
             <brew-pilot-input v-model="form.name" label="Nome do Perfil" />
           </div>
           <div class="col-12">
-            <brew-pilot-input
-              v-model="form.notes"
-              type="textarea"
-              autogrow
-              label="Observações (opcional)"
-              input-style="min-height: 48px; font-size: 13px"
-            />
+            <brew-pilot-input v-model="form.notes" type="textarea" autogrow label="Observações (opcional)"
+              input-style="min-height: 48px; font-size: 13px" />
           </div>
         </div>
       </brew-pilot-form-section>
@@ -76,38 +53,20 @@
       <brew-pilot-form-section title="Parâmetros do Sistema" collapsible>
         <div class="row q-col-gutter-sm">
           <div class="col-6 col-sm-4">
-            <brew-pilot-input
-              v-model.number="form.grainTemperature"
-              type="number"
-              step="0.5"
-              label="Temp. do Grão"
-              suffix="°C"
-              dense
-            >
+            <brew-pilot-input v-model.number="form.grainTemperature" type="number" step="0.5" label="Temp. do Grão"
+              suffix="°C" dense>
               <template #hint>Temperatura inicial do grão</template>
             </brew-pilot-input>
           </div>
           <div class="col-6 col-sm-4">
-            <brew-pilot-input
-              v-model.number="form.tunTemperature"
-              type="number"
-              step="0.5"
-              label="Temp. da Tina"
-              suffix="°C"
-              dense
-            >
+            <brew-pilot-input v-model.number="form.tunTemperature" type="number" step="0.5" label="Temp. da Tina"
+              suffix="°C" dense>
               <template #hint>Temperatura inicial da tina</template>
             </brew-pilot-input>
           </div>
           <div class="col-6 col-sm-4">
-            <brew-pilot-input
-              v-model.number="form.spargeTemperature"
-              type="number"
-              step="0.5"
-              label="Temp. de Lavagem"
-              suffix="°C"
-              dense
-            >
+            <brew-pilot-input v-model.number="form.spargeTemperature" type="number" step="0.5" label="Temp. de Lavagem"
+              suffix="°C" dense>
               <template #hint>Temp. água de sparging</template>
             </brew-pilot-input>
           </div>
@@ -121,11 +80,8 @@
       <!-- ── Etapas ────────────────────────────────────────────────── -->
       <brew-pilot-form-section title="Etapas de Mostura" collapsible>
         <template #actions>
-          <q-btn
-            v-if="form.steps.length"
-            flat round dense size="xs"
-            :icon="allStepsCollapsed ? 'mdi-arrow-expand-all' : 'mdi-arrow-collapse-all'"
-            color="grey-5"
+          <q-btn v-if="form.steps.length" flat round dense size="xs"
+            :icon="allStepsCollapsed ? 'mdi-arrow-expand-all' : 'mdi-arrow-collapse-all'" color="grey-5"
             @click.stop="allStepsCollapsed ? expandAllSteps() : collapseAllSteps()">
             <q-tooltip>{{ allStepsCollapsed ? 'Expandir todas' : 'Recolher todas' }}</q-tooltip>
           </q-btn>
@@ -139,36 +95,29 @@
           <!-- ── Cabeçalho da etapa ── -->
           <div class="mash-step-header" @click.self="toggleStepCollapse(step.id)" style="cursor: pointer">
             <div class="row items-center no-wrap" style="gap: 6px">
-              <q-chip
-                dense square
-              :color="stepTypeColor(step.stepType)"
-              text-color="white"
-              :icon="stepTypeIcons[step.stepType]"
-              :label="stepTypeLabel(step.stepType)"
-                style="font-size: 10px; height: 20px; padding: 0 7px"
-              />
+              <q-chip dense square :color="stepTypeColor(step.stepType)" text-color="white"
+                :icon="stepTypeIcons[step.stepType]" :label="stepTypeLabel(step.stepType)"
+                style="font-size: 10px; height: 20px; padding: 0 7px" />
               <span class="mash-step-title">Etapa {{ i + 1 }}</span>
-              <span v-if="isStepCollapsed(step.id) && step.temperature" style="font-size: 11px; color: var(--bp-text-muted)">
+              <span v-if="isStepCollapsed(step.id) && step.temperature"
+                style="font-size: 11px; color: var(--bp-text-muted)">
                 — {{ step.temperature }}°C · {{ step.time }}min
               </span>
             </div>
             <div class="row items-center no-wrap" style="gap: 2px">
-              <q-btn flat round dense
-                :icon="isStepCollapsed(step.id) ? 'mdi-chevron-down' : 'mdi-chevron-up'"
-                color="grey-5" size="sm"
-                @click.stop="toggleStepCollapse(step.id)">
+              <q-btn flat round dense :icon="isStepCollapsed(step.id) ? 'mdi-chevron-down' : 'mdi-chevron-up'"
+                color="grey-5" size="sm" @click.stop="toggleStepCollapse(step.id)">
                 <q-tooltip>{{ isStepCollapsed(step.id) ? 'Expandir' : 'Recolher' }}</q-tooltip>
               </q-btn>
-              <q-btn flat round dense icon="mdi-arrow-up-bold" color="grey-5" size="sm"
-                :disable="i === 0" @click.stop="moveStep(i, -1)">
+              <q-btn flat round dense icon="mdi-arrow-up-bold" color="grey-5" size="sm" :disable="i === 0"
+                @click.stop="moveStep(i, -1)">
                 <q-tooltip>Mover para cima</q-tooltip>
               </q-btn>
               <q-btn flat round dense icon="mdi-arrow-down-bold" color="grey-5" size="sm"
                 :disable="i === form.steps.length - 1" @click.stop="moveStep(i, 1)">
                 <q-tooltip>Mover para baixo</q-tooltip>
               </q-btn>
-              <q-btn flat round dense icon="mdi-close" color="negative" size="sm"
-                @click.stop="removeStep(i)">
+              <q-btn flat round dense icon="mdi-close" color="negative" size="sm" @click.stop="removeStep(i)">
                 <q-tooltip>Remover etapa</q-tooltip>
               </q-btn>
             </div>
@@ -176,112 +125,56 @@
 
           <!-- ── Corpo da etapa (colapsável) ── -->
           <div v-show="!isStepCollapsed(step.id)">
-          <!-- ── Nome + Tipo ── -->
-          <div class="row q-col-gutter-xs q-px-sm q-pt-sm">
-            <div class="col-12 col-sm-8">
-              <brew-pilot-input v-model="step.name" label="Nome" dense />
-            </div>
-            <div class="col-12 col-sm-4">
-              <brew-pilot-select
-                v-model="step.stepType"
-                :options="stepTypeOptions"
-                emit-value
-                map-options
-                label="Tipo"
-                dense
-              />
-            </div>
-          </div>
-
-          <!-- ── Descrição ── -->
-          <div class="q-px-sm q-pt-xs q-pb-xs">
-            <brew-pilot-input
-              v-model="step.description"
-              type="textarea"
-              autogrow
-              label="Descrição (opcional)"
-              input-style="min-height: 28px; font-size: 12px"
-              dense
-            />
-          </div>
-
-          <!-- ── Dados em 2 colunas ── -->
-          <div class="row q-px-sm q-pb-sm" style="gap: 8px; flex-wrap: nowrap">
-            <!-- Coluna Etapa -->
-            <div class="col">
-              <div class="mash-step-section-label">Etapa</div>
-              <div class="column" style="gap: 6px">
-                <brew-pilot-input
-                  v-model.number="step.temperature"
-                  type="number"
-                  step="0.5"
-                  label="Temperatura"
-                  suffix="°C"
-                  dense
-                />
-                <brew-pilot-input
-                  v-model.number="step.time"
-                  type="number"
-                  step="1"
-                  label="Tempo"
-                  suffix="min"
-                  dense
-                />
-                <brew-pilot-input
-                  v-model.number="step.rampDuration"
-                  type="number"
-                  step="1"
-                  label="Tempo de Rampa"
-                  suffix="min"
-                  dense
-                />
+            <!-- ── Nome + Tipo ── -->
+            <div class="row q-col-gutter-xs q-px-sm q-pt-sm">
+              <div class="col-12 col-sm-8">
+                <brew-pilot-input v-model="step.name" label="Nome" dense />
+              </div>
+              <div class="col-12 col-sm-4">
+                <brew-pilot-select v-model="step.stepType" :options="stepTypeOptions" emit-value map-options
+                  label="Tipo" dense />
               </div>
             </div>
-            <!-- Coluna Infusão (oculta para Decoction) -->
-            <div v-if="step.stepType !== 'Decoction'" class="col mash-step-section--infusion">
-              <div class="mash-step-section-label">Infusão</div>
-              <div class="column" style="gap: 6px">
-                <brew-pilot-input
-                  v-if="step.stepType === 'Infusion'"
-                  v-model.number="step.infuseAmount"
-                  type="number"
-                  step="0.1"
-                  label="Água a adicionar"
-                  suffix="L"
-                  dense
-                />
-                <brew-pilot-input
-                  v-model.number="step.waterRatio"
-                  type="number"
-                  step="0.1"
-                  label="Água/Grão"
-                  suffix="L/kg"
-                  dense
-                />
-                <brew-pilot-input
-                  v-if="step.stepType === 'Infusion'"
-                  v-model.number="step.infusionTemperature"
-                  type="number"
-                  step="0.5"
-                  label="Temp. Infusão"
-                  suffix="°C"
-                  dense
-                />
+
+            <!-- ── Descrição ── -->
+            <div class="q-px-sm q-pt-xs q-pb-xs">
+              <brew-pilot-input v-model="step.description" type="textarea" autogrow label="Descrição (opcional)"
+                input-style="min-height: 28px; font-size: 12px" dense />
+            </div>
+
+            <!-- ── Dados em 2 colunas ── -->
+            <div class="row q-px-sm q-pb-sm" style="gap: 8px; flex-wrap: nowrap">
+              <!-- Coluna Etapa -->
+              <div class="col">
+                <div class="mash-step-section-label">Etapa</div>
+                <div class="column" style="gap: 6px">
+                  <brew-pilot-input v-model.number="step.temperature" type="number" step="0.5" label="Temperatura"
+                    suffix="°C" dense />
+                  <brew-pilot-input v-model.number="step.time" type="number" step="1" label="Tempo" suffix="min"
+                    dense />
+                  <brew-pilot-input v-model.number="step.rampDuration" type="number" step="1" label="Tempo de Rampa"
+                    suffix="min" dense />
+                </div>
+              </div>
+              <!-- Coluna Infusão (oculta para Decoction) -->
+              <div v-if="step.stepType !== 'Decoction'" class="col mash-step-section--infusion">
+                <div class="mash-step-section-label">Infusão</div>
+                <div class="column" style="gap: 6px">
+                  <brew-pilot-input v-if="step.stepType === 'Infusion'" v-model.number="step.infuseAmount" type="number"
+                    step="0.1" label="Água a adicionar" suffix="L" dense />
+                  <brew-pilot-input v-model.number="step.waterRatio" type="number" step="0.1" label="Água/Grão"
+                    suffix="L/kg" dense />
+                  <brew-pilot-input v-if="step.stepType === 'Infusion'" v-model.number="step.infusionTemperature"
+                    type="number" step="0.5" label="Temp. Infusão" suffix="°C" dense />
+                </div>
               </div>
             </div>
-          </div>
           </div><!-- end collapsible body -->
         </div>
 
         <!-- Botão adicionar etapa -->
-        <brew-pilot-button
-          variant="outline"
-          no-caps
-          class="full-width mash-add-btn"
-          icon="mdi-plus"
-          label="Adicionar Etapa"
-          @click="addStep"
-        />
+        <brew-pilot-button variant="outline" no-caps class="full-width mash-add-btn" icon="mdi-plus"
+          label="Adicionar Etapa" @click="addStep" />
       </brew-pilot-form-section>
       <!-- ── Sparging & BIAB ───────────────────────────────────── -->
       <brew-pilot-form-section title="Sparging &amp; BIAB" collapsible :initial-collapsed="true">
@@ -291,12 +184,8 @@
           </div>
           <div v-if="form.batchSparge" class="row items-center q-col-gutter-sm q-pl-sm">
             <div class="col-auto">
-              <brew-pilot-input
-                v-model.number="form.batchSpargePercent"
-                type="number" step="1"
-                label="Encher" suffix="%"
-                dense style="width: 110px"
-              />
+              <brew-pilot-input v-model.number="form.batchSpargePercent" type="number" step="1" label="Encher"
+                suffix="%" dense style="width: 110px" />
             </div>
             <div class="col-auto column" style="gap: 4px; padding-top: 4px">
               <q-toggle v-model="form.equalBatchSizes" dense label="Lotes de volume igual" />
@@ -309,62 +198,120 @@
           </div>
           <div v-if="form.biab" class="row items-center q-col-gutter-sm q-pl-sm">
             <div class="col-auto">
-              <brew-pilot-input
-                v-model.number="form.biabBoilVolume"
-                type="number" step="0.1"
-                label="Volume base de fervura" suffix="L"
-                dense style="width: 200px"
-              />
+              <brew-pilot-input v-model.number="form.biabBoilVolume" type="number" step="0.1"
+                label="Volume base de fervura" suffix="L" dense style="width: 200px" />
             </div>
           </div>
         </div>
       </brew-pilot-form-section>
       <!-- ── Resumo ─────────────────────────────────────────────────── -->
       <div v-if="form.steps.length" class="mash-summary">
-        <div class="mash-summary-item">
-          <span class="mash-summary-label">Etapas</span>
-          <span class="mash-summary-value">{{ form.steps.length }}</span>
+        <!-- Linha 1: métricas -->
+        <div class="mash-summary-row">
+          <div class="mash-summary-item">
+            <div class="mash-summary-icon-row">
+              <q-icon name="mdi-format-list-numbered" size="13px" />
+              <brew-pilot-label variant="muted" size="9px">Etapas</brew-pilot-label>
+            </div>
+            <brew-pilot-label variant="value" size="13px" class="text-weight-bold">{{ form.steps.length
+              }}</brew-pilot-label>
+          </div>
+          <div class="mash-summary-divider" />
+          <div class="mash-summary-item">
+            <div class="mash-summary-icon-row">
+              <q-icon name="mdi-clock-outline" size="13px" />
+              <brew-pilot-label variant="muted" size="9px">Tempo total</brew-pilot-label>
+            </div>
+            <brew-pilot-label variant="value" size="13px" class="text-weight-bold">{{ totalTime }}
+              min</brew-pilot-label>
+          </div>
+          <div v-if="totalRamp > 0" class="mash-summary-divider" />
+          <div v-if="totalRamp > 0" class="mash-summary-item">
+            <div class="mash-summary-icon-row">
+              <q-icon name="mdi-trending-up" size="13px" />
+              <brew-pilot-label variant="muted" size="9px">Rampa total</brew-pilot-label>
+            </div>
+            <brew-pilot-label variant="value" size="13px" class="text-weight-bold">{{ totalRamp }}
+              min</brew-pilot-label>
+          </div>
+          <div class="mash-summary-divider" />
+          <div class="mash-summary-item">
+            <div class="mash-summary-icon-row">
+              <q-icon name="mdi-thermometer" size="13px" />
+              <brew-pilot-label variant="muted" size="9px">Faixa de temp.</brew-pilot-label>
+            </div>
+            <brew-pilot-label variant="value" size="13px" class="text-weight-bold">{{ tempRange }}</brew-pilot-label>
+          </div>
+          <div class="mash-summary-divider" />
+          <div class="mash-summary-item">
+            <div class="mash-summary-icon-row">
+              <q-icon name="mdi-timer-outline" size="13px" />
+              <brew-pilot-label variant="muted" size="9px">Tempo c/ rampas</brew-pilot-label>
+            </div>
+            <brew-pilot-label variant="value" size="13px" class="text-weight-bold">{{ totalTime + totalRamp }}
+              min</brew-pilot-label>
+          </div>
+          <div class="mash-summary-divider" />
+          <div class="mash-summary-item">
+            <div class="mash-summary-icon-row">
+              <q-icon name="mdi-av-timer" size="13px" />
+              <brew-pilot-label variant="muted" size="9px">Méd/etapa</brew-pilot-label>
+            </div>
+            <brew-pilot-label variant="value" size="13px" class="text-weight-bold">{{ avgStepTime }}
+              min</brew-pilot-label>
+          </div>
         </div>
-        <div class="mash-summary-item">
-          <span class="mash-summary-label">Tempo total</span>
-          <span class="mash-summary-value">{{ totalTime }} min</span>
-        </div>
-        <div class="mash-summary-item">
-          <span class="mash-summary-label">Rampa total</span>
-          <span class="mash-summary-value">{{ totalRamp }} min</span>
-        </div>
-        <div class="mash-summary-item">
-          <span class="mash-summary-label">Faixa de temp.</span>
-          <span class="mash-summary-value">{{ tempRange }}</span>
-        </div>
+        <!-- Linha 2: tipos de etapa -->
+        <template v-if="summaryStepTypes.length">
+          <q-separator style="margin: 6px 8px" />
+          <div class="mash-summary-row mash-summary-row--types">
+            <div class="mash-summary-item" style="flex: 0 0 auto">
+              <div class="mash-summary-icon-row">
+                <q-icon name="mdi-water-plus" size="13px" />
+                <brew-pilot-label variant="muted" size="9px">Tipos de etapa</brew-pilot-label>
+              </div>
+              <div class="row items-center" style="gap: 5px; margin-top: 4px; flex-wrap: nowrap">
+                <span v-for="t in summaryStepTypes" :key="t.label" class="mash-type-chip"
+                  :style="{ background: t.bg, color: t.fg, borderColor: t.border }">
+                  <q-icon :name="t.icon" size="11px" style="margin-right: 3px" />{{ t.label }}
+                </span>
+              </div>
+            </div>
+            <q-space />
+            <template v-if="stepsWithRampCount > 0">
+              <div class="mash-summary-divider" />
+              <div class="mash-summary-item" style="flex: 0 0 auto">
+                <div class="mash-summary-icon-row">
+                  <q-icon name="mdi-stairs-up" size="13px" />
+                  <brew-pilot-label variant="muted" size="9px">C/ rampa</brew-pilot-label>
+                </div>
+                <brew-pilot-label variant="value" size="13px" class="text-weight-bold">
+                  {{ stepsWithRampCount }} etapa{{ stepsWithRampCount > 1 ? 's' : '' }}
+                </brew-pilot-label>
+              </div>
+            </template>
+            <div class="mash-summary-divider" />
+            <div class="mash-summary-item" style="flex: 0 0 auto">
+              <div class="mash-summary-icon-row">
+                <q-icon name="mdi-thermometer-lines" size="13px" />
+                <brew-pilot-label variant="muted" size="9px">Temp. média</brew-pilot-label>
+              </div>
+              <brew-pilot-label variant="value" size="13px" class="text-weight-bold">{{ avgTemp }} °C</brew-pilot-label>
+            </div>
+          </div>
+        </template>
       </div>
 
     </div>
 
     <template #footer>
       <div class="row items-center q-px-md q-py-sm" style="gap: 8px">
-        <brew-pilot-button
-          v-if="isEditing"
-          variant="outline"
-          no-caps
-          label="Copiar"
-          icon="mdi-content-copy"
-          size="sm"
-          :disable="saving"
-          @click="copyProfile"
-        />
+        <brew-pilot-button v-if="isEditing" variant="outline" no-caps label="Copiar" icon="mdi-content-copy" size="sm"
+          :disable="saving" @click="copyProfile" />
         <q-space />
         <brew-pilot-button variant="outline" no-caps label="Cancelar" :disable="saving" @click="open = false" />
-        <brew-pilot-button
-          variant="filled"
-          color="primary"
-          no-caps
-          :label="isEditing ? 'Salvar' : 'Criar Perfil'"
-          icon="mdi-content-save"
-          :loading="saving"
-          :disable="saving"
-          @click="save"
-        />
+        <brew-pilot-button variant="filled" color="primary" no-caps :label="isEditing ? 'Salvar' : 'Criar Perfil'"
+          icon="mdi-content-save" :loading="saving" :disable="saving" @click="save" />
       </div>
     </template>
   </brew-pilot-dialog>
@@ -409,17 +356,17 @@ function defaultForm() {
     name: '',
     notes: '',
     isDefault: false,
-    grainTemperature:  undefined as number | undefined,
-    tunTemperature:    undefined as number | undefined,
+    grainTemperature: undefined as number | undefined,
+    tunTemperature: undefined as number | undefined,
     spargeTemperature: undefined as number | undefined,
     // Sparging
-    batchSparge:        false,
+    batchSparge: false,
     batchSpargePercent: 100,
-    equalBatchSizes:    false,
-    drainBeforeSparge:  false,
+    equalBatchSizes: false,
+    drainBeforeSparge: false,
     // BIAB
-    biab:               false,
-    biabBoilVolume:     undefined as number | undefined,
+    biab: false,
+    biabBoilVolume: undefined as number | undefined,
     steps: [] as MashProfileStep[],
   }
 }
@@ -430,38 +377,40 @@ watch(() => props.modelValue, v => { if (v) initForm() }, { immediate: true })
 
 function initForm() {
   const base = props.baseProfile
-  if (base && !base.isDefault) {
+  if (base && base.id) {
+    // Edição — perfil com id real (padrão ou não)
     editingId.value = base.id
     form.value = {
       name: base.name,
       notes: base.notes ?? '',
       isDefault: base.isDefault ?? false,
-      grainTemperature:  base.grainTemperature,
-      tunTemperature:    base.tunTemperature,
+      grainTemperature: base.grainTemperature,
+      tunTemperature: base.tunTemperature,
       spargeTemperature: base.spargeTemperature,
-      batchSparge:        base.batchSparge ?? false,
+      batchSparge: base.batchSparge ?? false,
       batchSpargePercent: base.batchSpargePercent ?? 100,
-      equalBatchSizes:    base.equalBatchSizes ?? false,
-      drainBeforeSparge:  base.drainBeforeSparge ?? false,
-      biab:               base.biab ?? false,
-      biabBoilVolume:     base.biabBoilVolume,
+      equalBatchSizes: base.equalBatchSizes ?? false,
+      drainBeforeSparge: base.drainBeforeSparge ?? false,
+      biab: base.biab ?? false,
+      biabBoilVolume: base.biabBoilVolume,
       steps: base.steps.map(s => ({ ...s })),
     }
-  } else if (base && base.isDefault) {
+  } else if (base && !base.id) {
+    // Duplicação — id vazio sinaliza criação a partir de base
     editingId.value = null
     form.value = {
-      name: base.name + ' (Meu)',
+      name: base.name,
       notes: base.notes ?? '',
       isDefault: false,
-      grainTemperature:  base.grainTemperature,
-      tunTemperature:    base.tunTemperature,
+      grainTemperature: base.grainTemperature,
+      tunTemperature: base.tunTemperature,
       spargeTemperature: base.spargeTemperature,
-      batchSparge:        base.batchSparge ?? false,
+      batchSparge: base.batchSparge ?? false,
       batchSpargePercent: base.batchSpargePercent ?? 100,
-      equalBatchSizes:    base.equalBatchSizes ?? false,
-      drainBeforeSparge:  base.drainBeforeSparge ?? false,
-      biab:               base.biab ?? false,
-      biabBoilVolume:     base.biabBoilVolume,
+      equalBatchSizes: base.equalBatchSizes ?? false,
+      drainBeforeSparge: base.drainBeforeSparge ?? false,
+      biab: base.biab ?? false,
+      biabBoilVolume: base.biabBoilVolume,
       steps: base.steps.map(s => ({ ...s, id: crypto.randomUUID() })),
     }
   } else {
@@ -472,27 +421,27 @@ function initForm() {
 
 // ── Step types ─────────────────────────────────────────────────────────────
 const stepTypeOptions = [
-  { label: 'Infusão',    value: 'Infusion'    },
+  { label: 'Infusão', value: 'Infusion' },
   { label: 'Temperatura', value: 'Temperature' },
-  { label: 'Decocção',   value: 'Decoction'   },
+  { label: 'Decocção', value: 'Decoction' },
 ]
 
 const stepTypeLabels: Record<MashStepType, string> = {
-  Infusion:    'Infusão',
+  Infusion: 'Infusão',
   Temperature: 'Temperatura',
-  Decoction:   'Decocção',
+  Decoction: 'Decocção',
 }
 
 const stepTypeColors: Record<MashStepType, string> = {
-  Infusion:    'blue-7',
+  Infusion: 'blue-7',
   Temperature: 'orange-7',
-  Decoction:   'red-7',
+  Decoction: 'red-7',
 }
 
 const stepTypeIcons: Record<MashStepType, string> = {
-  Infusion:    'mdi-water-plus',
+  Infusion: 'mdi-water-plus',
   Temperature: 'mdi-thermometer',
-  Decoction:   'mdi-pot-steam-outline',
+  Decoction: 'mdi-pot-steam-outline',
 }
 
 function stepTypeLabel(type: MashStepType) { return stepTypeLabels[type] ?? type }
@@ -525,7 +474,7 @@ function moveStep(i: number, dir: -1 | 1) {
   const j = i + dir
   if (j < 0 || j >= form.value.steps.length) return
   const steps = [...form.value.steps]
-  ;[steps[i], steps[j]] = [steps[j], steps[i]]
+    ;[steps[i], steps[j]] = [steps[j], steps[i]]
   steps.forEach((s, idx) => { s.stepNumber = idx })
   form.value.steps = steps
 }
@@ -550,7 +499,17 @@ function expandAllSteps() {
 
 // ── Summary ───────────────────────────────────────────────────────────────
 const totalTime = computed(() => form.value.steps.reduce((sum, s) => sum + (s.time ?? 0), 0))
-const totalRamp = computed(() => form.value.steps.reduce((sum, s) => sum + (s.rampTime ?? 0), 0))
+const totalRamp = computed(() => form.value.steps.reduce((sum, s) => sum + (s.rampDuration ?? 0), 0))
+const avgStepTime = computed(() =>
+  form.value.steps.length ? Math.round(totalTime.value / form.value.steps.length) : 0
+)
+const stepsWithRampCount = computed(() =>
+  form.value.steps.filter(s => (s.rampDuration ?? 0) > 0).length
+)
+const avgTemp = computed(() => {
+  if (!form.value.steps.length) return 0
+  return Math.round(form.value.steps.reduce((sum, s) => sum + s.temperature, 0) / form.value.steps.length)
+})
 const tempRange = computed(() => {
   if (!form.value.steps.length) return '—'
   const temps = form.value.steps.map(s => s.temperature)
@@ -558,7 +517,14 @@ const tempRange = computed(() => {
   const max = Math.max(...temps)
   return min === max ? `${min} °C` : `${min}–${max} °C`
 })
-
+const summaryStepTypes = computed(() => {
+  const types = new Set(form.value.steps.map(s => s.stepType))
+  const result: { label: string; icon: string; bg: string; fg: string; border: string }[] = []
+  if (types.has('Infusion')) result.push({ label: 'Infusão', icon: 'mdi-water', bg: 'rgba(33,150,243,0.12)', fg: '#1565c0', border: 'rgba(33,150,243,0.28)' })
+  if (types.has('Temperature')) result.push({ label: 'Temp.', icon: 'mdi-thermometer', bg: 'rgba(230,130,10,0.12)', fg: '#b45309', border: 'rgba(230,130,10,0.28)' })
+  if (types.has('Decoction')) result.push({ label: 'Decocção', icon: 'mdi-fire', bg: 'rgba(211,47,47,0.12)', fg: '#b71c1c', border: 'rgba(211,47,47,0.28)' })
+  return result
+})
 // ── Presets ───────────────────────────────────────────────────────────────
 const mashPresets = [
   {
@@ -566,7 +532,7 @@ const mashPresets = [
     desc: '63°C · 60 min + Mash Out 77°C',
     icon: 'mdi-thermometer-low',
     steps: [
-      { name: 'Mash In',  stepType: 'Infusion'    as MashStepType, temperature: 63, time: 60, rampDuration: 0  },
+      { name: 'Mash In', stepType: 'Infusion' as MashStepType, temperature: 63, time: 60, rampDuration: 0 },
       { name: 'Mash Out', stepType: 'Temperature' as MashStepType, temperature: 77, time: 10, rampDuration: 10 },
     ],
   },
@@ -575,7 +541,7 @@ const mashPresets = [
     desc: '67°C · 75 min + Mash Out 77°C',
     icon: 'mdi-thermometer',
     steps: [
-      { name: 'Mash In',  stepType: 'Infusion'    as MashStepType, temperature: 67, time: 75, rampDuration: 0  },
+      { name: 'Mash In', stepType: 'Infusion' as MashStepType, temperature: 67, time: 75, rampDuration: 0 },
       { name: 'Mash Out', stepType: 'Temperature' as MashStepType, temperature: 77, time: 10, rampDuration: 10 },
     ],
   },
@@ -584,7 +550,7 @@ const mashPresets = [
     desc: '70°C · 75 min + Mash Out 77°C',
     icon: 'mdi-thermometer-high',
     steps: [
-      { name: 'Mash In',  stepType: 'Infusion'    as MashStepType, temperature: 70, time: 75, rampDuration: 0  },
+      { name: 'Mash In', stepType: 'Infusion' as MashStepType, temperature: 70, time: 75, rampDuration: 0 },
       { name: 'Mash Out', stepType: 'Temperature' as MashStepType, temperature: 77, time: 10, rampDuration: 10 },
     ],
   },
@@ -593,10 +559,10 @@ const mashPresets = [
     desc: '52°C·20min → 65°C·40min → 72°C·20min + Mash Out',
     icon: 'mdi-stairs-up',
     steps: [
-      { name: 'Protein Rest',    stepType: 'Infusion'    as MashStepType, temperature: 52, time: 20, rampDuration: 0  },
-      { name: 'Beta Sacch.',     stepType: 'Temperature' as MashStepType, temperature: 65, time: 40, rampDuration: 15 },
-      { name: 'Alpha Sacch.',    stepType: 'Temperature' as MashStepType, temperature: 72, time: 20, rampDuration: 10 },
-      { name: 'Mash Out',        stepType: 'Temperature' as MashStepType, temperature: 77, time: 10, rampDuration: 8  },
+      { name: 'Protein Rest', stepType: 'Infusion' as MashStepType, temperature: 52, time: 20, rampDuration: 0 },
+      { name: 'Beta Sacch.', stepType: 'Temperature' as MashStepType, temperature: 65, time: 40, rampDuration: 15 },
+      { name: 'Alpha Sacch.', stepType: 'Temperature' as MashStepType, temperature: 72, time: 20, rampDuration: 10 },
+      { name: 'Mash Out', stepType: 'Temperature' as MashStepType, temperature: 77, time: 10, rampDuration: 8 },
     ],
   },
   {
@@ -604,11 +570,11 @@ const mashPresets = [
     desc: '35°C·15min → 52°C·20min → 64°C·40min → 72°C·20min + Mash Out',
     icon: 'mdi-snowflake',
     steps: [
-      { name: 'Acid Rest',       stepType: 'Infusion'    as MashStepType, temperature: 35, time: 15, rampDuration: 0  },
-      { name: 'Protein Rest',    stepType: 'Temperature' as MashStepType, temperature: 52, time: 20, rampDuration: 15 },
-      { name: 'Beta Sacch.',     stepType: 'Temperature' as MashStepType, temperature: 64, time: 40, rampDuration: 15 },
-      { name: 'Alpha Sacch.',    stepType: 'Temperature' as MashStepType, temperature: 72, time: 20, rampDuration: 10 },
-      { name: 'Mash Out',        stepType: 'Temperature' as MashStepType, temperature: 77, time: 10, rampDuration: 8  },
+      { name: 'Acid Rest', stepType: 'Infusion' as MashStepType, temperature: 35, time: 15, rampDuration: 0 },
+      { name: 'Protein Rest', stepType: 'Temperature' as MashStepType, temperature: 52, time: 20, rampDuration: 15 },
+      { name: 'Beta Sacch.', stepType: 'Temperature' as MashStepType, temperature: 64, time: 40, rampDuration: 15 },
+      { name: 'Alpha Sacch.', stepType: 'Temperature' as MashStepType, temperature: 72, time: 20, rampDuration: 10 },
+      { name: 'Mash Out', stepType: 'Temperature' as MashStepType, temperature: 77, time: 10, rampDuration: 8 },
     ],
   },
   {
@@ -616,8 +582,8 @@ const mashPresets = [
     desc: 'Infusão 67°C · 45min + Decocção para Mash Out',
     icon: 'mdi-fire',
     steps: [
-      { name: 'Mash In',      stepType: 'Infusion'  as MashStepType, temperature: 67, time: 45, rampDuration: 0  },
-      { name: 'Decocção',     stepType: 'Decoction' as MashStepType, temperature: 77, time: 20, rampDuration: 0  },
+      { name: 'Mash In', stepType: 'Infusion' as MashStepType, temperature: 67, time: 45, rampDuration: 0 },
+      { name: 'Decocção', stepType: 'Decoction' as MashStepType, temperature: 77, time: 20, rampDuration: 0 },
     ],
   },
 ]
@@ -641,15 +607,15 @@ async function save() {
       name: form.value.name,
       notes: form.value.notes || undefined,
       isDefault: form.value.isDefault,
-      grainTemperature:  form.value.grainTemperature,
-      tunTemperature:    form.value.tunTemperature,
+      grainTemperature: form.value.grainTemperature,
+      tunTemperature: form.value.tunTemperature,
       spargeTemperature: form.value.spargeTemperature,
-      batchSparge:        form.value.batchSparge || undefined,
+      batchSparge: form.value.batchSparge || undefined,
       batchSpargePercent: form.value.batchSparge ? form.value.batchSpargePercent : undefined,
-      equalBatchSizes:    form.value.batchSparge ? form.value.equalBatchSizes : undefined,
-      drainBeforeSparge:  form.value.batchSparge ? form.value.drainBeforeSparge : undefined,
-      biab:               form.value.biab || undefined,
-      biabBoilVolume:     form.value.biab ? form.value.biabBoilVolume : undefined,
+      equalBatchSizes: form.value.batchSparge ? form.value.equalBatchSizes : undefined,
+      drainBeforeSparge: form.value.batchSparge ? form.value.drainBeforeSparge : undefined,
+      biab: form.value.biab || undefined,
+      biabBoilVolume: form.value.biab ? form.value.biabBoilVolume : undefined,
       steps: form.value.steps.map((s, i) => ({ ...s, stepNumber: i })),
     }
     let saved: MashProfile
@@ -680,7 +646,7 @@ function copyProfile() {
   background: var(--bp-surface-alt);
   border: 1px solid var(--bp-border);
   border-radius: 8px;
-  padding: 12px 16px 8px;
+  padding: 0px 0px 10px;
 }
 
 .mash-step-card {
@@ -721,33 +687,63 @@ function copyProfile() {
 
 .mash-summary {
   display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 0;
   background: var(--bp-surface-alt);
   border: 1px solid var(--bp-border);
   border-radius: 8px;
-  padding: 8px 14px;
+  padding: 8px 4px;
   margin-top: 4px;
+}
+
+.mash-summary-row {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 0;
+}
+
+.mash-summary-row--types {
+  padding: 2px 0;
 }
 
 .mash-summary-item {
   display: flex;
   flex-direction: column;
-  gap: 1px;
+  gap: 2px;
+  padding: 0 12px;
 }
 
-.mash-summary-label {
-  font-size: 9px;
-  font-weight: 500;
+.mash-summary-icon-row {
+  display: flex;
+  align-items: center;
+  gap: 3px;
   color: var(--bp-text-muted);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
-.mash-summary-value {
-  font-size: 13px;
+.mash-summary-divider {
+  width: 1px;
+  height: 28px;
+  background: var(--bp-border);
+  flex-shrink: 0;
+}
+
+.mash-type-chip {
+  display: inline-flex;
+  align-items: center;
+  font-size: 10px;
   font-weight: 600;
-  color: var(--bp-text-primary);
+  border-radius: 99px;
+  border: 1px solid;
+  padding: 1px 8px 1px 6px;
+  white-space: nowrap;
+  line-height: 18px;
+}
+
+.body--dark .mash-type-chip {
+  filter: brightness(1.5) saturate(0.7);
 }
 
 .mash-preset-header {

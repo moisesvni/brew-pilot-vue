@@ -67,12 +67,6 @@ const leftDrawerOpen = ref(false)
 const navLinks = [
   { label: 'Receitas', icon: 'mdi-note-text', to: '/recipes' },
   { label: 'Lotes', icon: 'mdi-barrel', to: '/batches' },
-  {
-    label: 'Estilos BJCP',
-    caption: 'Guia de estilos',
-    icon: 'mdi-flask',
-    to: '/styles'
-  },
   { label: 'Dispositivos', icon: 'mdi-wifi', to: '/devices' },
   { label: 'Estoque', icon: 'mdi-package-variant', to: '/inventory' },
   { label: 'Biblioteca', icon: 'mdi-cloud-outline', to: '/library' },

@@ -1,20 +1,13 @@
 <template>
-  <q-page class="profiles-page">
+  <brew-pilot-page>
     <brew-pilot-page-header icon="mdi-kettle" title="Perfis de Equipamento" :bleed="false">
       <template #actions>
-        <brew-pilot-button
-          variant="filled"
-          color="primary"
-          no-caps
-          icon="mdi-plus"
-          label="Criar Perfil"
-          :disable="!equipStore.canAddMore"
-          @click="openCreate"
-        />
+        <brew-pilot-button variant="filled" color="primary" no-caps icon="mdi-plus" label="Criar Perfil"
+          :disable="!equipStore.canAddMore" @click="openCreate" />
       </template>
     </brew-pilot-page-header>
 
-    <div class="profiles-content">
+    <div class="q-pa-md">
       <!-- Banner limite Free -->
       <div v-if="!equipStore.canAddMore" class="eq-limit-banner q-mb-md">
         <q-icon name="mdi-lock-outline" size="14px" class="q-mr-xs" />
@@ -49,20 +42,30 @@
                   </q-icon>
                 </div>
                 <div class="eq-stats-grid">
-                  <div class="eq-stat"><span class="eq-stat-label">Lote</span><span class="eq-stat-value">{{ p.batchVolume }} L</span></div>
-                  <div class="eq-stat"><span class="eq-stat-label">Pré-Fervura</span><span class="eq-stat-value">{{ p.preBoilVolume }} L</span></div>
-                  <div class="eq-stat"><span class="eq-stat-label">Fervura</span><span class="eq-stat-value">{{ p.boilTime }} min</span></div>
-                  <div class="eq-stat"><span class="eq-stat-label">Eficiência</span><span class="eq-stat-value">{{ p.efficiency }}%</span></div>
-                  <div class="eq-stat"><span class="eq-stat-label">Ef. Mostura</span><span class="eq-stat-value">{{ p.mashEfficiency }}%</span></div>
-                  <div class="eq-stat"><span class="eq-stat-label">Evaporação</span><span class="eq-stat-value">{{ p.boilOffRate }} L/h</span></div>
-                  <div class="eq-stat"><span class="eq-stat-label">Perda Trub</span><span class="eq-stat-value">{{ p.trubLoss }} L</span></div>
-                  <div class="eq-stat"><span class="eq-stat-label">Perda Ferm.</span><span class="eq-stat-value">{{ p.fermentorLoss }} L</span></div>
-                  <div v-if="p.hopUtilization" class="eq-stat"><span class="eq-stat-label">Util. Lúpulo</span><span class="eq-stat-value">{{ p.hopUtilization }}%</span></div>
+                  <div class="eq-stat"><span class="eq-stat-label">Lote</span><span class="eq-stat-value">{{
+                      p.batchVolume }} L</span></div>
+                  <div class="eq-stat"><span class="eq-stat-label">Pré-Fervura</span><span class="eq-stat-value">{{
+                      p.preBoilVolume }} L</span></div>
+                  <div class="eq-stat"><span class="eq-stat-label">Fervura</span><span class="eq-stat-value">{{
+                      p.boilTime }} min</span></div>
+                  <div class="eq-stat"><span class="eq-stat-label">Eficiência</span><span class="eq-stat-value">{{
+                      p.efficiency }}%</span></div>
+                  <div class="eq-stat"><span class="eq-stat-label">Ef. Mostura</span><span class="eq-stat-value">{{
+                    p.mashEfficiency }}%</span></div>
+                  <div class="eq-stat"><span class="eq-stat-label">Evaporação</span><span class="eq-stat-value">{{
+                      p.boilOffRate }} L/h</span></div>
+                  <div class="eq-stat"><span class="eq-stat-label">Perda Trub</span><span class="eq-stat-value">{{
+                      p.trubLoss }} L</span></div>
+                  <div class="eq-stat"><span class="eq-stat-label">Perda Ferm.</span><span class="eq-stat-value">{{
+                      p.fermentorLoss }} L</span></div>
+                  <div v-if="p.hopUtilization" class="eq-stat"><span class="eq-stat-label">Util. Lúpulo</span><span
+                      class="eq-stat-value">{{ p.hopUtilization }}%</span></div>
                 </div>
                 <div v-if="p.notes" class="eq-notes q-mt-xs">{{ p.notes }}</div>
               </div>
               <div class="row q-gutter-xs flex-shrink-0 q-ml-sm">
-                <q-btn flat round dense size="sm" icon="mdi-export-variant" color="grey-5" @click="equipStore.exportProfile(p)">
+                <q-btn flat round dense size="sm" icon="mdi-export-variant" color="grey-5"
+                  @click="equipStore.exportProfile(p)">
                   <q-tooltip>Exportar como JSON</q-tooltip>
                 </q-btn>
                 <q-btn flat round dense size="sm" icon="mdi-pencil" color="grey-5" @click="openEdit(p)">
@@ -81,7 +84,8 @@
         </div>
         <div v-else class="text-caption q-mb-xl" style="color: var(--bp-text-muted)">
           Nenhum perfil personalizado ainda.
-          <span v-if="equipStore.canAddMore" class="cursor-pointer eq-limit-link" @click="openCreate">Criar o primeiro →</span>
+          <span v-if="equipStore.canAddMore" class="cursor-pointer eq-limit-link" @click="openCreate">Criar o primeiro
+            →</span>
         </div>
 
         <!-- Perfis Padrão -->
@@ -98,12 +102,18 @@
                   </q-icon>
                 </div>
                 <div class="eq-stats-grid q-mt-sm">
-                  <div class="eq-stat"><span class="eq-stat-label">Lote</span><span class="eq-stat-value">{{ p.batchVolume }} L</span></div>
-                  <div class="eq-stat"><span class="eq-stat-label">Pré-Fervura</span><span class="eq-stat-value">{{ p.preBoilVolume }} L</span></div>
-                  <div class="eq-stat"><span class="eq-stat-label">Fervura</span><span class="eq-stat-value">{{ p.boilTime }} min</span></div>
-                  <div class="eq-stat"><span class="eq-stat-label">Eficiência</span><span class="eq-stat-value">{{ p.efficiency }}%</span></div>
-                  <div class="eq-stat"><span class="eq-stat-label">Ef. Mostura</span><span class="eq-stat-value">{{ p.mashEfficiency }}%</span></div>
-                  <div class="eq-stat"><span class="eq-stat-label">Evaporação</span><span class="eq-stat-value">{{ p.boilOffRate }} L/h</span></div>
+                  <div class="eq-stat"><span class="eq-stat-label">Lote</span><span class="eq-stat-value">{{
+                      p.batchVolume }} L</span></div>
+                  <div class="eq-stat"><span class="eq-stat-label">Pré-Fervura</span><span class="eq-stat-value">{{
+                      p.preBoilVolume }} L</span></div>
+                  <div class="eq-stat"><span class="eq-stat-label">Fervura</span><span class="eq-stat-value">{{
+                      p.boilTime }} min</span></div>
+                  <div class="eq-stat"><span class="eq-stat-label">Eficiência</span><span class="eq-stat-value">{{
+                      p.efficiency }}%</span></div>
+                  <div class="eq-stat"><span class="eq-stat-label">Ef. Mostura</span><span class="eq-stat-value">{{
+                    p.mashEfficiency }}%</span></div>
+                  <div class="eq-stat"><span class="eq-stat-label">Evaporação</span><span class="eq-stat-value">{{
+                      p.boilOffRate }} L/h</span></div>
                 </div>
               </div>
               <div class="flex-shrink-0 q-ml-sm">
@@ -123,13 +133,12 @@
     </div>
 
     <!-- Dialogs -->
-    <equipment-base-picker-dialog v-model="pickerDialog" @select="onPickerSelect" />
-    <edit-equipment-dialog v-model="editDialog" :base-profile="editBase"
-      :show-back-to-picker="fromPicker"
-      @back-to-picker="backToPicker"
-      @saved="onSaved" />
+    <brew-pilot-equipment-base-picker-dialog v-model="pickerDialog" @select="onPickerSelect" />
+    <brew-pilot-edit-equipment-dialog v-model="editDialog" :base-profile="editBase" :show-back-to-picker="fromPicker"
+      @back-to-picker="backToPicker" @saved="onSaved" />
 
-    <brew-pilot-dialog v-model="deleteDialog" title="Excluir Perfil" icon="mdi-delete" icon-color="negative" width="360px">
+    <brew-pilot-dialog v-model="deleteDialog" title="Excluir Perfil" icon="mdi-delete" icon-color="negative"
+      width="360px">
       <q-card-section class="q-pt-sm">
         <div style="color: var(--bp-text-secondary)">
           Deseja excluir <strong style="color: var(--bp-text-primary)">{{ deleteTarget?.name }}</strong>?
@@ -139,11 +148,12 @@
       <template #footer>
         <q-card-actions align="right" class="q-px-md q-pb-md">
           <brew-pilot-button variant="flat" no-caps label="Cancelar" @click="deleteDialog = false" />
-          <brew-pilot-button variant="filled" color="negative" no-caps label="Excluir" :loading="deleting" @click="doDelete" />
+          <brew-pilot-button variant="filled" color="negative" no-caps label="Excluir" :loading="deleting"
+            @click="doDelete" />
         </q-card-actions>
       </template>
     </brew-pilot-dialog>
-  </q-page>
+  </brew-pilot-page>
 </template>
 
 <script setup lang="ts">
@@ -195,14 +205,6 @@ async function doDelete() {
 </script>
 
 <style scoped>
-.profiles-page {
-  padding: 0;
-}
-
-.profiles-content {
-  padding: 20px 28px;
-}
-
 .section-label {
   font-size: 11px;
   font-weight: 700;
