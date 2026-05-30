@@ -5,9 +5,11 @@ export interface MashProfile {
   name: string
   notes?: string
   isDefault?: boolean
-  grainTemp?: number     // Temperatura inicial do grão (°C)
-  tunTemp?: number       // Temperatura da tina (°C)
-  spargeTemp?: number    // Temperatura de lavagem/sparging (°C)
+  grainTemperature?: number    // Temperatura inicial do grão (°C) — BeerXML: GRAIN_TEMP
+  tunTemperature?: number      // Temperatura da tina (°C) — BeerXML: TUN_TEMP
+  spargeTemperature?: number   // Temperatura de lavagem/sparging (°C) — BeerXML: SPARGE_TEMP
+  targetPh?: number            // pH alvo da mostura (4.4–5.5) — BeerXML: PH
+  spargeType?: string          // Enum: 'Default' | 'BatchSparge' | 'NoSparge' | 'NoBoilExpansion' | 'Custom'
   // Sparging
   batchSparge?: boolean
   batchSpargePercent?: number   // % de preenchimento por lote (padrão 100)

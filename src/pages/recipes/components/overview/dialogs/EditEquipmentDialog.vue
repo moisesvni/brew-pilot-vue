@@ -88,11 +88,11 @@
               <template #hint>Resíduo na panela: trub, perdas no chiller, etc.</template>
             </brew-pilot-input>
           </div>
-          <div class="col-12">
+          <div class="col-8">
             <q-checkbox v-model="form.calculateBoilVolume" dense label="Calcular volume de fervura automaticamente"
               color="primary" />
           </div>
-          <div class="col-12 col-sm-6">
+          <div class="col-12 col-sm-4">
             <brew-pilot-input
               :model-value="form.calculateBoilVolume ? calcPreBoilVol : form.preBoilVolume"
               @update:model-value="(v: string | number | null) => { if (!form.calculateBoilVolume) form.preBoilVolume = +(v ?? 0) }"
@@ -152,13 +152,48 @@
               <brew-pilot-input v-model.number="form.spargeDeadSpace" type="number" step="0.1"
                 label="Espaço Morto — Panela de Lavagem" suffix="L" />
             </div>
+
+            <!-- Editor de fórmulas personalizadas (só quando Custom) -->
+            <template v-if="form.lauterMethod === 'Custom'">
+              <div class="col-12">
+                <brew-pilot-input
+                  v-model="form.mashWaterCustomMashFormula"
+                  label="Fórmula da Água de Mostura"
+                  class="eq-formula-input"
+                />
+              </div>
+              <div class="col-12">
+                <brew-pilot-input
+                  v-model="form.mashWaterCustomSpargeFormula"
+                  label="Fórmula de Água de Lavagem"
+                  class="eq-formula-input"
+                />
+              </div>
+              <div class="col-12 row q-gutter-sm items-center">
+                <q-btn flat no-caps dense size="sm" label="Redefinir fórmulas"
+                  color="grey-6" class="text-weight-medium"
+                  @click="resetCustomFormulas" />
+                <q-btn flat no-caps dense size="sm" label="Definir fórmulas sem lavagem"
+                  color="positive" class="text-weight-medium"
+                  @click="setNoSpargeFormulas" />
+              </div>
+              <div class="col-12">
+                <div class="eq-formula-hint">
+                  As fórmulas devem retornar a quantidade de água em litros.<br>
+                  Variáveis: <code>GrainAmountKg</code>, <code>WaterGrainRatio</code>,
+                  <code>MashTunDeadSpaceL</code>, <code>GrainAbsorptionRate</code>,
+                  <code>BoilVolumeColdL</code>, <code>MashWaterL</code>,
+                  <code>MashTunLossL</code>, <code>SpargeDeadSpaceL</code>.
+                </div>
+              </div>
+            </template>
+
           </template>
 
         </div>
       </brew-pilot-form-section>
 
-      <!-- ── Painel de resumo de volumes ───────────────────────────── -->
-      <div class="q-mb-sm">
+      <!-- ── Painel de resumo de volumes
         <div class="eq-vol-summary">
           <div class="eq-vol-summary__grid">
             <template v-if="hasMash">
@@ -246,6 +281,13 @@
           <!-- Equipamento de Mostura -->
           <brew-pilot-form-section v-if="hasMash" :title="mashSectionTitle">
             <div class="row q-col-gutter-sm">
+              <!-- Descrição contextual HLT/MLT/Mash Tun -->
+              <div v-if="mashSectionDesc" class="col-12">
+                <div class="eq-setup-info">
+                  <q-icon name="mdi-information-outline" size="14px" color="primary" class="q-mr-xs flex-shrink-0" />
+                  <span>{{ mashSectionDesc }}</span>
+                </div>
+              </div>
               <template v-if="isBIAB">
                 <div class="col-12 col-sm-6">
                   <brew-pilot-input v-model.number="form.mashTunVolume" type="number" step="0.5" label="Volume da Panela"
@@ -291,11 +333,6 @@
                   label="Relação Água/Grão" suffix="L/kg">
                   <template #hint>{{ isBIAB ? 'BIAB: geralmente 3–4 L/kg (mais água = mais eficiência)' : 'Padrão: 2,5–3,5 L/kg' }}</template>
                 </brew-pilot-input>
-              </div>
-              <div v-if="!isBIAB" class="col-12 col-sm-6">
-                <brew-pilot-select v-model="form.mashWaterMethod"
-                  :options="['Padrão', 'Por Relação Água/Grão', 'Manual']"
-                  label="Cálculo da Água de Mostura" />
               </div>
             </div>
           </brew-pilot-form-section>
@@ -395,7 +432,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, nextTick } from 'vue'
 import { useQuasar } from 'quasar'
 import { useRecipeStore } from '@/stores/recipeStore'
 import { useEquipmentStore } from '@/stores/equipmentStore'
@@ -483,15 +520,50 @@ const lauterMethodOptions = [
   { label: 'No Sparge (sem lavagem)',    value: 'NoSparge'    },
   { label: 'RIMS (recirculação inline)', value: 'RIMS'        },
   { label: 'HERMS (recirculação HLT)',   value: 'HERMS'       },
+  { label: 'Personalizado',              value: 'Custom'      },
 ]
 const lauterMethodMap: Record<string, { icon: string; desc: string }> = {
-  BatchSparge: { icon: 'mdi-water-pump',   desc: 'Lavagem em batelada: toda a água de lavagem adicionada de uma vez, aguarda 10–15 min e drena. Método mais simples e rápido.' },
-  FlySparge:   { icon: 'mdi-water-sync',   desc: 'Lavagem contínua: água quente adicionada lentamente enquanto o mosto drena. Maior eficiência, requer mais atenção.' },
-  NoSparge:    { icon: 'mdi-water-off',    desc: 'Sem lavagem: toda a água na mostura, sem sparge. Menor eficiência, mais corpo e sabor de grão. Útil para cervejas encorpadas.' },
-  RIMS:        { icon: 'mdi-reload',       desc: 'RIMS (Recirculating Infusion Mash System): mosto recircula pelo MLT aquecido por tubo inline. Temperatura precisa e mosto claro.' },
-  HERMS:       { icon: 'mdi-heat-wave',    desc: 'HERMS (Heat Exchange Recirculating Mash System): recirculação com troca de calor via serpentina no HLT. Temperatura muito estável.' },
+  BatchSparge: { icon: 'mdi-water-pump',      desc: 'Lavagem em batelada: toda a água de lavagem adicionada de uma vez, aguarda 10–15 min e drena. Método mais simples e rápido.' },
+  FlySparge:   { icon: 'mdi-water-sync',      desc: 'Lavagem contínua: água quente adicionada lentamente enquanto o mosto drena. Maior eficiência, requer mais atenção.' },
+  NoSparge:    { icon: 'mdi-water-off',       desc: 'Sem lavagem: toda a água na mostura, sem sparge. Menor eficiência, mais corpo e sabor de grão. Útil para cervejas encorpadas.' },
+  RIMS:        { icon: 'mdi-reload',          desc: 'RIMS (Recirculating Infusion Mash System): mosto recircula pelo MLT aquecido por tubo inline. Temperatura precisa e mosto claro.' },
+  HERMS:       { icon: 'mdi-heat-wave',       desc: 'HERMS (Heat Exchange Recirculating Mash System): recirculação com troca de calor via serpentina no HLT. Temperatura muito estável.' },
+  Custom:      { icon: 'mdi-function-variant', desc: 'Fórmulas personalizadas: defina como a água de mostura e lavagem são calculadas.' },
 }
 const lauterInfo = computed(() => lauterMethodMap[form.value.lauterMethod ?? 'BatchSparge'] ?? null)
+
+// ── Método de cálculo da água de mostura/lavagem ──────────────────────────
+const DEFAULT_MASH_FORMULA   = '(GrainAmountKg * WaterGrainRatio) + MashTunDeadSpaceL'
+const DEFAULT_SPARGE_FORMULA = 'BoilVolumeColdL - MashWaterL + (GrainAmountKg * GrainAbsorptionRate) + MashTunLossL'
+const NO_SPARGE_FORMULA      = '(GrainAmountKg * WaterGrainRatio) + MashTunDeadSpaceL + SpargeWaterL'
+
+const mashWaterMethodOptions = [
+  { label: 'Padrão',                      value: 'Padrão' },
+  { label: 'Lavagem em Lote',             value: 'BatchSparge' },
+  { label: 'Sem Lavagem',                 value: 'NoSparge' },
+  { label: 'Sem expansão na fervura',     value: 'NoBoilExpansion' },
+  { label: 'Personalizado',               value: 'Personalizado' },
+]
+
+const mashWaterMethodInfoMap: Record<string, { icon: string; desc: string }> = {
+  Padrão:           { icon: 'mdi-water',          desc: 'Cálculo padrão: água de mostura por relação água/grão, lavagem para atingir o volume de pré-fervura.' },
+  BatchSparge:      { icon: 'mdi-water-pump',      desc: 'Lavagem em lote: mostura com relação menor e lavagem adicional em batelada.' },
+  NoSparge:         { icon: 'mdi-water-off',       desc: 'Sem lavagem: toda a água adicionada na mostura. Menor eficiência, mais corpo.' },
+  NoBoilExpansion:  { icon: 'mdi-thermometer-low', desc: 'Sem expansão na fervura: volumes calculados sem fator de expansão térmica.' },
+  Personalizado:    { icon: 'mdi-function-variant', desc: 'Fórmulas personalizadas para cálculo da água de mostura e lavagem.' },
+}
+
+const mashWaterMethodInfo = computed(() => mashWaterMethodInfoMap[form.value.mashWaterMethod ?? 'Padrão'] ?? null)
+
+function resetCustomFormulas() {
+  form.value.mashWaterCustomMashFormula   = DEFAULT_MASH_FORMULA
+  form.value.mashWaterCustomSpargeFormula = DEFAULT_SPARGE_FORMULA
+}
+
+function setNoSpargeFormulas() {
+  form.value.mashWaterCustomMashFormula   = NO_SPARGE_FORMULA
+  form.value.mashWaterCustomSpargeFormula = '0'
+}
 
 // ── Flags de capacidade por setup ─────────────────────────────────────────
 const isBIAB = computed(() => (form.value.setupType ?? 'BIAB') === 'BIAB')
@@ -506,9 +578,15 @@ const showTopUpInMain = computed(() =>
 
 const mashSectionTitle = computed(() => {
   if (isBIAB.value) return 'Panela / Configuração BIAB'
-  if (isTwoVessel.value) return 'Mash Tun'
+  if (isTwoVessel.value) return 'Mash Tun (Panela de Mostura)'
   if (isThreeVessel.value) return 'HLT + MLT'
   return 'Recipiente de Mostura'
+})
+
+const mashSectionDesc = computed(() => {
+  if (isThreeVessel.value) return 'HLT (Hot Liquor Tank) = boiler que aquece a água de mostura e lavagem. MLT (Mash Lauter Tun) = panela onde os grãos são mosturados e filtrados.'
+  if (isTwoVessel.value) return 'O Mash Tun é a panela (ou cooler) onde os grãos são mosturados e filtrados antes de transferir para a panela de fervura.'
+  return null
 })
 
 const batchTargetOptions = [
@@ -609,6 +687,8 @@ function baseDefaults() {
     grainAbsorptionRate: 0.8,
     waterToGrainRatio: 3.0,
     mashWaterMethod: 'Padrão',
+    mashWaterCustomMashFormula: '(GrainAmountKg * WaterGrainRatio) + MashTunDeadSpaceL' as string,
+    mashWaterCustomSpargeFormula: 'BoilVolumeColdL - MashWaterL + (GrainAmountKg * GrainAbsorptionRate) + MashTunLossL' as string,
     bagSqueeze: false,
     lauterMethod: 'BatchSparge',
   }
@@ -638,26 +718,26 @@ function initForm() {
   const sType = base?.setupType ?? base?.equipmentType ?? 'BIAB'
   const isBaseProfile = !!base?.isDefault && !base.userId && base.id.startsWith('base-')
 
-  try {
-    if (base && !isBaseProfile) {
-      editingId.value = base.id
-      form.value = { ...defaultForm(sType), ...base, fermenterType: base.fermenterType ?? 'FlatBottom', notes: base.notes ?? '' }
-    } else if (base && isBaseProfile) {
-      editingId.value = null
-      form.value = { ...defaultForm(sType), ...base, fermenterType: base.fermenterType ?? 'FlatBottom', name: base.name + ' (Meu)', notes: base.notes ?? '', isDefault: false }
-    } else {
-      editingId.value = null
-      form.value = {
-        ...defaultForm(),
-        batchVolume:   recipe.value?.batchVolume   ?? 20,
-        preBoilVolume: recipe.value?.preBoilVolume ?? 24,
-        boilTime:      recipe.value?.boilTime      ?? 60,
-        efficiency:    recipe.value?.efficiency    ?? 72,
-      }
+  if (base && !isBaseProfile) {
+    editingId.value = base.id
+    form.value = { ...defaultForm(sType), ...base, fermenterType: base.fermenterType ?? 'FlatBottom', notes: base.notes ?? '' }
+  } else if (base && isBaseProfile) {
+    editingId.value = null
+    form.value = { ...defaultForm(sType), ...base, fermenterType: base.fermenterType ?? 'FlatBottom', name: base.name + ' (Meu)', notes: base.notes ?? '', isDefault: false }
+  } else {
+    editingId.value = null
+    form.value = {
+      ...defaultForm(),
+      batchVolume:   recipe.value?.batchVolume   ?? 20,
+      preBoilVolume: recipe.value?.preBoilVolume ?? 24,
+      boilTime:      recipe.value?.boilTime      ?? 60,
+      efficiency:    recipe.value?.efficiency    ?? 72,
     }
-  } finally {
-    isHydratingForm.value = false
   }
+
+  // Reset the hydrating flag only AFTER Vue watchers have flushed (next tick)
+  // so that scaleByBatchVolume and other guards remain active during hydration
+  nextTick(() => { isHydratingForm.value = false })
 }
 
 // ── Computed de volumes ───────────────────────────────────────────────────
@@ -709,13 +789,13 @@ function scaleByBatchVolume(previous: number, next: number) {
   const factor = next / previous
   form.value = {
     ...form.value,
-    preBoilVolume: form.value.calculateBoilVolume ? form.value.preBoilVolume : scaleVolume(form.value.preBoilVolume, factor),
+    preBoilVolume: form.value.calculateBoilVolume ? form.value.preBoilVolume : (scaleVolume(form.value.preBoilVolume, factor) ?? form.value.preBoilVolume),
     boilOffRate: scaleVolume(form.value.boilOffRate, factor) ?? form.value.boilOffRate,
     trubLoss: scaleVolume(form.value.trubLoss, factor) ?? form.value.trubLoss,
     fermentorLoss: scaleVolume(form.value.fermentorLoss, factor) ?? form.value.fermentorLoss,
     fermenterWater: scaleVolume(form.value.fermenterWater, factor),
     deadSpace: scaleVolume(form.value.deadSpace, factor) ?? form.value.deadSpace,
-    mashLoss: scaleVolume(form.value.mashLoss, factor),
+    mashLoss: scaleVolume(form.value.mashLoss, factor) ?? form.value.mashLoss,
     spargeDeadSpace: scaleVolume(form.value.spargeDeadSpace, factor),
     mashTunVolume: scaleVolume(form.value.mashTunVolume, factor) ?? form.value.mashTunVolume,
     hltVolume: scaleVolume(form.value.hltVolume, factor),
@@ -897,6 +977,22 @@ function handleExport() {
 .eq-advanced-btn {
   border-style: dashed !important;
   font-size: 12px;
+}
+
+.eq-formula-hint {
+  font-size: 11px;
+  color: var(--q-negative);
+  background: color-mix(in srgb, var(--q-negative) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--q-negative) 25%, transparent);
+  border-radius: 6px;
+  padding: 7px 10px;
+  line-height: 1.5;
+}
+.eq-formula-hint code {
+  background: color-mix(in srgb, var(--q-negative) 12%, transparent);
+  border-radius: 3px;
+  padding: 1px 4px;
+  font-size: 10.5px;
 }
 
 .eq-slide-enter-active,

@@ -4,13 +4,13 @@
     title="Guia de Mostura"
     icon="mdi-book-open-variant"
     icon-color="primary"
-    width="660px"
+    width="860px"
     scrollable
   >
     <div class="guide-body q-pa-md">
 
       <!-- ── Introdução ──────────────────────────────────────────── -->
-      <div class="guide-intro q-mb-lg">
+      <div class="guide-intro q-mb-md">
         <div class="guide-intro-text">
           A <strong>mostura</strong> é o processo de misturar o malte moído com água quente para ativar enzimas
           que convertem o amido em açúcares fermentáveis. A temperatura e o tempo de cada repouso determinam
@@ -19,11 +19,16 @@
         </div>
       </div>
 
+      <!-- ── Imagem de referência ──────────────────────────────── -->
+      <div class="guide-ref-img q-mb-lg">
+        <img src="@/assets/faixas-mash-pt.png" alt="Faixas de temperatura e enzimas da mostura" style="width:100%;border-radius:8px;display:block" />
+      </div>
+
       <!-- ── Diagrama SVG de faixas ────────────────────────────── -->
       <div class="guide-diagram q-mb-lg">
         <div class="guide-section-title q-mb-sm">Mapa de Temperatura × Enzimas</div>
         <div class="guide-diagram-wrap">
-          <svg viewBox="0 0 580 70" width="580" height="70" style="width:100%;height:auto;overflow:visible">
+          <svg viewBox="0 0 383 70" width="383" height="70" style="width:100%;height:auto;overflow:visible">
             <!-- faixas coloridas -->
             <rect x="0"   y="10" width="35"  height="30" rx="2" fill="#4caf50" fill-opacity="0.35"/>
             <rect x="37"  y="10" width="30"  height="30" rx="2" fill="#66bb6a" fill-opacity="0.35"/>
@@ -33,7 +38,7 @@
             <rect x="205" y="10" width="45"  height="30" rx="2" fill="#fb8c00" fill-opacity="0.45"/>
             <rect x="252" y="10" width="50"  height="30" rx="2" fill="#ef6c00" fill-opacity="0.45"/>
             <rect x="304" y="10" width="45"  height="30" rx="2" fill="#f44336" fill-opacity="0.40"/>
-            <rect x="351" y="10" width="229" height="30" rx="2" fill="#9e9e9e" fill-opacity="0.20"/>
+            <rect x="351" y="10" width="30"  height="30" rx="2" fill="#9e9e9e" fill-opacity="0.20"/>
             <!-- labels de temperatura no eixo inferior -->
             <text x="0"   y="65" font-size="8" fill="var(--bp-text-muted)" text-anchor="middle">35°</text>
             <text x="37"  y="65" font-size="8" fill="var(--bp-text-muted)" text-anchor="middle">40°</text>
@@ -53,7 +58,7 @@
             <text x="228" y="29" font-size="7.5" fill="var(--bp-text-primary)" text-anchor="middle">α+β</text>
             <text x="277" y="29" font-size="7.5" fill="var(--bp-text-primary)" text-anchor="middle">α-Amil.</text>
             <text x="327" y="29" font-size="7.5" fill="var(--bp-text-primary)" text-anchor="middle">Mash Out</text>
-            <text x="466" y="29" font-size="7.5" fill="var(--bp-text-muted)" text-anchor="middle">Enzimas inativas</text>
+            <text x="366" y="29" font-size="6.5" fill="var(--bp-text-muted)" text-anchor="middle">Inat.</text>
           </svg>
         </div>
       </div>

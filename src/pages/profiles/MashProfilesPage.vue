@@ -42,49 +42,18 @@
 
         <div v-if="mashStore.userProfiles.length" class="column q-gutter-sm q-mb-xl">
           <div v-for="p in mashStore.userProfiles" :key="p.id" class="mp-card">
-            <div class="row items-start no-wrap">
-              <q-icon name="mdi-thermometer" color="red-4" size="22px" class="q-mr-sm q-mt-xs flex-shrink-0" />
-
-              <div class="col" style="min-width: 0">
-                <!-- Nome + estrela padrão -->
-                <div class="row items-center no-wrap q-mb-xs" style="gap: 8px">
-                  <span class="mp-card-name">{{ p.name }}</span>
-                  <q-icon v-if="p.isDefault" name="mdi-star" color="amber" size="14px">
-                    <q-tooltip>Perfil padrão</q-tooltip>
-                  </q-icon>
-                </div>
-
-                <!-- Stat chips -->
-                <div class="mp-stats-row q-mb-xs">
-                  <span class="mp-stat">
-                    <span class="mp-stat-label">Etapas</span>
-                    <span class="mp-stat-value">{{ p.steps.length }}</span>
-                  </span>
-                  <span class="mp-stat">
-                    <span class="mp-stat-label">Tempo total</span>
-                    <span class="mp-stat-value">{{ totalTime(p) }} min</span>
-                  </span>
-                  <span v-if="totalRamp(p) > 0" class="mp-stat">
-                    <span class="mp-stat-label">Rampa</span>
-                    <span class="mp-stat-value">{{ totalRamp(p) }} min</span>
-                  </span>
-                  <span class="mp-stat">
-                    <span class="mp-stat-label">Temperatura</span>
-                    <span class="mp-stat-value">{{ tempRange(p) }}</span>
-                  </span>
-                </div>
-
-                <!-- Gráfico SVG mini -->
-                <div v-if="p.steps.length" class="mp-chart-wrap">
-                  <mash-temp-chart :steps="p.steps" />
-                </div>
-
-                <!-- Notas -->
-                <div v-if="p.notes" class="mp-notes q-mt-xs">{{ p.notes }}</div>
+            <!-- Topo: ícone + nome + ações -->
+            <div class="row items-center no-wrap q-mb-sm" style="gap: 8px">
+              <q-icon name="mdi-thermometer" color="red-4" size="20px" class="flex-shrink-0" />
+              <div class="row items-center no-wrap col" style="gap: 6px; min-width: 0">
+                <span class="mp-card-name">{{ p.name }}</span>
+                <q-icon v-if="p.isDefault" name="mdi-star" color="amber" size="13px">
+                  <q-tooltip>Perfil padrão</q-tooltip>
+                </q-icon>
+                <q-badge v-if="p.biab" color="blue-7" label="BIAB" style="font-size:9px" />
+                <q-badge v-if="p.batchSparge" color="teal-6" label="Batch Sparge" style="font-size:9px" />
               </div>
-
-              <!-- Ações -->
-              <div class="row q-gutter-xs flex-shrink-0 q-ml-sm">
+              <div class="row q-gutter-xs flex-shrink-0">
                 <q-btn flat round dense size="sm" icon="mdi-pencil" color="grey-5" @click="openEdit(p)">
                   <q-tooltip>Editar</q-tooltip>
                 </q-btn>
@@ -97,25 +66,12 @@
                 </q-btn>
               </div>
             </div>
-          </div>
-        </div>
 
-        <div v-else class="text-caption q-mb-xl" style="color: var(--bp-text-muted)">
-          Nenhum perfil personalizado ainda.
-          <span v-if="mashStore.canAddMore" class="cursor-pointer mp-limit-link" @click="openCreate">Criar o primeiro →</span>
-        </div>
-
-        <!-- ── Perfis Padrão ── -->
-        <div class="section-label q-mb-sm">Perfis Padrão</div>
-        <div v-if="mashStore.defaultProfiles.length" class="column q-gutter-sm">
-          <div v-for="p in mashStore.defaultProfiles" :key="p.id" class="mp-card mp-card--global">
-            <div class="row items-start no-wrap">
-              <q-icon name="mdi-thermometer" color="grey-5" size="22px" class="q-mr-sm q-mt-xs flex-shrink-0" />
-              <div class="col" style="min-width: 0">
-                <div class="row items-center no-wrap q-mb-xs" style="gap: 8px">
-                  <span class="mp-card-name">{{ p.name }}</span>
-                </div>
-                <div class="mp-stats-row q-mb-xs">
+            <!-- Corpo 2 colunas -->
+            <div class="mp-card-body">
+              <!-- Esquerda: stats + etapas -->
+              <div class="mp-left">
+                <div class="mp-stats-row q-mb-sm">
                   <span class="mp-stat">
                     <span class="mp-stat-label">Etapas</span>
                     <span class="mp-stat-value">{{ p.steps.length }}</span>
@@ -129,18 +85,76 @@
                     <span class="mp-stat-value">{{ tempRange(p) }}</span>
                   </span>
                 </div>
-                <div v-if="p.steps.length" class="mp-chart-wrap">
-                  <mash-temp-chart :steps="p.steps" />
+                <div class="mp-step-list">
+                  <div v-for="(s, si) in p.steps" :key="s.id" class="mp-step-row">
+                    <q-icon :name="stepChipIcon(s.stepType)" :color="stepChipColorName(s.stepType)" size="11px" class="flex-shrink-0" />
+                    <span class="mp-step-name">{{ s.name || stepChipLabel(s.stepType) }}</span>
+                    <span class="mp-step-meta">{{ s.temperature }}°C · {{ s.time }}min</span>
+                  </div>
                 </div>
-                <div v-if="p.notes" class="mp-notes q-mt-xs">{{ p.notes }}</div>
               </div>
-              <div class="flex-shrink-0 q-ml-sm">
-                <q-btn flat round dense size="sm" icon="mdi-content-copy" color="grey-5"
-                  :disable="!mashStore.canAddMore" @click="openCreateFromBase(p)">
-                  <q-tooltip>{{ mashStore.canAddMore ? 'Usar como base' : 'Limite atingido' }}</q-tooltip>
-                </q-btn>
+              <!-- Direita: gráfico -->
+              <div v-if="p.steps.length" class="mp-right">
+                <mash-temp-chart :steps="p.steps" />
               </div>
             </div>
+
+            <!-- Notas -->
+            <div v-if="p.notes" class="mp-notes q-mt-sm">{{ p.notes }}</div>
+          </div>
+        </div>
+
+        <div v-else class="text-caption q-mb-xl" style="color: var(--bp-text-muted)">
+          Nenhum perfil personalizado ainda.
+          <span v-if="mashStore.canAddMore" class="cursor-pointer mp-limit-link" @click="openCreate">Criar o primeiro →</span>
+        </div>
+
+        <div v-if="mashStore.defaultProfiles.length" class="column q-gutter-sm">
+          <div v-for="p in mashStore.defaultProfiles" :key="p.id" class="mp-card mp-card--global">
+            <!-- Topo: ícone + nome + ação -->
+            <div class="row items-center no-wrap q-mb-sm" style="gap: 8px">
+              <q-icon name="mdi-thermometer" color="grey-5" size="20px" class="flex-shrink-0" />
+              <span class="mp-card-name col">{{ p.name }}</span>
+              <q-btn flat round dense size="sm" icon="mdi-content-copy" color="grey-5"
+                :disable="!mashStore.canAddMore" @click="openCreateFromBase(p)">
+                <q-tooltip>{{ mashStore.canAddMore ? 'Usar como base' : 'Limite atingido' }}</q-tooltip>
+              </q-btn>
+            </div>
+
+            <!-- Corpo 2 colunas -->
+            <div class="mp-card-body">
+              <!-- Esquerda: stats + etapas -->
+              <div class="mp-left">
+                <div class="mp-stats-row q-mb-sm">
+                  <span class="mp-stat">
+                    <span class="mp-stat-label">Etapas</span>
+                    <span class="mp-stat-value">{{ p.steps.length }}</span>
+                  </span>
+                  <span class="mp-stat">
+                    <span class="mp-stat-label">Tempo total</span>
+                    <span class="mp-stat-value">{{ totalTime(p) }} min</span>
+                  </span>
+                  <span class="mp-stat">
+                    <span class="mp-stat-label">Temperatura</span>
+                    <span class="mp-stat-value">{{ tempRange(p) }}</span>
+                  </span>
+                </div>
+                <div class="mp-step-list">
+                  <div v-for="(s, si) in p.steps" :key="s.id" class="mp-step-row">
+                    <q-icon :name="stepChipIcon(s.stepType)" :color="stepChipColorName(s.stepType)" size="11px" class="flex-shrink-0" />
+                    <span class="mp-step-name">{{ s.name || stepChipLabel(s.stepType) }}</span>
+                    <span class="mp-step-meta">{{ s.temperature }}°C · {{ s.time }}min</span>
+                  </div>
+                </div>
+              </div>
+              <!-- Direita: gráfico -->
+              <div v-if="p.steps.length" class="mp-right">
+                <mash-temp-chart :steps="p.steps" />
+              </div>
+            </div>
+
+            <!-- Notas -->
+            <div v-if="p.notes" class="mp-notes q-mt-sm">{{ p.notes }}</div>
           </div>
         </div>
 
@@ -186,7 +200,8 @@
 import { ref, onMounted } from 'vue'
 import { useQuasar } from 'quasar'
 import { useMashProfileStore } from '@/stores/mashProfileStore'
-import type { MashProfile } from '@/types/mash'
+import type { MashProfile, MashProfileStep } from '@/types/mash'
+import type { MashStepType } from '@/types/recipe'
 import EditMashProfileDialog from './EditMashProfileDialog.vue'
 import MashTempChart from './MashTempChart.vue'
 
@@ -207,7 +222,7 @@ function totalTime(p: MashProfile) {
   return p.steps.reduce((sum, s) => sum + (s.time ?? 0), 0)
 }
 function totalRamp(p: MashProfile) {
-  return p.steps.reduce((sum, s) => sum + (s.rampTime ?? 0), 0)
+  return p.steps.reduce((sum, s) => sum + (s.rampDuration ?? 0), 0)
 }
 function tempRange(p: MashProfile) {
   if (!p.steps.length) return '—'
@@ -215,6 +230,19 @@ function tempRange(p: MashProfile) {
   const min = Math.min(...temps)
   const max = Math.max(...temps)
   return min === max ? `${min} °C` : `${min}–${max} °C`
+}
+
+function stepChipColor(type: MashStepType) {
+  return type === 'Infusion' ? 'blue-7' : type === 'Decoction' ? 'red-7' : 'orange-7'
+}
+function stepChipColorName(type: MashStepType) {
+  return type === 'Infusion' ? 'blue-7' : type === 'Decoction' ? 'red-7' : 'orange-7'
+}
+function stepChipIcon(type: MashStepType) {
+  return type === 'Infusion' ? 'mdi-water-plus' : type === 'Decoction' ? 'mdi-pot-steam-outline' : 'mdi-thermometer'
+}
+function stepChipLabel(type: MashStepType) {
+  return type === 'Infusion' ? 'Infusão' : type === 'Decoction' ? 'Decocção' : 'Temp.'
 }
 
 // ── Actions ───────────────────────────────────────────────────────────────
@@ -297,21 +325,26 @@ async function doDelete() {
 
 .mp-stats-row {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 0;
+  margin-bottom: 8px;
+  overflow: hidden;
 }
 
 .mp-stat {
   display: flex;
   flex-direction: column;
-  min-width: 80px;
-  padding: 2px 10px 2px 0;
-  margin-right: 10px;
+  align-items: flex-start;
+  padding: 3px 8px 3px 0;
+  margin-right: 8px;
   border-right: 1px solid var(--bp-border);
+  white-space: nowrap;
+  min-width: 0;
+  flex-shrink: 1;
 }
-
 .mp-stat:last-child {
   border-right: none;
+  margin-right: 0;
 }
 
 .mp-stat-label {
@@ -320,6 +353,7 @@ async function doDelete() {
   color: var(--bp-text-muted);
   text-transform: uppercase;
   letter-spacing: 0.4px;
+  line-height: 1.2;
 }
 
 .mp-stat-value {
@@ -329,8 +363,68 @@ async function doDelete() {
 }
 
 .mp-chart-wrap {
-  margin-top: 8px;
-  max-width: 420px;
+  margin-top: 10px;
+  max-width: 560px;
+}
+
+.mp-card-body {
+  display: flex;
+  gap: 100px;
+  align-items: flex-start;
+}
+
+.mp-left {
+  flex: 0 0 210px;
+  width: 210px;
+  min-width: 0;
+}
+
+.mp-right {
+  flex: 0 0 460px;
+  width: 460px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.mp-step-list {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.mp-step-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+}
+
+.mp-step-name {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--bp-text-secondary);
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mp-step-meta {
+  font-size: 10px;
+  color: var(--bp-text-muted);
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+@media (max-width: 599px) {
+  .mp-card-body {
+    flex-direction: column;
+  }
+  .mp-left {
+    flex: none;
+    width: 100%;
+  }
 }
 
 .mp-notes {

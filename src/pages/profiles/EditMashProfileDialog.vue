@@ -77,7 +77,7 @@
         <div class="row q-col-gutter-sm">
           <div class="col-6 col-sm-4">
             <brew-pilot-input
-              v-model.number="form.grainTemp"
+              v-model.number="form.grainTemperature"
               type="number"
               step="0.5"
               label="Temp. do Grão"
@@ -89,7 +89,7 @@
           </div>
           <div class="col-6 col-sm-4">
             <brew-pilot-input
-              v-model.number="form.tunTemp"
+              v-model.number="form.tunTemperature"
               type="number"
               step="0.5"
               label="Temp. da Tina"
@@ -101,7 +101,7 @@
           </div>
           <div class="col-6 col-sm-4">
             <brew-pilot-input
-              v-model.number="form.spargeTemp"
+              v-model.number="form.spargeTemperature"
               type="number"
               step="0.5"
               label="Temp. de Lavagem"
@@ -141,10 +141,10 @@
             <div class="row items-center no-wrap" style="gap: 6px">
               <q-chip
                 dense square
-                :color="stepTypeColor(step.type)"
-                text-color="white"
-                :icon="stepTypeIcons[step.type]"
-                :label="stepTypeLabel(step.type)"
+              :color="stepTypeColor(step.stepType)"
+              text-color="white"
+              :icon="stepTypeIcons[step.stepType]"
+              :label="stepTypeLabel(step.stepType)"
                 style="font-size: 10px; height: 20px; padding: 0 7px"
               />
               <span class="mash-step-title">Etapa {{ i + 1 }}</span>
@@ -183,7 +183,7 @@
             </div>
             <div class="col-12 col-sm-4">
               <brew-pilot-select
-                v-model="step.type"
+                v-model="step.stepType"
                 :options="stepTypeOptions"
                 emit-value
                 map-options
@@ -228,7 +228,7 @@
                   dense
                 />
                 <brew-pilot-input
-                  v-model.number="step.rampTime"
+                  v-model.number="step.rampDuration"
                   type="number"
                   step="1"
                   label="Tempo de Rampa"
@@ -238,12 +238,12 @@
               </div>
             </div>
             <!-- Coluna Infusão (oculta para Decoction) -->
-            <div v-if="step.type !== 'Decoction'" class="col mash-step-section--infusion">
+            <div v-if="step.stepType !== 'Decoction'" class="col mash-step-section--infusion">
               <div class="mash-step-section-label">Infusão</div>
               <div class="column" style="gap: 6px">
                 <brew-pilot-input
-                  v-if="step.type === 'Infusion'"
-                  v-model.number="step.waterToAdd"
+                  v-if="step.stepType === 'Infusion'"
+                  v-model.number="step.infuseAmount"
                   type="number"
                   step="0.1"
                   label="Água a adicionar"
@@ -259,8 +259,8 @@
                   dense
                 />
                 <brew-pilot-input
-                  v-if="step.type === 'Infusion'"
-                  v-model.number="step.infusionTemp"
+                  v-if="step.stepType === 'Infusion'"
+                  v-model.number="step.infusionTemperature"
                   type="number"
                   step="0.5"
                   label="Temp. Infusão"
@@ -409,9 +409,9 @@ function defaultForm() {
     name: '',
     notes: '',
     isDefault: false,
-    grainTemp:  undefined as number | undefined,
-    tunTemp:    undefined as number | undefined,
-    spargeTemp: undefined as number | undefined,
+    grainTemperature:  undefined as number | undefined,
+    tunTemperature:    undefined as number | undefined,
+    spargeTemperature: undefined as number | undefined,
     // Sparging
     batchSparge:        false,
     batchSpargePercent: 100,
@@ -436,9 +436,9 @@ function initForm() {
       name: base.name,
       notes: base.notes ?? '',
       isDefault: base.isDefault ?? false,
-      grainTemp:  base.grainTemp,
-      tunTemp:    base.tunTemp,
-      spargeTemp: base.spargeTemp,
+      grainTemperature:  base.grainTemperature,
+      tunTemperature:    base.tunTemperature,
+      spargeTemperature: base.spargeTemperature,
       batchSparge:        base.batchSparge ?? false,
       batchSpargePercent: base.batchSpargePercent ?? 100,
       equalBatchSizes:    base.equalBatchSizes ?? false,
@@ -453,9 +453,9 @@ function initForm() {
       name: base.name + ' (Meu)',
       notes: base.notes ?? '',
       isDefault: false,
-      grainTemp:  base.grainTemp,
-      tunTemp:    base.tunTemp,
-      spargeTemp: base.spargeTemp,
+      grainTemperature:  base.grainTemperature,
+      tunTemperature:    base.tunTemperature,
+      spargeTemperature: base.spargeTemperature,
       batchSparge:        base.batchSparge ?? false,
       batchSpargePercent: base.batchSpargePercent ?? 100,
       equalBatchSizes:    base.equalBatchSizes ?? false,
@@ -505,20 +505,20 @@ function addStep() {
     id: crypto.randomUUID(),
     name: '',
     description: '',
-    type: 'Temperature',
+    stepType: 'Temperature',
     temperature: prev ? Math.max(prev.temperature, 67) : 67,
     time: 60,
-    rampTime: undefined,
+    rampDuration: undefined,
     waterRatio: undefined,
-    waterToAdd: undefined,
-    infusionTemp: undefined,
-    sortOrder: form.value.steps.length,
+    infuseAmount: undefined,
+    infusionTemperature: undefined,
+    stepNumber: form.value.steps.length,
   })
 }
 
 function removeStep(i: number) {
   form.value.steps.splice(i, 1)
-  form.value.steps.forEach((s, idx) => { s.sortOrder = idx })
+  form.value.steps.forEach((s, idx) => { s.stepNumber = idx })
 }
 
 function moveStep(i: number, dir: -1 | 1) {
@@ -526,7 +526,7 @@ function moveStep(i: number, dir: -1 | 1) {
   if (j < 0 || j >= form.value.steps.length) return
   const steps = [...form.value.steps]
   ;[steps[i], steps[j]] = [steps[j], steps[i]]
-  steps.forEach((s, idx) => { s.sortOrder = idx })
+  steps.forEach((s, idx) => { s.stepNumber = idx })
   form.value.steps = steps
 }
 
@@ -566,8 +566,8 @@ const mashPresets = [
     desc: '63°C · 60 min + Mash Out 77°C',
     icon: 'mdi-thermometer-low',
     steps: [
-      { name: 'Mash In',  type: 'Infusion'    as MashStepType, temperature: 63, time: 60, rampTime: 0  },
-      { name: 'Mash Out', type: 'Temperature' as MashStepType, temperature: 77, time: 10, rampTime: 10 },
+      { name: 'Mash In',  stepType: 'Infusion'    as MashStepType, temperature: 63, time: 60, rampDuration: 0  },
+      { name: 'Mash Out', stepType: 'Temperature' as MashStepType, temperature: 77, time: 10, rampDuration: 10 },
     ],
   },
   {
@@ -575,8 +575,8 @@ const mashPresets = [
     desc: '67°C · 75 min + Mash Out 77°C',
     icon: 'mdi-thermometer',
     steps: [
-      { name: 'Mash In',  type: 'Infusion'    as MashStepType, temperature: 67, time: 75, rampTime: 0  },
-      { name: 'Mash Out', type: 'Temperature' as MashStepType, temperature: 77, time: 10, rampTime: 10 },
+      { name: 'Mash In',  stepType: 'Infusion'    as MashStepType, temperature: 67, time: 75, rampDuration: 0  },
+      { name: 'Mash Out', stepType: 'Temperature' as MashStepType, temperature: 77, time: 10, rampDuration: 10 },
     ],
   },
   {
@@ -584,8 +584,8 @@ const mashPresets = [
     desc: '70°C · 75 min + Mash Out 77°C',
     icon: 'mdi-thermometer-high',
     steps: [
-      { name: 'Mash In',  type: 'Infusion'    as MashStepType, temperature: 70, time: 75, rampTime: 0  },
-      { name: 'Mash Out', type: 'Temperature' as MashStepType, temperature: 77, time: 10, rampTime: 10 },
+      { name: 'Mash In',  stepType: 'Infusion'    as MashStepType, temperature: 70, time: 75, rampDuration: 0  },
+      { name: 'Mash Out', stepType: 'Temperature' as MashStepType, temperature: 77, time: 10, rampDuration: 10 },
     ],
   },
   {
@@ -593,10 +593,10 @@ const mashPresets = [
     desc: '52°C·20min → 65°C·40min → 72°C·20min + Mash Out',
     icon: 'mdi-stairs-up',
     steps: [
-      { name: 'Protein Rest',    type: 'Infusion'    as MashStepType, temperature: 52, time: 20, rampTime: 0  },
-      { name: 'Beta Sacch.',     type: 'Temperature' as MashStepType, temperature: 65, time: 40, rampTime: 15 },
-      { name: 'Alpha Sacch.',    type: 'Temperature' as MashStepType, temperature: 72, time: 20, rampTime: 10 },
-      { name: 'Mash Out',        type: 'Temperature' as MashStepType, temperature: 77, time: 10, rampTime: 8  },
+      { name: 'Protein Rest',    stepType: 'Infusion'    as MashStepType, temperature: 52, time: 20, rampDuration: 0  },
+      { name: 'Beta Sacch.',     stepType: 'Temperature' as MashStepType, temperature: 65, time: 40, rampDuration: 15 },
+      { name: 'Alpha Sacch.',    stepType: 'Temperature' as MashStepType, temperature: 72, time: 20, rampDuration: 10 },
+      { name: 'Mash Out',        stepType: 'Temperature' as MashStepType, temperature: 77, time: 10, rampDuration: 8  },
     ],
   },
   {
@@ -604,11 +604,11 @@ const mashPresets = [
     desc: '35°C·15min → 52°C·20min → 64°C·40min → 72°C·20min + Mash Out',
     icon: 'mdi-snowflake',
     steps: [
-      { name: 'Acid Rest',       type: 'Infusion'    as MashStepType, temperature: 35, time: 15, rampTime: 0  },
-      { name: 'Protein Rest',    type: 'Temperature' as MashStepType, temperature: 52, time: 20, rampTime: 15 },
-      { name: 'Beta Sacch.',     type: 'Temperature' as MashStepType, temperature: 64, time: 40, rampTime: 15 },
-      { name: 'Alpha Sacch.',    type: 'Temperature' as MashStepType, temperature: 72, time: 20, rampTime: 10 },
-      { name: 'Mash Out',        type: 'Temperature' as MashStepType, temperature: 77, time: 10, rampTime: 8  },
+      { name: 'Acid Rest',       stepType: 'Infusion'    as MashStepType, temperature: 35, time: 15, rampDuration: 0  },
+      { name: 'Protein Rest',    stepType: 'Temperature' as MashStepType, temperature: 52, time: 20, rampDuration: 15 },
+      { name: 'Beta Sacch.',     stepType: 'Temperature' as MashStepType, temperature: 64, time: 40, rampDuration: 15 },
+      { name: 'Alpha Sacch.',    stepType: 'Temperature' as MashStepType, temperature: 72, time: 20, rampDuration: 10 },
+      { name: 'Mash Out',        stepType: 'Temperature' as MashStepType, temperature: 77, time: 10, rampDuration: 8  },
     ],
   },
   {
@@ -616,8 +616,8 @@ const mashPresets = [
     desc: 'Infusão 67°C · 45min + Decocção para Mash Out',
     icon: 'mdi-fire',
     steps: [
-      { name: 'Mash In',      type: 'Infusion'  as MashStepType, temperature: 67, time: 45, rampTime: 0  },
-      { name: 'Decocção',     type: 'Decoction' as MashStepType, temperature: 77, time: 20, rampTime: 0  },
+      { name: 'Mash In',      stepType: 'Infusion'  as MashStepType, temperature: 67, time: 45, rampDuration: 0  },
+      { name: 'Decocção',     stepType: 'Decoction' as MashStepType, temperature: 77, time: 20, rampDuration: 0  },
     ],
   },
 ]
@@ -626,7 +626,7 @@ function applyPreset(preset: typeof mashPresets[0]) {
   form.value.steps = preset.steps.map((s, i) => ({
     ...s,
     id: crypto.randomUUID(),
-    sortOrder: i,
+    stepNumber: i,
     waterRatio: undefined,
   }))
   if (!form.value.name) form.value.name = preset.label
@@ -641,16 +641,16 @@ async function save() {
       name: form.value.name,
       notes: form.value.notes || undefined,
       isDefault: form.value.isDefault,
-      grainTemp:  form.value.grainTemp,
-      tunTemp:    form.value.tunTemp,
-      spargeTemp: form.value.spargeTemp,
+      grainTemperature:  form.value.grainTemperature,
+      tunTemperature:    form.value.tunTemperature,
+      spargeTemperature: form.value.spargeTemperature,
       batchSparge:        form.value.batchSparge || undefined,
       batchSpargePercent: form.value.batchSparge ? form.value.batchSpargePercent : undefined,
       equalBatchSizes:    form.value.batchSparge ? form.value.equalBatchSizes : undefined,
       drainBeforeSparge:  form.value.batchSparge ? form.value.drainBeforeSparge : undefined,
       biab:               form.value.biab || undefined,
       biabBoilVolume:     form.value.biab ? form.value.biabBoilVolume : undefined,
-      steps: form.value.steps.map((s, i) => ({ ...s, sortOrder: i })),
+      steps: form.value.steps.map((s, i) => ({ ...s, stepNumber: i })),
     }
     let saved: MashProfile
     if (editingId.value) {
