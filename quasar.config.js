@@ -23,7 +23,7 @@ export default configure(function (/* ctx */) {
 
     boot: [
       'axios',
-      'pinia'
+      'pinia',
     ],
 
     css: [

@@ -44,6 +44,9 @@
               <div class="col" style="min-width: 0">
                 <div class="row items-center no-wrap q-mb-xs" style="gap: 8px">
                   <span class="eq-card-name">{{ p.name }}</span>
+                  <q-icon v-if="p.isDefault" name="mdi-star" color="primary" size="16px">
+                    <q-tooltip>Perfil padrão</q-tooltip>
+                  </q-icon>
                 </div>
                 <div class="eq-stats-grid">
                   <div class="eq-stat"><span class="eq-stat-label">Lote</span><span class="eq-stat-value">{{ p.batchVolume }} L</span></div>
@@ -88,7 +91,12 @@
             <div class="row items-start no-wrap">
               <q-icon name="mdi-kettle" color="grey-5" size="22px" class="q-mr-sm q-mt-xs flex-shrink-0" />
               <div class="col" style="min-width: 0">
-                <span class="eq-card-name">{{ p.name }}</span>
+                <div class="row items-center no-wrap q-mb-xs" style="gap: 8px">
+                  <span class="eq-card-name">{{ p.name }}</span>
+                  <q-icon v-if="p.isDefault" name="mdi-star" color="primary" size="16px">
+                    <q-tooltip>Perfil padrão</q-tooltip>
+                  </q-icon>
+                </div>
                 <div class="eq-stats-grid q-mt-sm">
                   <div class="eq-stat"><span class="eq-stat-label">Lote</span><span class="eq-stat-value">{{ p.batchVolume }} L</span></div>
                   <div class="eq-stat"><span class="eq-stat-label">Pré-Fervura</span><span class="eq-stat-value">{{ p.preBoilVolume }} L</span></div>

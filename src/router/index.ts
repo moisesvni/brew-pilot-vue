@@ -103,6 +103,12 @@ const routes = [
         meta: { title: 'Equipamento' }
       },
       {
+        path: 'profiles/mash',
+        name: 'ProfilesMash',
+        component: () => import('@/pages/profiles/MashProfilesPage.vue'),
+        meta: { title: 'Mostura' }
+      },
+      {
         path: 'tools',
         name: 'Tools',
         component: () => import('@/pages/tools/ToolsPage.vue'),

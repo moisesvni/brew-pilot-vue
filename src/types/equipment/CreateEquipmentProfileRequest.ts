@@ -1,3 +1,3 @@
 import type { EquipmentProfile } from './EquipmentProfile'
 
-export type CreateEquipmentProfileRequest = Omit<EquipmentProfile, 'id' | 'isDefault' | 'userId'>
+export type CreateEquipmentProfileRequest = Omit<EquipmentProfile, 'id' | 'userId'>

@@ -7,6 +7,10 @@ import { UserPlan } from '@/types/auth'
 
 const FREE_EQUIPMENT_LIMIT = 2
 
+function isGlobalBaseProfile(profile: EquipmentProfile) {
+  return profile.isDefault && !profile.userId && profile.id.startsWith('base-')
+}
+
 export const useEquipmentStore = defineStore('equipment', () => {
   // ── State ──────────────────────────────────────────────────────────────────
   const profiles = ref<EquipmentProfile[]>([])
@@ -14,8 +18,8 @@ export const useEquipmentStore = defineStore('equipment', () => {
   const error    = ref<string | null>(null)
 
   // ── Getters ────────────────────────────────────────────────────────────────
-  const globalProfiles = computed(() => profiles.value.filter(p => p.isDefault))
-  const userProfiles   = computed(() => profiles.value.filter(p => !p.isDefault))
+  const globalProfiles = computed(() => profiles.value.filter(isGlobalBaseProfile))
+  const userProfiles   = computed(() => profiles.value.filter(p => !isGlobalBaseProfile(p)))
 
   const canAddMore = computed(() => {
     const auth = useAuthStore()
@@ -102,6 +106,7 @@ export const useEquipmentStore = defineStore('equipment', () => {
       mashTunVolume:    raw.mashTunVolume ?? 0,
       boilTemperature:  raw.boilTemperature ?? 100,
       notes:            raw.notes,
+      isDefault:        raw.isDefault ?? false,
       // Campos opcionais preservados se presentes
       batchVolumeTarget:      raw.batchVolumeTarget,
       fermenterType:          raw.fermenterType,

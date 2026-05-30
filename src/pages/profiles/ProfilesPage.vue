@@ -38,6 +38,13 @@
             </div>
             <div v-else class="hub-card-empty">Nenhum cadastrado</div>
           </template>
+          <template v-else-if="cat.id === 'mash'">
+            <div class="hub-card-count" v-if="mashStore.userProfiles.length">
+              {{ mashStore.userProfiles.length }}
+              <span class="hub-card-count-label">perfil{{ mashStore.userProfiles.length > 1 ? 'is' : '' }}</span>
+            </div>
+            <div v-else class="hub-card-empty">Nenhum cadastrado</div>
+          </template>
           <q-icon v-if="!cat.comingSoon" name="mdi-chevron-right" color="grey-5" size="20px" />
         </div>
       </div>
@@ -48,10 +55,15 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 import { useEquipmentStore } from '@/stores/equipmentStore'
+import { useMashProfileStore } from '@/stores/mashProfileStore'
 
 const equipStore = useEquipmentStore()
+const mashStore  = useMashProfileStore()
 
-onMounted(() => { if (!equipStore.profiles.length) equipStore.fetchAll() })
+onMounted(() => {
+  if (!equipStore.profiles.length) equipStore.fetchAll()
+  if (!mashStore.profiles.length) mashStore.fetchAll()
+})
 
 const categories = [
   {
@@ -69,7 +81,6 @@ const categories = [
     icon: 'mdi-thermometer',
     color: 'red-4',
     colorHex: '#ef5350',
-    comingSoon: true,
   },
   {
     id: 'ferment',

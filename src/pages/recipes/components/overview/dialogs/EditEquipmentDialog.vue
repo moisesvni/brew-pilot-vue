@@ -7,7 +7,7 @@
       </q-btn>
 
       <q-btn flat round dense :icon="form.isDefault ? 'mdi-star' : 'mdi-star-outline'"
-        :color="form.isDefault ? 'amber' : 'grey-5'" :disable="saving" @click="form.isDefault = !form.isDefault">
+        :color="form.isDefault ? 'primary' : 'grey-5'" :disable="saving" @click="form.isDefault = !form.isDefault">
         <q-tooltip>{{ form.isDefault ? 'Equipamento padrão' : 'Definir como padrão' }}</q-tooltip>
       </q-btn>
 
@@ -636,12 +636,13 @@ function initForm() {
   showAdvanced.value = false
   const base = props.baseProfile
   const sType = base?.setupType ?? base?.equipmentType ?? 'BIAB'
+  const isBaseProfile = !!base?.isDefault && !base.userId && base.id.startsWith('base-')
 
   try {
-    if (base && !base.isDefault) {
+    if (base && !isBaseProfile) {
       editingId.value = base.id
       form.value = { ...defaultForm(sType), ...base, fermenterType: base.fermenterType ?? 'FlatBottom', notes: base.notes ?? '' }
-    } else if (base && base.isDefault) {
+    } else if (base && isBaseProfile) {
       editingId.value = null
       form.value = { ...defaultForm(sType), ...base, fermenterType: base.fermenterType ?? 'FlatBottom', name: base.name + ' (Meu)', notes: base.notes ?? '', isDefault: false }
     } else {
@@ -794,7 +795,6 @@ async function save() {
     const payload = {
       ...form.value,
       preBoilVolume: form.value.calculateBoilVolume ? calcPreBoilVol.value : form.value.preBoilVolume,
-      isDefault: false,
     }
     let saved: EquipmentProfile
     if (editingId.value) {

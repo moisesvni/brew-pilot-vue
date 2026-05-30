@@ -1,7 +1,7 @@
 <template>
   <q-dialog
     :model-value="modelValue"
-    :persistent="loading"
+    :persistent="loading || persistent"
     @update:model-value="!loading && emit('update:modelValue', $event)">
     <q-card :dark="$q.dark.isActive" class="brew-dialog-card" :style="cardStyle">
       <!-- Header -->
@@ -49,11 +49,13 @@ const props = withDefaults(defineProps<{
   width?: string
   scrollable?: boolean
   loading?: boolean
+  persistent?: boolean
 }>(), {
   width: '440px',
   iconColor: 'grey-5',
   scrollable: false,
-  loading: false
+  loading: false,
+  persistent: false,
 })
 
 const emit = defineEmits<{
