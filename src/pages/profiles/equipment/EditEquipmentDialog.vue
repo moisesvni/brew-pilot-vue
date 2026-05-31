@@ -511,6 +511,31 @@ const setupTypeMap: Record<string, { icon: string; desc: string }> = {
   FermentedBeverage: { icon: 'mdi-glass-wine', desc: 'Sidra (maçã/pera), Hidromél (mel), Vinho. Sem mostura de grãos cereais. Fervura opcional.' },
 }
 
+function normalizeSetupType(value?: string | null) {
+  if (!value) return 'BIAB'
+
+  const trimmedValue = value.trim()
+  if (setupTypeOptions.some(option => option.value === trimmedValue)) return trimmedValue
+
+  const byLabel = setupTypeOptions.find(option => option.label === trimmedValue)
+  if (byLabel) return byLabel.value
+
+  const normalizedValue = trimmedValue
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+
+  if (normalizedValue.includes('biab') || normalizedValue.includes('panela unica')) return 'BIAB'
+  if (normalizedValue.includes('3 panelas') || normalizedValue.includes('threevessel') || normalizedValue.includes('tri-bloc')) return 'ThreeVessel'
+  if (normalizedValue.includes('2 panelas') || normalizedValue.includes('twovessel')) return 'TwoVessel'
+  if (normalizedValue.includes('allgrain') || normalizedValue.includes('all grain')) return 'BIAB'
+  if (normalizedValue.includes('partial') || normalizedValue.includes('mini-mash')) return 'PartialMash'
+  if (normalizedValue.includes('extrato') || normalizedValue.includes('extract')) return 'Extract'
+  if (normalizedValue.includes('fermented') || normalizedValue.includes('hidromel') || normalizedValue.includes('sidra') || normalizedValue.includes('vinho')) return 'FermentedBeverage'
+
+  return 'BIAB'
+}
+
 const setupInfo = computed(() => setupTypeMap[form.value.setupType ?? 'BIAB'] ?? null)
 
 // ── Métodos de lavagem / lauter ───────────────────────────────────────────
@@ -715,15 +740,15 @@ function initForm() {
   isHydratingForm.value = true
   showAdvanced.value = false
   const base = props.baseProfile
-  const sType = base?.setupType ?? base?.equipmentType ?? 'BIAB'
+  const sType = normalizeSetupType(base?.setupType ?? base?.equipmentType)
   const isBaseProfile = !!base?.isDefault && !base.userId && base.id.startsWith('base-')
 
   if (base && !isBaseProfile) {
     editingId.value = base.id
-    form.value = { ...defaultForm(sType), ...base, fermenterType: base.fermenterType ?? 'FlatBottom', notes: base.notes ?? '' }
+    form.value = { ...defaultForm(sType), ...base, setupType: sType, fermenterType: base.fermenterType ?? 'FlatBottom', notes: base.notes ?? '' }
   } else if (base && isBaseProfile) {
     editingId.value = null
-    form.value = { ...defaultForm(sType), ...base, fermenterType: base.fermenterType ?? 'FlatBottom', name: base.name + ' (Meu)', notes: base.notes ?? '', isDefault: false }
+    form.value = { ...defaultForm(sType), ...base, setupType: sType, fermenterType: base.fermenterType ?? 'FlatBottom', name: base.name + ' (Meu)', notes: base.notes ?? '', isDefault: false }
   } else {
     editingId.value = null
     form.value = {

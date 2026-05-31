@@ -60,7 +60,7 @@ const vbWidth = computed(() => props.width ?? 600)
 const vbHeight = computed(() => props.height ?? 100)
 const leftPad = 32
 const rightPad = 12
-const topPad = 20
+const topPad = 14
 const bottomPad = 28
 const baselineY = computed(() => vbHeight.value - bottomPad)
 
@@ -105,8 +105,8 @@ const pxPerMin = computed(() => {
 })
 
 // ── Eixo de temperatura ────────────────────────────────────────────────────
-const tempMin = computed(() => Math.min(...props.steps.map(s => s.temperature)) - 10)
-const tempMax = computed(() => Math.max(...props.steps.map(s => s.temperature)) + 6)
+const tempMin = computed(() => Math.min(...props.steps.map(s => s.temperature)) - 8)
+const tempMax = computed(() => Math.max(...props.steps.map(s => s.temperature)) + 3)
 
 function tempToY(temp: number): number {
     const chartH = vbHeight.value - topPad - bottomPad

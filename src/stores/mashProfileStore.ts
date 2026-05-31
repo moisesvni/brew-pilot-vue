@@ -23,6 +23,21 @@ export const useMashProfileStore = defineStore('mashProfile', () => {
     return profiles.value.length < FREE_MASH_LIMIT
   })
 
+  function upsertProfile(profile: MashProfile) {
+    const normalizedProfiles = profile.isDefault
+      ? profiles.value.map(current =>
+          current.id !== profile.id
+            ? { ...current, isDefault: false }
+            : current
+        )
+      : profiles.value
+
+    const idx = normalizedProfiles.findIndex(current => current.id === profile.id)
+    profiles.value = idx === -1
+      ? [...normalizedProfiles, profile]
+      : normalizedProfiles.map((current, currentIdx) => currentIdx === idx ? profile : current)
+  }
+
   // ── Actions ────────────────────────────────────────────────────────────────
   async function fetchAll() {
     loading.value = true
@@ -44,14 +59,13 @@ export const useMashProfileStore = defineStore('mashProfile', () => {
 
   async function create(data: Omit<MashProfile, 'id' | 'createdAt' | 'updatedAt'>) {
     const created = await mashProfileService.create(data)
-    profiles.value.push(created)
+    upsertProfile(created)
     return created
   }
 
   async function update(id: string, data: Omit<MashProfile, 'id' | 'createdAt' | 'updatedAt'>) {
     const updated = await mashProfileService.update(id, data)
-    const idx = profiles.value.findIndex(p => p.id === id)
-    if (idx !== -1) profiles.value[idx] = updated
+    upsertProfile(updated)
     return updated
   }
 

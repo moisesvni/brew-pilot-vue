@@ -1,15 +1,12 @@
 <template>
   <div :class="['mp-card', profile.isDefault && 'mp-card--default']">
-
     <!-- ─ Cabeçalho ───────────────────────────────────────── -->
     <div class="row items-start no-wrap q-mb-xs" style="gap: 8px">
-
       <!-- Ícone esquerdo -->
       <div v-if="profile.isDefault" class="mp-default-icon-wrap" style="flex-shrink: 0; margin-top: 1px">
         <q-icon name="mdi-star" color="amber-7" size="16px" />
       </div>
       <q-icon v-else name="mdi-thermometer" color="red-4" size="18px" style="margin-top: 2px; flex-shrink: 0" />
-
       <!-- Info -->
       <div class="col" style="min-width: 0">
         <!-- Nome + badges + stats inline -->
@@ -26,7 +23,6 @@
           <span v-if="totalRamp > 0" class="meta-chip meta-chip--ramp"><q-icon name="mdi-trending-up" size="10px" />{{ stepsWithRamp }} rampas · {{ totalRamp }}min</span>
         </div>
       </div>
-
       <!-- Ações -->
       <div class="row no-wrap q-gutter-xs" style="flex-shrink: 0">
         <template v-if="profile.isDefault">
@@ -53,11 +49,11 @@
     </div>
 
     <!-- ─ Corpo: etapas + gráfico ────────────────────────────── -->
-    <div class="row q-col-gutter-md items-center q-mt-xs">
+    <div class="row q-col-gutter-md items-start q-mt-xs">
       <div class="col-5">
         <mash-steps-table :steps="profile.steps" />
       </div>
-      <div v-if="profile.steps.length" class="col-7" style="min-width: 0">
+      <div v-if="profile.steps.length" class="col-7 q-pa-none" style="min-width: 0">
         <mash-temp-chart-compact :steps="profile.steps" :height="chartHeight" />
       </div>
     </div>
@@ -92,9 +88,8 @@ const totalTime = computed(() => props.profile.steps.reduce((s, st) => s + (st.t
 const totalRamp = computed(() => props.profile.steps.reduce((s, st) => s + (st.rampDuration ?? 0), 0))
 const stepsWithRamp = computed(() => props.profile.steps.filter(st => (st.rampDuration ?? 0) > 0).length)
 
-// Altura do gráfico sincronizada com a tabela de etapas
-// header (~26px) + cada linha (~26px) — mínimo 75px
-const chartHeight = computed(() => Math.max(75, props.profile.steps.length * 26))
+// Altura proporcional: 2 etapas → ~62px, 4 etapas → ~84px, 5+ → ~100px
+const chartHeight = computed(() => Math.max(58, 30 + props.profile.steps.length * 18))
 
 const tempRange = computed(() => {
   if (!props.profile.steps.length) return '—'

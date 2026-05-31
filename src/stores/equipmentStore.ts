@@ -27,6 +27,21 @@ export const useEquipmentStore = defineStore('equipment', () => {
     return userProfiles.value.length < FREE_EQUIPMENT_LIMIT
   })
 
+  function upsertProfile(profile: EquipmentProfile) {
+    const normalizedProfiles = profile.isDefault && !isGlobalBaseProfile(profile)
+      ? profiles.value.map(current =>
+          !isGlobalBaseProfile(current) && current.id !== profile.id
+            ? { ...current, isDefault: false }
+            : current
+        )
+      : profiles.value
+
+    const idx = normalizedProfiles.findIndex(current => current.id === profile.id)
+    profiles.value = idx === -1
+      ? [...normalizedProfiles, profile]
+      : normalizedProfiles.map((current, currentIdx) => currentIdx === idx ? profile : current)
+  }
+
   // ── Actions ────────────────────────────────────────────────────────────────
   async function fetchAll() {
     loading.value = true
@@ -42,14 +57,13 @@ export const useEquipmentStore = defineStore('equipment', () => {
 
   async function create(data: CreateEquipmentProfileRequest) {
     const created = await equipmentService.create(data)
-    profiles.value.push(created)
+    upsertProfile(created)
     return created
   }
 
   async function update(id: string, data: CreateEquipmentProfileRequest) {
     const updated = await equipmentService.update(id, data)
-    const idx = profiles.value.findIndex(p => p.id === id)
-    if (idx !== -1) profiles.value[idx] = updated
+    upsertProfile(updated)
     return updated
   }
 

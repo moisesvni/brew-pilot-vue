@@ -156,11 +156,12 @@ function onSaved(_: MashProfile) { /* store updated inside dialog */ }
 function confirmDelete(p: MashProfile) { deleteTarget.value = p; deleteDialog.value = true }
 
 async function toggleDefault(p: MashProfile) {
+  const newDefault = !p.isDefault
   try {
-    await mashStore.update(p.id, { ...p, isDefault: !p.isDefault })
+    await mashStore.update(p.id, { ...p, isDefault: newDefault })
     $q.notify({
       type: 'positive',
-      message: p.isDefault ? 'Perfil removido dos padrões.' : 'Perfil definido como padrão.',
+      message: newDefault ? 'Perfil definido como padrão.' : 'Perfil removido dos padrões.',
       timeout: 2000,
     })
   } catch {

@@ -8,38 +8,53 @@
     </brew-pilot-page-header>
 
     <div class="q-pa-md">
-      <!-- Banner limite Free -->
-      <div v-if="!equipStore.canAddMore" class="eq-limit-banner q-mb-md">
-        <q-icon name="mdi-lock-outline" size="14px" class="q-mr-xs" />
-        Limite atingido: plano Free permite até {{ FREE_LIMIT }} perfis personalizados.
-        <span class="eq-limit-link q-ml-xs">Assinar Pro</span>
-      </div>
 
+      <!-- Loading -->
       <div v-if="equipStore.loading" class="row justify-center q-py-xl">
-        <q-spinner color="primary" size="36px" />
+        <brew-pilot-loading />
       </div>
 
-      <template v-else-if="equipStore.error">
-        <div class="eq-error-banner q-mb-md">
-          <q-icon name="mdi-alert-circle-outline" size="14px" class="q-mr-xs" />
-          {{ equipStore.error }}
-          <span class="eq-limit-link q-ml-xs cursor-pointer" @click="equipStore.fetchAll()">Tentar novamente</span>
-        </div>
-      </template>
+      <!-- Erro -->
+      <q-banner v-else-if="equipStore.error" rounded dense class="bg-negative text-white q-mb-md">
+        <template #avatar><q-icon name="mdi-alert-circle-outline" /></template>
+        {{ equipStore.error }}
+        <template #action>
+          <q-btn flat dense no-caps label="Tentar novamente" @click="equipStore.fetchAll()" />
+        </template>
+      </q-banner>
 
       <template v-else>
+
+        <!-- ── Banner Upgrade ────────────────────────────── -->
+        <div v-if="!equipStore.canAddMore" class="upgrade-banner q-mb-lg">
+          <div class="row items-center no-wrap" style="gap: 12px">
+            <div class="upgrade-icon-wrap">
+              <q-icon name="mdi-crown" color="amber-7" size="28px" />
+            </div>
+            <div class="col">
+              <div class="text-body2 text-weight-bold upgrade-title">
+                Você atingiu o limite do plano gratuito
+              </div>
+              <div class="text-caption upgrade-sub">
+                O plano Free permite até {{ FREE_LIMIT }} perfis de equipamento.
+                Altere seu plano, você cria perfis ilimitados e acessa recursos avançados.
+              </div>
+            </div>
+            <brew-pilot-subscription-plan-button />
+          </div>
+        </div>
         <!-- Meus Perfis -->
         <div class="section-label q-mb-sm">Meus Perfis</div>
         <div v-if="filteredUserProfiles.length" class="column q-gutter-sm q-mb-xl">
-          <div v-for="p in filteredUserProfiles" :key="p.id" class="eq-card">
+          <div v-for="p in filteredUserProfiles" :key="p.id" :class="['eq-card', p.isDefault && 'eq-card--default']">
             <div class="row items-start no-wrap">
-              <q-icon name="mdi-kettle" color="primary" size="22px" class="q-mr-sm q-mt-xs flex-shrink-0" />
+              <div :class="['eq-icon-wrap q-mr-sm flex-shrink-0', p.isDefault && 'eq-icon-wrap--default']" style="margin-top: 2px">
+                <q-icon v-if="p.isDefault" name="mdi-star" color="amber-7" size="12px" />
+                <q-icon name="mdi-kettle" :color="p.isDefault ? 'amber-8' : 'primary'" size="20px" />
+              </div>
               <div class="col" style="min-width: 0">
                 <div class="row items-center no-wrap q-mb-xs" style="gap: 8px">
                   <span class="eq-card-name">{{ p.name }}</span>
-                  <q-icon v-if="p.isDefault" name="mdi-star" color="primary" size="16px">
-                    <q-tooltip>Perfil padrão</q-tooltip>
-                  </q-icon>
                 </div>
                 <div class="eq-stats-grid">
                   <div class="eq-stat"><span class="eq-stat-label">Lote</span><span class="eq-stat-value">{{
@@ -64,6 +79,16 @@
                 <div v-if="p.notes" class="eq-notes q-mt-xs">{{ p.notes }}</div>
               </div>
               <div class="row q-gutter-xs flex-shrink-0 q-ml-sm">
+                <template v-if="p.isDefault">
+                  <q-btn flat round dense size="sm" icon="mdi-star-off" color="amber-6" @click="toggleDefault(p)">
+                    <q-tooltip>Remover como padrão</q-tooltip>
+                  </q-btn>
+                </template>
+                <template v-else>
+                  <q-btn flat round dense size="sm" icon="mdi-star-outline" color="grey-5" @click="toggleDefault(p)">
+                    <q-tooltip>Definir como padrão</q-tooltip>
+                  </q-btn>
+                </template>
                 <q-btn flat round dense size="sm" icon="mdi-export-variant" color="grey-5"
                   @click="equipStore.exportProfile(p)">
                   <q-tooltip>Exportar como JSON</q-tooltip>
@@ -176,7 +201,9 @@ const deleteDialog = ref(false)
 const deleteTarget = ref<EquipmentProfile | null>(null)
 const deleting = ref(false)
 
-const filteredUserProfiles = computed(() => equipStore.userProfiles)
+const filteredUserProfiles = computed(() =>
+  [...equipStore.userProfiles].sort((a, b) => (b.isDefault ? 1 : 0) - (a.isDefault ? 1 : 0))
+)
 const filteredGlobalProfiles = computed(() => equipStore.globalProfiles)
 
 function openCreate() { pickerDialog.value = true }
@@ -185,6 +212,15 @@ function backToPicker() { editDialog.value = false; pickerDialog.value = true }
 function openEdit(p: EquipmentProfile) { fromPicker.value = false; editBase.value = p; editDialog.value = true }
 function openCreateFromBase(p: EquipmentProfile) { fromPicker.value = false; editBase.value = p; editDialog.value = true }
 function onSaved(_: EquipmentProfile) { /* store updated inside dialog */ }
+
+async function toggleDefault(p: EquipmentProfile) {
+  const newDefault = !p.isDefault
+  try {
+    await equipStore.update(p.id, { ...p, isDefault: newDefault })
+  } catch {
+    $q.notify({ type: 'negative', message: 'Erro ao atualizar perfil padrão.', timeout: 3000 })
+  }
+}
 
 function confirmDelete(p: EquipmentProfile) { deleteTarget.value = p; deleteDialog.value = true }
 
@@ -222,7 +258,29 @@ async function doDelete() {
 }
 
 .eq-card:hover {
-  border-color: #c1710e66;
+  border-color: color-mix(in srgb, var(--q-primary) 35%, transparent);
+}
+
+/* ── Card padrão — destaque âmbar ── */
+.eq-card--default {
+  border-left: 3px solid #f59e0b;
+  border-color: color-mix(in srgb, #f59e0b 45%, var(--bp-border));
+  background: color-mix(in srgb, #f59e0b 5%, var(--bp-surface-alt));
+}
+.eq-card--default:hover {
+  border-color: color-mix(in srgb, #f59e0b 70%, transparent);
+}
+
+.eq-icon-wrap {
+  background: color-mix(in srgb, var(--q-primary) 10%, transparent);
+  border-radius: 6px;
+  padding: 4px 5px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.eq-icon-wrap--default {
+  background: color-mix(in srgb, #f59e0b 15%, transparent);
 }
 
 .eq-card--global {
@@ -273,34 +331,22 @@ async function doDelete() {
   font-style: italic;
 }
 
-.eq-limit-banner {
-  display: flex;
-  align-items: center;
-  font-size: 12px;
-  color: var(--bp-text-secondary);
-  background: color-mix(in srgb, #c1710e 10%, transparent);
-  border: 1px solid color-mix(in srgb, #c1710e 30%, transparent);
-  border-radius: 6px;
-  padding: 6px 10px;
+.upgrade-banner {
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, #f59e0b 10%, var(--bp-surface-alt)),
+    color-mix(in srgb, #c1710e 8%, var(--bp-surface-alt))
+  );
+  border: 1px solid color-mix(in srgb, #f59e0b 35%, transparent);
+  border-radius: 12px;
+  padding: 14px 16px;
 }
-
-.eq-limit-link {
-  color: #c1710e;
-  cursor: pointer;
+.upgrade-icon-wrap {
+  background: color-mix(in srgb, #f59e0b 15%, transparent);
+  border-radius: 10px;
+  padding: 8px;
+  flex-shrink: 0;
 }
-
-.eq-limit-link:hover {
-  text-decoration: underline;
-}
-
-.eq-error-banner {
-  display: flex;
-  align-items: center;
-  font-size: 12px;
-  color: var(--bp-text-secondary);
-  background: color-mix(in srgb, var(--q-negative) 10%, transparent);
-  border: 1px solid color-mix(in srgb, var(--q-negative) 30%, transparent);
-  border-radius: 6px;
-  padding: 8px 12px;
-}
+.upgrade-title { color: var(--bp-text-primary); margin-bottom: 2px; }
+.upgrade-sub { color: var(--bp-text-secondary); }
 </style>

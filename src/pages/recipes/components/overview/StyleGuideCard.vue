@@ -7,13 +7,13 @@
         <q-icon
           :name="recipe.styleGuide ? 'mdi-book-open-variant' : 'mdi-book-open-variant-outline'"
           size="22px" class="q-mr-xs flex-shrink-0"
-          :style="{ color: bookIconColor }"
+          :style="{ color: 'var(--bp-text-secondary)' }"
         />
-        <span class="text-caption text-weight-bold ellipsis col" :style="{ color: labelColor }">
+        <brew-pilot-label size="13px" class="col">
           {{ recipe.styleGuide
             ? `${recipe.styleGuide.code} ${recipe.styleGuide.name}`
             : 'Nenhum estilo selecionado' }}
-        </span>
+        </brew-pilot-label>
         <div class="row flex-shrink-0">
           <brew-pilot-button round outline dense primary
             :icon="recipe.styleGuide ? 'mdi-swap-horizontal' : 'mdi-plus'" size="md"
@@ -53,11 +53,14 @@
       </template>
 
       <!-- ── Sem estilo ── -->
-      <div v-else class="column items-center q-py-md" style="gap: 6px">
-        <q-icon name="mdi-chart-bar" size="32px" :style="{ color: 'var(--bp-text-muted)' }" />
-        <span class="text-caption" style="color: var(--bp-text-secondary)">
-          Selecione um estilo
-        </span>
+      <div v-else class="column items-center q-py-sm q-gutter-xs text-center">
+        <q-icon name="mdi-book-open-variant-outline" size="32px" color="grey-5" />
+        <brew-pilot-label variant="primary" size="12px" class="text-weight-medium">
+          Nenhum estilo selecionado
+        </brew-pilot-label>
+        <brew-pilot-label variant="muted" size="11px">
+          Selecione um estilo para comparar ABV, OG, FG, EBC e IBU da receita.
+        </brew-pilot-label>
       </div>
 
     </q-card-section>
@@ -69,32 +72,11 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { useQuasar } from 'quasar'
 import { useRecipeStore } from '@/stores/recipeStore'
 
-const $q    = useQuasar()
 const store = useRecipeStore()
 const recipe = computed(() => store.currentRecipe!)
 const stats  = computed(() => store.stats)
-
-// Ícone do livro — 2 cores no light, 2 cores no dark
-const bookIconColor = computed(() => {
-  const hasStyle = !!recipe.value.styleGuide
-  if ($q.dark.isActive) {
-    return hasStyle ? '#6fcf6f' : 'rgba(255,255,255,0.28)'  // dark: verde / muted
-  } else {
-    return hasStyle ? '#c1710e' : 'rgba(43,26,6,0.28)'      // light: marrom / muted
-  }
-})
-
-const labelColor = computed(() => {
-  const hasStyle = !!recipe.value.styleGuide
-  if ($q.dark.isActive) {
-    return hasStyle ? 'var(--bp-text-primary)' : 'rgba(255,255,255,0.38)'
-  } else {
-    return hasStyle ? 'var(--bp-text-primary)' : 'rgba(43,26,6,0.40)'
-  }
-})
 
 const styleDialog = ref(false)
 

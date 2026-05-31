@@ -21,9 +21,21 @@ export const notifyError = (message: string, type: 'error' | 'warning' = 'error'
 // Instância axios compartilhada por todos os serviços
 // ---------------------------------------------------------------------------
 
+const apiBaseURL = import.meta.env.VITE_API_URL ?? import.meta.env.VITE_BASE_URL ?? '/api'
+
+function resolveTimeout(): number {
+  const rawTimeout = import.meta.env.VITE_API_TIMEOUT_MS
+  if (rawTimeout !== undefined && rawTimeout !== '') {
+    const parsed = Number(rawTimeout)
+    if (Number.isFinite(parsed) && parsed >= 0) return parsed
+  }
+
+  return import.meta.env.DEV ? 0 : 60000
+}
+
 const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_URL ?? import.meta.env.VITE_BASE_URL ?? '/api',
-  timeout: 10000,
+  baseURL: apiBaseURL,
+  timeout: resolveTimeout(),
 })
 
 // Injeta o access token em cada requisição
@@ -48,8 +60,9 @@ apiClient.interceptors.response.use(
       if (refreshToken) {
         try {
           const { data } = await axios.post(
-            `${import.meta.env.VITE_API_URL ?? import.meta.env.VITE_BASE_URL ?? '/api'}/auth/refresh`,
-            { refreshToken }
+            `${apiBaseURL}/auth/refresh`,
+            { refreshToken },
+            { timeout: resolveTimeout() }
           )
           localStorage.setItem('brew_access_token', data.accessToken)
           localStorage.setItem('brew_refresh_token', data.refreshToken)
@@ -71,6 +84,8 @@ apiClient.interceptors.response.use(
       notifyError('Acesso negado.')
     } else if (status !== undefined && status >= 500) {
       notifyError('Erro no servidor. Tente novamente mais tarde.')
+    } else if (error.code === 'ECONNABORTED') {
+      notifyError('Tempo limite da requisição excedido. Tente novamente em instantes.', 'warning')
     } else if (status === undefined) {
       notifyError(`Falha de conexão: ${error.message}`)
     }

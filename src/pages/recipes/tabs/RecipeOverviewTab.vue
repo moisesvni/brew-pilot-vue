@@ -9,7 +9,7 @@
             <div class="row items-center no-wrap q-gutter-sm">
               <!-- Avatar / Swatch EBC -->
               <div class="recipe-thumb rounded-borders overflow-hidden flex flex-center flex-shrink-0 cursor-pointer"
-                :style="{ backgroundColor: ebcToHex(stats?.ebc ?? 4) }" @click="imageDialog = true">
+                :style="{ backgroundColor: ebcToHex(stats?.ebc ?? 4) }" @click="showImageDialog()">
                 <img v-if="recipe.imageUrl" :src="recipe.imageUrl" class="fit" style="object-fit:cover"
                   referrerpolicy="no-referrer" />
                 <q-icon v-else name="mdi-beer" size="30px" color="white" style="opacity:.5" />
@@ -32,9 +32,16 @@
                 <!-- Tipo + Versão chips -->
                 <div class="info-row">
                   <span class="info-label">Tipo</span>
-                   <q-select v-model="recipe.type" class="col" :options="typeOptions" option-value="label" 
-                   transition-show="flip-up"
-                  transition-hide="flip-down"/>
+                   <q-select
+                    v-model="recipe.type"
+                    class="col"
+                    :options="typeOptions"
+                    option-value="value"
+                    emit-value
+                    map-options
+                    transition-show="flip-up"
+                    transition-hide="flip-down"
+                  />
                 </div>
               </div>
             </div>
@@ -46,62 +53,86 @@
           <q-card-section class="q-pa-sm">
             <!-- Header: ícone + nome + ações -->
             <div class="row items-center no-wrap q-mb-xs">
-              <q-icon name="mdi-kettle" size="24px" class="q-mr-xs flex-shrink-0"
-                :style="{ color: 'var(--bp-text-secondary)' }" />
-              <span class="text-caption text-weight-bold ellipsis col"
-                style="color: var(--bp-text-primary)">
+              <q-icon :name="recipe.equipmentProfile?.name ? 'mdi-kettle' : 'mdi-kettle-off'" size="24px" class="q-mr-xs flex-shrink-0"
+                :style="{ color: recipe.equipmentProfile?.name ? 'var(--bp-text-secondary)' : 'var(--bp-text-muted)' }" />
+              <brew-pilot-label :variant="recipe.equipmentProfile?.name ? 'primary' : 'muted'" size="13px" class="col ellipsis">
                 {{ recipe.equipmentProfile?.name ?? 'Equipamento não selecionado' }}
-              </span>
+              </brew-pilot-label>
               <div class="row q-gutter-xs flex-shrink-0">
-                <!-- Redimensionar (só quando há equipamento selecionado) -->
-                <q-btn round outline dense icon="mdi-resize" color="grey-5" size="md"
+                <brew-pilot-button round outline dense icon="mdi-resize" color="grey-5" size="md"
                   v-if="recipe.equipmentProfile?.name"
-                  @click="resizeEquipDialog = true">
+                  @click="showResizeEquipDialog()">
                   <q-tooltip>Redimensionar lote</q-tooltip>
-                </q-btn>
-                <!-- Alterar equipamento -->
-                <q-btn round outline dense icon="mdi-swap-horizontal" color="grey-5" size="md" @click="changeEquipDialog = true"
-                  v-if="recipe.equipmentProfile?.name">
+                </brew-pilot-button>
+                <brew-pilot-button round outline dense icon="mdi-swap-horizontal" color="grey-5" size="md"
+                  v-if="recipe.equipmentProfile?.name"
+                  @click="showChangeEquipDialog()">
                   <q-tooltip>Alterar equipamento</q-tooltip>
-                </q-btn>
-                <!-- Editar equipamento -->
-                <q-btn round outline dense icon="mdi-pencil" color="grey-5" size="md" @click="editEquipDialog = true"
-                 v-if="recipe.equipmentProfile?.name">
+                </brew-pilot-button>
+                <brew-pilot-button round outline dense icon="mdi-pencil" color="grey-5" size="md"
+                  v-if="recipe.equipmentProfile?.name"
+                  @click="showEditEquipDialog()">
                   <q-tooltip>Editar equipamento</q-tooltip>
-                </q-btn>
-                <!-- Adicionar (quando nenhum perfil selecionado e há perfis disponíveis) -->
-                <q-btn round outline dense icon="mdi-plus" color="primary" size="md"
-                  v-if="!recipe.equipmentProfile?.name && !hasNoEquipProfiles"
-                  @click="changeEquipDialog = true">
+                </brew-pilot-button>
+                <brew-pilot-button round outline dense icon="mdi-plus" primary size="md"
+                  v-if="!recipe.equipmentProfile?.name && equipStore.userProfiles.length > 0"
+                  @click="showChangeEquipDialog()">
                   <q-tooltip>Selecionar equipamento</q-tooltip>
-                </q-btn>
+                </brew-pilot-button>
               </div>
             </div>
             <q-separator class="q-mb-xs" />
 
-            <!-- Alerta: sem nenhum perfil de equipamento criado -->
-            <div v-if="hasNoEquipProfiles && !recipe.equipmentProfile"
-              class="column items-center q-py-sm q-gutter-sm text-center">
-              <q-icon name="mdi-alert-circle-outline" size="36px" color="warning" />
-              <div class="text-caption text-weight-medium" style="color: var(--bp-text-primary)">
-                Nenhum perfil de equipamento criado
-              </div>
-              <div class="text-caption" style="color: var(--bp-text-secondary)">
-                Crie um perfil para calcular volumes e eficiências corretamente.
-              </div>
-              <brew-pilot-button
-                variant="outline"
-                color="warning"
-                label="Criar Perfil"
-                icon="mdi-plus"
-                size="sm"
-                no-caps
-                @click="router.push('/profiles/equipment')"
-              />
+            <!-- Estado: carregando perfis -->
+            <div v-if="equipStore.loading && !recipe.equipmentProfile"
+              class="column items-center q-py-md q-gutter-xs">
+              <q-spinner-dots color="primary" size="28px" />
+              <brew-pilot-label variant="muted" size="11px">Carregando equipamentos...</brew-pilot-label>
             </div>
 
-            <!-- Dados do lote — texto compacto -->
-            <div v-else class="column q-gutter-none">
+            <!-- Estado: sem nenhum perfil criado -->
+            <div v-if="hasNoEquipProfiles && !recipe.equipmentProfile && !equipStore.loading"
+              class="column items-center q-py-sm q-gutter-xs text-center">
+              <q-icon name="mdi-kettle-off" size="32px" color="grey-5" />
+              <brew-pilot-label variant="primary" size="12px" class="text-weight-medium">
+                Nenhum perfil de equipamento
+              </brew-pilot-label>
+              <brew-pilot-label variant="muted" size="11px">
+                Crie um perfil para calcular volumes e eficiências.
+              </brew-pilot-label>
+              <brew-pilot-button variant="outline" label="Criar Perfil" icon="mdi-plus"
+                size="sm" no-caps class="q-mt-xs" @click="router.push('/profiles/equipment')" />
+            </div>
+
+            <!-- Estado: há perfis mas nenhum selecionado -->
+            <div v-else-if="!recipe.equipmentProfile && equipStore.userProfiles.length"
+              class="equip-pick-state column q-gutter-xs q-py-xs">
+              <brew-pilot-label variant="secondary" size="11.5px" class="text-weight-medium q-mb-xs">
+                Escolha um equipamento para esta receita
+              </brew-pilot-label>
+              <div v-for="p in equipStore.userProfiles.slice(0, 3)" :key="p.id"
+                class="equip-pick-row row items-center no-wrap cursor-pointer rounded-borders"
+                :class="{ 'equip-pick-row--default': p.isDefault }"
+                @click="selectEquip(p)">
+                <div :class="['equip-pick-icon', p.isDefault && 'equip-pick-icon--default']">
+                  <q-icon v-if="p.isDefault" name="mdi-star" color="amber-7" size="9px" />
+                  <q-icon name="mdi-kettle" :color="p.isDefault ? 'amber-8' : 'grey-5'" size="14px" />
+                </div>
+                <div class="col q-ml-xs">
+                  <div class="equip-pick-name ellipsis">{{ p.name }}</div>
+                  <div class="equip-pick-caption">{{ p.batchVolume }}L · {{ p.boilTime }}min · {{ p.efficiency }}%</div>
+                </div>
+                <q-icon name="mdi-chevron-right" color="grey-5" size="16px" />
+              </div>
+              <div v-if="equipStore.userProfiles.length > 3"
+                class="text-center q-mt-xs">
+                <brew-pilot-button variant="flat" no-caps size="xs" label="Ver todos"
+                  icon="mdi-dots-horizontal" @click="showChangeEquipDialog()" />
+              </div>
+            </div>
+
+            <!-- Dados do lote quando equipamento selecionado -->
+            <div v-else-if="recipe.equipmentProfile" class="column q-gutter-none">
               <div class="row items-center no-wrap q-py-xs">
                 <q-icon name="mdi-cup" size="12px" class="q-mr-xs flex-shrink-0"
                   :style="{ color: 'var(--bp-text-secondary)' }" />
@@ -159,7 +190,7 @@
       </div>
     </div>
 
-    <!-- Diversos | Levedura -->
+    <!-- Diversos -->
     <div class="row q-col-gutter-md q-mt-sm">
       <div class="col-12 col-md-6">
         <recipe-section title="Diversos" icon="mdi-flask-outline" icon-color="teal">
@@ -196,31 +227,69 @@
     </div>
 
     <!-- ── Dialogs ────────────────────────────────────────────────────────── -->
-    <recipe-image-dialog v-model="imageDialog" />
-    <change-equipment-dialog v-model="changeEquipDialog" />
-    <resize-equip-dialog v-model="resizeEquipDialog" />
-    <edit-equipment-dialog v-model="editEquipDialog" />
-    <recipe-style-dialog v-model="styleDialog" />
+    <RecipeImageDialog v-if="imageDialogMounted" v-model="imageDialog" />
+    <ChangeEquipmentDialog v-if="changeEquipDialogMounted" v-model="changeEquipDialog" />
+    <ResizeEquipDialog v-if="resizeEquipDialogMounted" v-model="resizeEquipDialog" />
+    <EditEquipmentDialog
+      v-if="editEquipDialogMounted"
+      v-model="editEquipDialog"
+      :base-profile="recipe.equipmentProfile ?? null"
+      @saved="applyEquipmentProfile"
+    />
+    <RecipeStyleDialog v-if="styleDialogMounted" v-model="styleDialog" />
 
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, type ComponentPublicInstance } from 'vue'
+import { ref, computed, onMounted, watch, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import { useRecipeStore } from '@/stores/recipeStore'
 import { useEquipmentStore } from '@/stores/equipmentStore'
 import { ebcToHex } from '@/core/utils/brewColors'
+import type { EquipmentProfile } from '@/types/equipment'
+import ChangeEquipmentDialog from '@/pages/recipes/components/overview/dialogs/ChangeEquipmentDialog.vue'
+import EditEquipmentDialog from '@/pages/recipes/components/overview/dialogs/EditEquipmentDialog.vue'
+import RecipeImageDialog from '@/pages/recipes/components/overview/dialogs/RecipeImageDialog.vue'
+import RecipeStyleDialog from '@/pages/recipes/components/overview/dialogs/RecipeStyleDialog.vue'
+import ResizeEquipDialog from '@/pages/recipes/components/overview/dialogs/ResizeEquipDialog.vue'
 
 const store = useRecipeStore()
 const recipe = computed(() => store.currentRecipe!)
 const stats = computed(() => store.stats)
 const router = useRouter()
 
-const miscTabRef = ref<ComponentPublicInstance | null>(null)
+const miscTabRef = ref<{ openPicker: () => void } | null>(null)
 
 const equipStore = useEquipmentStore()
-onMounted(() => { if (!equipStore.profiles.length) equipStore.fetchAll() })
+
+function selectEquip(p: EquipmentProfile) {
+  recipe.value.equipmentProfileId = p.id
+  recipe.value.equipmentProfile = p
+  recipe.value.batchVolume = p.batchVolume
+  recipe.value.preBoilVolume = p.preBoilVolume
+  recipe.value.boilTime = p.boilTime
+  recipe.value.efficiency = p.efficiency
+}
+
+function applyEquipmentProfile(p: EquipmentProfile) {
+  selectEquip(p)
+}
+
+function tryAutoSelect() {
+  if (recipe.value.equipmentProfile) return
+  const user = equipStore.userProfiles
+  if (user.length === 1 && user[0].isDefault) {
+    selectEquip(user[0])
+  }
+}
+
+onMounted(async () => {
+  if (!equipStore.profiles.length) await equipStore.fetchAll()
+  tryAutoSelect()
+})
+
+watch(() => equipStore.userProfiles, tryAutoSelect)
 
 const hasNoEquipProfiles = computed(() => !equipStore.loading && equipStore.userProfiles.length === 0)
 
@@ -232,10 +301,90 @@ const typeOptions = [
 
 // Dialog state refs
 const imageDialog = ref(false)
+const imageDialogMounted = ref(false)
 const changeEquipDialog = ref(false)
+const changeEquipDialogMounted = ref(false)
 const resizeEquipDialog = ref(false)
+const resizeEquipDialogMounted = ref(false)
 const editEquipDialog = ref(false)
+const editEquipDialogMounted = ref(false)
 const styleDialog = ref(false)
+const styleDialogMounted = ref(false)
+
+function showImageDialog() {
+  imageDialogMounted.value = true
+  nextTick(() => {
+    imageDialog.value = true
+  })
+}
+
+function showChangeEquipDialog() {
+  changeEquipDialogMounted.value = true
+  nextTick(() => {
+    changeEquipDialog.value = true
+  })
+}
+
+function showResizeEquipDialog() {
+  resizeEquipDialogMounted.value = true
+  nextTick(() => {
+    resizeEquipDialog.value = true
+  })
+}
+
+function showEditEquipDialog() {
+  editEquipDialogMounted.value = true
+  nextTick(() => {
+    editEquipDialog.value = true
+  })
+}
+
+function showStyleDialog() {
+  styleDialogMounted.value = true
+  nextTick(() => {
+    styleDialog.value = true
+  })
+}
+
+watch(imageDialog, value => {
+  if (!value && imageDialogMounted.value) {
+    nextTick(() => {
+      if (!imageDialog.value) imageDialogMounted.value = false
+    })
+  }
+})
+
+watch(changeEquipDialog, value => {
+  if (!value && changeEquipDialogMounted.value) {
+    nextTick(() => {
+      if (!changeEquipDialog.value) changeEquipDialogMounted.value = false
+    })
+  }
+})
+
+watch(resizeEquipDialog, value => {
+  if (!value && resizeEquipDialogMounted.value) {
+    nextTick(() => {
+      if (!resizeEquipDialog.value) resizeEquipDialogMounted.value = false
+    })
+  }
+})
+
+watch(editEquipDialog, value => {
+  if (!value && editEquipDialogMounted.value) {
+    nextTick(() => {
+      if (!editEquipDialog.value) editEquipDialogMounted.value = false
+    })
+  }
+})
+
+watch(styleDialog, value => {
+  if (!value && styleDialogMounted.value) {
+    nextTick(() => {
+      if (!styleDialog.value) styleDialogMounted.value = false
+    })
+  }
+})
 </script>
 
 <style scoped>
@@ -283,5 +432,42 @@ const styleDialog = ref(false)
 .info-value {
   font-size: 13px;
   color: var(--bp-text-primary);
+}
+
+.equip-pick-row {
+  padding: 5px 6px;
+  border: 1px solid transparent;
+  transition: background 0.12s, border-color 0.12s;
+  gap: 4px;
+}
+.equip-pick-row:hover {
+  background: rgba(193, 113, 14, 0.06);
+  border-color: rgba(193, 113, 14, 0.18);
+}
+.equip-pick-row--default {
+  border-left: 2px solid #f59e0b;
+  border-color: color-mix(in srgb, #f59e0b 40%, var(--bp-border));
+  background: color-mix(in srgb, #f59e0b 4%, var(--bp-surface-alt));
+}
+.equip-pick-icon {
+  background: color-mix(in srgb, var(--q-primary) 10%, transparent);
+  border-radius: 5px;
+  padding: 3px 4px;
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  flex-shrink: 0;
+}
+.equip-pick-icon--default {
+  background: color-mix(in srgb, #f59e0b 15%, transparent);
+}
+.equip-pick-name {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--bp-text-primary);
+}
+.equip-pick-caption {
+  font-size: 10.5px;
+  color: var(--bp-text-muted);
 }
 </style>

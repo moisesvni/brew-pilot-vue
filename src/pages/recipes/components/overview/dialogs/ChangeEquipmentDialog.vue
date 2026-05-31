@@ -1,52 +1,46 @@
 <template>
   <brew-pilot-dialog v-model="open" title="Selecionar Perfil de Equipamento"
     icon="mdi-kettle" icon-color="orange-6" width="580px" scrollable>
-
-    <!-- Busca -->
-    <div class="q-px-md q-pt-md q-pb-xs">
-      <brew-pilot-search-input v-model="search" placeholder="Buscar perfil..." />
-    </div>
-
-    <!-- Banner limite Free -->
-    <div v-if="!equipStore.canAddMore" class="q-px-md q-pt-sm">
-      <div class="eq-limit-banner">
-        <q-icon name="mdi-lock-outline" size="14px" class="q-mr-xs" />
-        Limite atingido: plano Free permite até {{ FREE_LIMIT }} perfis personalizados.
-        <a class="eq-limit-link" @click.prevent>Assinar Pro</a>
+    <!-- Banner Upgrade -->
+    <div v-if="!equipStore.canAddMore" class="q-px-md q-pt-md">
+      <div class="upgrade-banner">
+        <div class="row items-center no-wrap" style="gap: 10px">
+          <div class="upgrade-icon-wrap">
+            <q-icon name="mdi-crown" color="amber-7" size="20px" />
+          </div>
+          <div class="col">
+            <div class="text-caption text-weight-bold upgrade-title">Limite do plano gratuito atingido</div>
+            <div class="upgrade-sub">O plano Free permite até {{ FREE_LIMIT }} perfis personalizados.</div>
+          </div>
+          <brew-pilot-subscription-plan-button />
+        </div>
       </div>
     </div>
-
     <q-list class="q-px-sm q-pb-sm">
-
       <!-- ── Meus Perfis ── -->
       <template v-if="filteredUserProfiles.length">
         <q-item-label header class="eq-section-label">Meus Perfis</q-item-label>
-        <q-item v-for="p in filteredUserProfiles" :key="p.id"
+        <q-item v-for="p in sortedUserProfiles" :key="p.id"
           clickable v-ripple class="eq-item rounded-borders q-mb-xs"
-          :class="{ 'eq-item--active': recipe.equipmentProfileId === p.id }"
+          :class="{ 'eq-item--active': recipe.equipmentProfileId === p.id, 'eq-item--default': p.isDefault }"
           @click="selectProfile(p)">
-          <q-item-section avatar style="min-width:36px">
-            <q-icon name="mdi-kettle"
-              :color="recipe.equipmentProfileId === p.id ? 'primary' : 'grey-5'"
-              size="20px" />
+          <q-item-section avatar style="min-width: 36px">
+            <div :class="['eq-icon-wrap', p.isDefault && 'eq-icon-wrap--default']">
+              <q-icon v-if="p.isDefault" name="mdi-star" color="amber-7" size="10px" />
+              <q-icon name="mdi-kettle"
+                :color="recipe.equipmentProfileId === p.id ? 'primary' : (p.isDefault ? 'amber-8' : 'grey-5')"
+                size="18px" />
+            </div>
           </q-item-section>
           <q-item-section>
             <q-item-label class="eq-item-name">{{ p.name }}</q-item-label>
             <q-item-label caption class="eq-item-caption">
-              {{ p.batchVolume }} L · {{ p.boilTime }} min · {{ p.efficiency }}%
+              {{ p.batchVolume }}L &middot; {{ p.boilTime }}min fervura &middot; {{ p.efficiency }}% efic.
             </q-item-label>
           </q-item-section>
-          <q-item-section side class="row no-wrap q-gutter-xs">
-            <q-btn flat round dense size="xs" icon="mdi-pencil"
-              color="grey-5" @click.stop="openEdit(p)">
-              <q-tooltip>Editar perfil</q-tooltip>
-            </q-btn>
-            <q-btn flat round dense size="xs" icon="mdi-delete"
-              color="negative" @click.stop="confirmDelete(p)">
-              <q-tooltip>Excluir perfil</q-tooltip>
-            </q-btn>
+          <q-item-section side style="min-width: 24px">
             <q-icon v-if="recipe.equipmentProfileId === p.id"
-              name="mdi-check-circle" color="positive" size="18px" class="q-ml-xs" />
+              name="mdi-check-circle" color="primary" size="20px" />
           </q-item-section>
         </q-item>
       </template>
@@ -57,25 +51,22 @@
         clickable v-ripple class="eq-item rounded-borders q-mb-xs"
         :class="{ 'eq-item--active': recipe.equipmentProfileId === p.id }"
         @click="selectProfile(p)">
-        <q-item-section avatar style="min-width:36px">
-          <q-icon name="mdi-kettle"
-            :color="recipe.equipmentProfileId === p.id ? 'primary' : 'grey-5'"
-            size="20px" />
+        <q-item-section avatar style="min-width: 36px">
+          <div class="eq-icon-wrap">
+            <q-icon name="mdi-kettle"
+              :color="recipe.equipmentProfileId === p.id ? 'primary' : 'grey-5'"
+              size="18px" />
+          </div>
         </q-item-section>
         <q-item-section>
           <q-item-label class="eq-item-name">{{ p.name }}</q-item-label>
           <q-item-label caption class="eq-item-caption">
-            {{ p.batchVolume }} L · {{ p.boilTime }} min · {{ p.efficiency }}%
+            {{ p.batchVolume }}L &middot; {{ p.boilTime }}min fervura &middot; {{ p.efficiency }}% efic.
           </q-item-label>
         </q-item-section>
-        <q-item-section side class="row no-wrap items-center q-gutter-xs">
-          <q-btn flat round dense size="xs" icon="mdi-content-copy"
-            color="grey-5" :disable="!equipStore.canAddMore"
-            @click.stop="openCreateFromBase(p)">
-            <q-tooltip>{{ equipStore.canAddMore ? 'Usar como base' : 'Limite de perfis atingido' }}</q-tooltip>
-          </q-btn>
+        <q-item-section side style="min-width: 24px">
           <q-icon v-if="recipe.equipmentProfileId === p.id"
-            name="mdi-check-circle" color="positive" size="18px" class="q-ml-xs" />
+            name="mdi-check-circle" color="primary" size="20px" />
         </q-item-section>
       </q-item>
 
@@ -89,9 +80,8 @@
 
     <template #footer>
       <div class="row items-center q-px-md q-py-sm" style="gap: 8px">
-        <brew-pilot-label v-if="equipStore.userProfiles.length" variant="muted" size="11px">
-          {{ equipStore.userProfiles.length }} / {{ FREE_LIMIT }} perfis personalizados
-        </brew-pilot-label>
+        <brew-pilot-button variant="flat" no-caps icon="mdi-cog-outline" label="Gerenciar Perfis"
+          size="sm" @click="goToProfiles" />
         <q-space />
         <brew-pilot-button variant="outline" no-caps icon="mdi-plus" label="Criar Perfil"
           :disable="!equipStore.canAddMore" size="sm"
@@ -110,30 +100,13 @@
     @saved="onSaved" />
 
   <!-- Picker de base -->
-  <equipment-base-picker-dialog v-model="pickerDialog" @select="onPickerSelect" />
-
-  <!-- Confirmação de exclusão -->
-  <brew-pilot-dialog v-model="deleteDialog" title="Excluir Perfil"
-    icon="mdi-delete" icon-color="negative" width="360px">
-    <q-card-section class="q-pt-sm">
-      <brew-pilot-label variant="secondary">
-        Deseja excluir o perfil <strong>{{ deleteTarget?.name }}</strong>?
-        Esta ação não pode ser desfeita.
-      </brew-pilot-label>
-    </q-card-section>
-    <template #footer>
-      <q-card-actions align="right" class="q-px-md q-pb-md">
-        <brew-pilot-button variant="flat" no-caps label="Cancelar" @click="deleteDialog = false" />
-        <brew-pilot-button variant="filled" color="negative" no-caps label="Excluir"
-          :loading="deleting" @click="doDelete" />
-      </q-card-actions>
-    </template>
-  </brew-pilot-dialog>
+  <brew-pilot-equipment-base-picker-dialog v-model="pickerDialog" @select="onPickerSelect" />
 
 </template>
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
+import { useRouter } from 'vue-router'
 import { useRecipeStore } from '@/stores/recipeStore'
 import { useEquipmentStore } from '@/stores/equipmentStore'
 import type { EquipmentProfile } from '@/types/equipment'
@@ -145,6 +118,7 @@ const emit = defineEmits<{ 'update:modelValue': [v: boolean] }>()
 
 const open = computed({ get: () => props.modelValue, set: v => emit('update:modelValue', v) })
 
+const router = useRouter()
 const store = useRecipeStore()
 const recipe = computed(() => store.currentRecipe!)
 const equipStore = useEquipmentStore()
@@ -154,10 +128,6 @@ const editDialog = ref(false)
 const editBase = ref<EquipmentProfile | null>(null)
 const fromPicker = ref(false)
 const pickerDialog = ref(false)
-const deleteDialog = ref(false)
-const deleteTarget = ref<EquipmentProfile | null>(null)
-const deleting = ref(false)
-
 // Carrega os perfis ao abrir
 watch(() => props.modelValue, (v) => {
   if (v) {
@@ -176,6 +146,10 @@ const filteredUserProfiles = computed(() => {
   return equipStore.userProfiles.filter(p => p.name.toLowerCase().includes(q))
 })
 
+const sortedUserProfiles = computed(() =>
+  [...filteredUserProfiles.value].sort((a, b) => (b.isDefault ? 1 : 0) - (a.isDefault ? 1 : 0))
+)
+
 function selectProfile(p: EquipmentProfile) {
   recipe.value.equipmentProfileId = p.id
   recipe.value.equipmentProfile = p
@@ -193,8 +167,9 @@ function openEdit(p: EquipmentProfile) {
 }
 
 function openCreateFromBase(p: EquipmentProfile | null) {
-  // Abre o picker de base em vez de criar direto
-  pickerDialog.value = true
+  fromPicker.value = true
+  editBase.value = p
+  editDialog.value = true
 }
 
 function onPickerSelect(base: EquipmentProfile | null) {
@@ -212,25 +187,9 @@ function onSaved(saved: EquipmentProfile) {
   selectProfile(saved)
 }
 
-function confirmDelete(p: EquipmentProfile) {
-  deleteTarget.value = p
-  deleteDialog.value = true
-}
-
-async function doDelete() {
-  if (!deleteTarget.value) return
-  deleting.value = true
-  try {
-    await equipStore.remove(deleteTarget.value.id)
-    if (recipe.value.equipmentProfileId === deleteTarget.value.id) {
-      recipe.value.equipmentProfileId = undefined
-      recipe.value.equipmentProfile = undefined
-    }
-  } finally {
-    deleting.value = false
-    deleteDialog.value = false
-    deleteTarget.value = null
-  }
+function goToProfiles() {
+  open.value = false
+  router.push('/profiles/equipment')
 }
 </script>
 
@@ -256,6 +215,15 @@ async function doDelete() {
   background: rgba(193, 113, 14, 0.08) !important;
   border-color: rgba(193, 113, 14, 0.30) !important;
 }
+.eq-item--default {
+  border-left: 3px solid #f59e0b;
+  border-color: color-mix(in srgb, #f59e0b 45%, var(--bp-border));
+  background: color-mix(in srgb, #f59e0b 5%, var(--bp-surface-alt));
+}
+.eq-item--default:hover {
+  border-color: color-mix(in srgb, #f59e0b 70%, transparent) !important;
+  background: rgba(193, 113, 14, 0.08) !important;
+}
 .eq-item-name {
   color: var(--bp-text-primary);
   font-size: 13px;
@@ -265,23 +233,39 @@ async function doDelete() {
   color: var(--bp-text-muted) !important;
   font-size: 11px;
 }
-.eq-limit-banner {
+
+.eq-icon-wrap {
+  background: color-mix(in srgb, var(--q-primary) 10%, transparent);
+  border-radius: 6px;
+  padding: 4px 5px;
   display: flex;
   align-items: center;
-  background: rgba(193, 113, 14, 0.10);
-  border: 1px solid rgba(193, 113, 14, 0.28);
-  border-radius: 6px;
-  padding: 7px 12px;
-  font-size: 11.5px;
-  color: var(--bp-text-secondary);
-  gap: 4px;
+  gap: 2px;
 }
-.eq-limit-link {
-  color: #c1710e;
-  font-weight: 600;
-  text-decoration: underline;
-  cursor: pointer;
-  margin-left: 4px;
+.eq-icon-wrap--default {
+  background: color-mix(in srgb, #f59e0b 15%, transparent);
 }
+
+.upgrade-banner {
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, #f59e0b 10%, var(--bp-surface-alt)),
+    color-mix(in srgb, #c1710e 8%, var(--bp-surface-alt))
+  );
+  border: 1px solid color-mix(in srgb, #f59e0b 35%, transparent);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 4px;
+}
+.upgrade-icon-wrap {
+  background: color-mix(in srgb, #f59e0b 15%, transparent);
+  border-radius: 8px;
+  padding: 6px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+.upgrade-title { color: var(--bp-text-primary); margin-bottom: 1px; }
+.upgrade-sub { font-size: 11px; color: var(--bp-text-secondary); }
 </style>
 
