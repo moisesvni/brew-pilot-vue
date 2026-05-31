@@ -2,6 +2,13 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import type { Recipe, RecipeStats, RecipeValidation } from '@/types/recipe'
 import { calculateRecipeStats } from '@/composables/useBrewCalculator'
+import {
+  applyStyleAdjustmentPlan,
+  getStyleAdjustmentPlan,
+  type StyleAdjustmentMetric,
+  type StyleAdjustmentPlan,
+} from '@/pages/recipes/utils/styleAdjustments'
+import { getStyleMetricStatus } from '@/pages/recipes/utils/styleMetricStatus'
 import { recipeService } from '@/services/recipe.service'
 
 export const useRecipeStore = defineStore('recipe', () => {
@@ -112,6 +119,24 @@ export const useRecipeStore = defineStore('recipe', () => {
     return copy
   }
 
+  function applyStyleMetricTarget(metric: StyleAdjustmentMetric, target: number): StyleAdjustmentPlan | null {
+    if (!currentRecipe.value) return null
+
+    const plan = getStyleAdjustmentPlan(currentRecipe.value, metric, target)
+    if (!plan.adjustable) return plan
+
+    const appliedPlan = applyStyleAdjustmentPlan(currentRecipe.value, plan)
+    const now = new Date().toISOString()
+
+    currentRecipe.value.updatedAt = now
+
+    if (metric === 'og') currentRecipe.value.targetOg = target
+    if (metric === 'ibu') currentRecipe.value.targetIbu = target
+    if (metric === 'ebc') currentRecipe.value.targetEbc = target
+
+    return appliedPlan
+  }
+
   return {
     recipes,
     currentRecipe,
@@ -125,7 +150,8 @@ export const useRecipeStore = defineStore('recipe', () => {
     newRecipe,
     saveRecipe,
     deleteRecipe,
-    duplicateRecipe
+    duplicateRecipe,
+    applyStyleMetricTarget
   }
 })
 
@@ -188,13 +214,22 @@ function validateRecipe (recipe: Recipe, stats: RecipeStats): RecipeValidation[]
 
   // Comparação com estilo
   const style = recipe.styleGuide
-  if (style && stats.og > 1.010) {
-    if (stats.abv < style.abvMin || stats.abv > style.abvMax) {
-      results.push({ severity: 'suggestion', message: `ABV de ${stats.abv}% está fora da faixa do estilo ${style.name} (${style.abvMin}–${style.abvMax}%).` })
-    }
-    if (stats.ibu < style.ibuMin || stats.ibu > style.ibuMax) {
-      results.push({ severity: 'suggestion', message: `IBU de ${stats.ibu} está fora da faixa do estilo (${style.ibuMin}–${style.ibuMax} IBU).` })
-    }
+  const hasFermentables = recipe.fermentables.length > 0
+  const hasYeast = recipe.yeasts.length > 0
+  const hasIbuDrivers = recipe.hops.some(hop =>
+    ['Boil', 'FirstWort', 'Whirlpool', 'Hopstand'].includes(hop.use) && hop.amount > 0,
+  )
+
+  if (style) {
+    pushStyleValidation(results, 'ABV', stats.abv, style.abvMin, style.abvMax, '%', hasFermentables && hasYeast)
+    pushStyleValidation(results, 'OG', stats.og, style.ogMin, style.ogMax, ' SG', hasFermentables)
+    pushStyleValidation(results, 'FG', stats.fg, style.fgMin, style.fgMax, ' SG', hasFermentables && hasYeast)
+    pushStyleValidation(results, 'EBC', stats.ebc, style.ebcMin, style.ebcMax, ' EBC', hasFermentables)
+    pushStyleValidation(results, 'IBU', stats.ibu, style.ibuMin, style.ibuMax, ' IBU', hasIbuDrivers)
+
+    const buguMin = style.ibuMin / ((style.ogMin - 1) * 1000)
+    const buguMax = style.ibuMax / ((style.ogMax - 1) * 1000)
+    pushStyleValidation(results, 'BU/GU', stats.buGuRatio, buguMin, buguMax, '', hasFermentables && hasIbuDrivers)
   }
 
   // Sugestão: sem mostura definida para All Grain
@@ -203,4 +238,39 @@ function validateRecipe (recipe: Recipe, stats: RecipeStats): RecipeValidation[]
   }
 
   return results
+}
+
+function pushStyleValidation(
+  results: RecipeValidation[],
+  label: string,
+  current: number,
+  min: number,
+  max: number,
+  unit: string,
+  enabled: boolean,
+) {
+  if (!enabled) return
+
+  const status = getStyleMetricStatus(current, min, max)
+  if (status === 'ok') return
+
+  const formattedCurrent = unit === '%'
+    ? `${current.toFixed(1)}${unit}`
+    : unit
+      ? `${current.toFixed(unit.includes('SG') ? 3 : unit.includes('EBC') ? 1 : unit.includes('IBU') ? 0 : 2)}${unit}`
+      : current.toFixed(2)
+
+  const formattedRange = unit === '%'
+    ? `${min.toFixed(1)}–${max.toFixed(1)}${unit}`
+    : unit
+      ? `${min.toFixed(unit.includes('SG') ? 3 : unit.includes('EBC') ? 1 : unit.includes('IBU') ? 0 : 2)}–${max.toFixed(unit.includes('SG') ? 3 : unit.includes('EBC') ? 1 : unit.includes('IBU') ? 0 : 2)}${unit}`
+      : `${min.toFixed(2)}–${max.toFixed(2)}`
+
+  results.push({
+    severity: status === 'warning' ? 'warning' : 'suggestion',
+    message: status === 'warning'
+      ? `${label} de ${formattedCurrent} está perto do limite da faixa do estilo (${formattedRange}).`
+      : `${label} de ${formattedCurrent} está fora da faixa do estilo (${formattedRange}).`,
+    field: 'style',
+  })
 }
