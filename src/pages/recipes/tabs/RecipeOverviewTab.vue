@@ -65,7 +65,7 @@
                   <q-tooltip>Redimensionar lote</q-tooltip>
                 </brew-pilot-button>
                 <brew-pilot-button round outline dense icon="mdi-swap-horizontal" color="grey-5" size="md"
-                  v-if="recipe.equipmentProfile?.name"
+                  v-if="recipe.equipmentProfile?.name && hasMultipleEquipProfiles"
                   @click="showChangeEquipDialog()">
                   <q-tooltip>Alterar equipamento</q-tooltip>
                 </brew-pilot-button>
@@ -195,10 +195,25 @@
       <div class="col-12 col-md-6">
         <recipe-section title="Diversos" icon="mdi-flask-outline" icon-color="teal">
           <template #actions>
-            <brew-pilot-button variant="outline" round dense icon="mdi-plus" primary
-              tooltip="Adicionar Ingrediente" @click.stop="miscTabRef?.openPicker()" />
+            <div class="misc-add-action">
+              <brew-pilot-button variant="outline" round dense icon="mdi-plus" primary
+                :disable="!hasSelectedStyle"
+                :tooltip="hasSelectedStyle ? 'Adicionar Ingrediente' : undefined"
+                @click.stop="miscTabRef?.openPicker()" />
+              <q-tooltip v-if="!hasSelectedStyle" anchor="bottom middle" self="top middle" class="misc-action-tooltip">
+                Selecione um estilo para liberar a adição de ingredientes diversos.
+              </q-tooltip>
+            </div>
           </template>
-          <recipe-misc-tab ref="miscTabRef" :hide-button="true" />
+          <recipe-misc-tab v-if="recipe.miscs.length" ref="miscTabRef" :hide-button="true" />
+          <overview-empty-state-banner
+            v-else
+            class="q-mt-xs"
+            icon="mdi-flask-outline"
+            tone="teal"
+            title="Nenhum ingrediente diverso adicionado"
+            description="Adicione clarificantes, especiarias, cascas, lactose e outros extras que completam a receita."
+          />
         </recipe-section>
       </div>
       <div class="col-12 col-md-6">
@@ -253,15 +268,18 @@ import EditEquipmentDialog from '@/pages/recipes/components/overview/dialogs/Edi
 import RecipeImageDialog from '@/pages/recipes/components/overview/dialogs/RecipeImageDialog.vue'
 import RecipeStyleDialog from '@/pages/recipes/components/overview/dialogs/RecipeStyleDialog.vue'
 import ResizeEquipDialog from '@/pages/recipes/components/overview/dialogs/ResizeEquipDialog.vue'
+import OverviewEmptyStateBanner from '@/pages/recipes/components/overview/OverviewEmptyStateBanner.vue'
 
 const store = useRecipeStore()
 const recipe = computed(() => store.currentRecipe!)
 const stats = computed(() => store.stats)
 const router = useRouter()
+const hasSelectedStyle = computed(() => Boolean(recipe.value.styleGuide))
 
 const miscTabRef = ref<{ openPicker: () => void } | null>(null)
 
 const equipStore = useEquipmentStore()
+const hasMultipleEquipProfiles = computed(() => (equipStore.userProfiles.length + equipStore.globalProfiles.length) > 1)
 
 function selectEquip(p: EquipmentProfile) {
   recipe.value.equipmentProfileId = p.id
@@ -469,5 +487,13 @@ watch(styleDialog, value => {
 .equip-pick-caption {
   font-size: 10.5px;
   color: var(--bp-text-muted);
+}
+
+.misc-add-action {
+  display: inline-flex;
+}
+
+.misc-action-tooltip {
+  font-size: 12px;
 }
 </style>

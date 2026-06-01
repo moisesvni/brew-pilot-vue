@@ -41,11 +41,11 @@
         <q-card-section class="q-pt-xs q-pb-sm">
             <div class="rsad-bar-caption">Atual na faixa do estilo</div>
             <recipe-style-range-bar :label="label" :current="current" :min="min" :max="max" :decimals="decimals"
-                :unit="unit" :show-current-value="false" />
+                :unit="unit" :show-current-value="false" :show-metric-label="false" />
 
             <div class="rsad-bar-caption q-mt-sm">Previa apos aplicar</div>
             <recipe-style-range-bar :label="label" :current="plan?.achieved ?? targetValue" :min="min" :max="max"
-                :decimals="decimals" :unit="unit" :show-current-value="false" />
+                :decimals="decimals" :unit="unit" :show-current-value="false" :show-metric-label="false" />
         </q-card-section>
 
         <q-card-section class="q-pt-none q-pb-sm">

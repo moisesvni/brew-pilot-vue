@@ -63,13 +63,12 @@ export const useRecipeStore = defineStore('recipe', () => {
       efficiency: 72,
       styleGuideId: '',
       styleGuide: undefined,
+      mashProfileId: undefined,
+      mashProfile: undefined,
       fermentables: [],
       hops: [],
       yeasts: [],
-      mashSteps: [
-        { id: crypto.randomUUID(), name: 'Sacarificação', type: 'Infusion', temperature: 67, time: 75, waterRatio: 3.0, sortOrder: 0 },
-        { id: crypto.randomUUID(), name: 'MashOut', type: 'Temperature', temperature: 75, time: 10, sortOrder: 1 }
-      ],
+      mashSteps: [],
       miscs: [],
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()

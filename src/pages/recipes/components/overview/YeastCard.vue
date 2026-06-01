@@ -5,14 +5,21 @@
     icon-color="deep-purple-4"
   >
     <template #actions>
-      <brew-pilot-button variant="outline" round dense icon="mdi-calculator"
+      <brew-pilot-button v-if="recipe.yeasts.length" variant="outline" round dense icon="mdi-calculator"
         tooltip="Calculadora de Levedura" @click.stop="calcDialog = true" />
-      <brew-pilot-button variant="outline" round dense icon="mdi-plus" primary
-        class="q-ml-xs" tooltip="Adicionar Levedura" @click.stop="pickerOpen = true" />
+      <div class="yeast-add-action q-ml-xs">
+        <brew-pilot-button variant="outline" round dense icon="mdi-plus" primary
+          :disable="!hasSelectedStyle"
+          :tooltip="hasSelectedStyle ? 'Adicionar Levedura' : undefined"
+          @click.stop="pickerOpen = true" />
+        <q-tooltip v-if="!hasSelectedStyle" anchor="bottom middle" self="top middle" class="yeast-action-tooltip">
+          Selecione um estilo para liberar a adição de leveduras.
+        </q-tooltip>
+      </div>
     </template>
 
     <!-- ── Lista ──────────────────────────────────────────────────────────── -->
-    <q-list dense class="q-mt-xs">
+    <q-list v-if="recipe.yeasts.length" dense class="q-mt-xs">
       <q-item
         v-for="y in recipe.yeasts"
         :key="y.id"
@@ -46,12 +53,15 @@
           </div>
         </q-item-section>
       </q-item>
-      <q-item v-if="!recipe.yeasts.length" class="q-px-xs">
-        <q-item-section>
-          <div class="text-caption text-grey-7">Nenhuma levedura adicionada</div>
-        </q-item-section>
-      </q-item>
     </q-list>
+    <overview-empty-state-banner
+      v-else
+      class="q-mt-xs"
+      icon="mdi-test-tube"
+      tone="purple"
+      title="Nenhuma levedura adicionada"
+      description="Adicione uma levedura para definir atenuacao, perfil de fermentacao e estimativas de FG e ABV."
+    />
 
     <!-- ══════════════════════════════════════════════════════════════════════
          DIALOG: Editar Levedura
@@ -273,10 +283,12 @@
 import { ref, computed } from 'vue'
 import { useRecipeStore } from '@/stores/recipeStore'
 import type { RecipeYeast, YeastForm } from '@/types/recipe'
+import OverviewEmptyStateBanner from './OverviewEmptyStateBanner.vue'
 
 const store = useRecipeStore()
 const recipe = computed(() => store.currentRecipe!)
 const stats   = computed(() => store.stats)
+const hasSelectedStyle = computed(() => Boolean(recipe.value.styleGuide))
 
 const pickerOpen  = ref(false)
 const editDialog  = ref(false)
@@ -504,6 +516,10 @@ const formOptions = [
 <style scoped>
 .yeast-row { border-radius: 4px; transition: background 0.12s; }
 .yeast-row:hover { background: rgba(255,255,255,0.05); }
+
+.yeast-add-action { display: inline-flex; }
+
+.yeast-action-tooltip { font-size: 12px; }
 
 .calc-result-box {
   background: rgba(76, 175, 80, 0.12);

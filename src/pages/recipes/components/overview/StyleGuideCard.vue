@@ -16,31 +16,14 @@
         </brew-pilot-label>
         <div class="row flex-shrink-0">
           <brew-pilot-button
-            variant="flat"
+            variant="outline"
             round
             dense
-            icon="mdi-help-circle-outline"
-            tooltip="Guia rapido dos indicadores do estilo"
+            icon="mdi-help"
+            tooltip="Abrir guia rapido dos indicadores do estilo"
             class="q-mr-xs sgc-help-btn"
+            @click="styleGuideHelpDialog = true"
           >
-            <q-menu anchor="bottom right" self="top right" :offset="[0, 6]" class="sgc-help-menu">
-              <div class="sgc-help-panel">
-                <div class="sgc-help-title">Guia de estilo e ajustes</div>
-                <div class="sgc-help-copy">
-                  Use OG, IBU e EBC para empurrar a receita em direcao ao estilo. ABV, FG e BU/GU respondem aos ingredientes e a fermentacao ja definidos.
-                </div>
-
-                <div class="sgc-help-grid q-mt-sm">
-                  <div v-for="guide in metricGuide" :key="guide.key" class="sgc-help-item">
-                    <div class="sgc-help-item-head">
-                      <span class="sgc-help-badge">{{ guide.label }}</span>
-                      <q-icon :name="guide.icon" size="13px" :color="guide.adjustable ? 'primary' : 'grey-5'" />
-                    </div>
-                    <div class="sgc-help-item-copy">{{ guide.description }}</div>
-                  </div>
-                </div>
-              </div>
-            </q-menu>
           </brew-pilot-button>
           <brew-pilot-button round outline dense primary
             :icon="recipe.styleGuide ? 'mdi-swap-horizontal' : 'mdi-plus'" size="md"
@@ -84,6 +67,77 @@
     </q-card-section>
 
     <!-- dialog de seleção de estilo (auto-contido) -->
+    <brew-pilot-dialog
+      v-model="styleGuideHelpDialog"
+      title="Guia de estilo e ajustes"
+      icon="mdi-book-open-page-variant"
+      icon-color="primary"
+      width="760px"
+      scrollable
+    >
+      <div class="sgc-dialog-body q-pa-md">
+        <div class="sgc-dialog-hero q-mb-md">
+          <div class="sgc-dialog-kicker">Leitura rapida</div>
+          <div class="sgc-dialog-title">Use o estilo como alvo, nao como limite cego</div>
+          <div class="sgc-dialog-copy">
+            OG, IBU e EBC sao os tres controles que o Brew Pilot consegue empurrar direto com os ingredientes que ja estao na receita. ABV, FG e BU/GU reagem a essas decisoes e ao perfil de fermentacao definido.
+          </div>
+          <div class="row q-col-gutter-sm q-mt-sm">
+            <div class="col-12 col-sm-4">
+              <div class="sgc-hero-stat">
+                <div class="sgc-hero-stat-label">Ajuste direto</div>
+                <div class="sgc-hero-stat-value">OG, IBU, EBC</div>
+              </div>
+            </div>
+            <div class="col-12 col-sm-4">
+              <div class="sgc-hero-stat">
+                <div class="sgc-hero-stat-label">Resposta indireta</div>
+                <div class="sgc-hero-stat-value">ABV, FG, BU/GU</div>
+              </div>
+            </div>
+            <div class="col-12 col-sm-4">
+              <div class="sgc-hero-stat">
+                <div class="sgc-hero-stat-label">Objetivo</div>
+                <div class="sgc-hero-stat-value">Aproximar o perfil</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sgc-dialog-section q-mb-sm">
+          <div class="sgc-dialog-section-title">Indicadores do card</div>
+          <div class="sgc-dialog-section-copy">
+            Cada linha mostra a sua receita contra a faixa do estilo. Verde indica dentro da faixa. Amarelo mostra proximidade. Vermelho aponta que a metrica saiu do alvo de forma clara.
+          </div>
+        </div>
+
+        <div class="sgc-help-grid q-mt-sm">
+          <div v-for="guide in metricGuide" :key="guide.key" class="sgc-help-item">
+            <div class="row items-start no-wrap" style="gap: 12px">
+              <div class="sgc-help-icon-wrap">
+                <q-icon :name="guide.icon" size="18px" :color="guide.adjustable ? 'primary' : 'grey-5'" />
+              </div>
+              <div class="col">
+                <div class="sgc-help-item-head">
+                  <span class="sgc-help-badge">{{ guide.label }}</span>
+                  <span class="sgc-help-chip" :class="guide.adjustable ? 'is-adjustable' : 'is-derived'">
+                    {{ guide.adjustable ? 'Ajustavel' : 'Derivado' }}
+                  </span>
+                </div>
+                <div class="sgc-help-item-copy">{{ guide.description }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <template #footer>
+        <div class="row justify-end q-px-md q-py-sm">
+          <brew-pilot-button variant="outline" no-caps label="Fechar" @click="styleGuideHelpDialog = false" />
+        </div>
+      </template>
+    </brew-pilot-dialog>
+
     <recipe-style-dialog v-model="styleDialog" />
     <recipe-style-adjust-dialog
       v-if="selectedMetric"
@@ -113,6 +167,7 @@ const stats  = computed(() => store.stats)
 
 const styleDialog = ref(false)
 const adjustDialog = ref(false)
+const styleGuideHelpDialog = ref(false)
 const selectedMetricKey = ref<StyleAdjustmentMetric | null>(null)
 
 interface StyleMetricItem {
@@ -322,44 +377,112 @@ function updateAdjustDialog(value: boolean) {
 }
 
 .sgc-help-btn {
-  color: var(--q-primary) !important;
+  color: var(--bp-text-secondary) !important;
 }
 
-.sgc-help-panel {
-  width: min(360px, 88vw);
-  padding: 14px;
-  background: var(--bp-card-bg);
+.sgc-dialog-body {
+  background:
+    radial-gradient(circle at top right, color-mix(in srgb, var(--q-primary) 10%, transparent), transparent 34%),
+    linear-gradient(180deg, color-mix(in srgb, var(--bp-card-bg) 94%, var(--bp-card-border)) 0%, var(--bp-card-bg) 100%);
 }
 
-.sgc-help-title {
+.sgc-dialog-hero {
+  padding: 18px;
+  border-radius: 18px;
+  border: 1px solid color-mix(in srgb, var(--q-primary) 16%, var(--bp-card-border));
+  background: linear-gradient(135deg, color-mix(in srgb, var(--q-primary) 10%, var(--bp-card-bg)) 0%, var(--bp-card-bg) 100%);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, .08);
+}
+
+.sgc-dialog-kicker {
+  color: var(--q-primary);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.sgc-dialog-title {
+  color: var(--bp-text-primary);
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.sgc-dialog-copy {
+  color: var(--bp-text-secondary);
+  font-size: 13px;
+  line-height: 1.55;
+  margin-top: 10px;
+  max-width: 620px;
+}
+
+.sgc-hero-stat {
+  height: 100%;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid color-mix(in srgb, var(--q-primary) 10%, var(--bp-card-border));
+  background: color-mix(in srgb, var(--bp-card-bg) 88%, transparent);
+}
+
+.sgc-hero-stat-label {
+  color: var(--bp-text-secondary);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.sgc-hero-stat-value {
+  color: var(--bp-text-primary);
+  font-size: 14px;
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+.sgc-dialog-section-title {
   color: var(--bp-text-primary);
   font-size: 13px;
   font-weight: 700;
 }
 
-.sgc-help-copy {
+.sgc-dialog-section-copy {
   color: var(--bp-text-secondary);
   font-size: 12px;
-  line-height: 1.45;
-  margin-top: 6px;
+  line-height: 1.5;
+  margin-top: 4px;
 }
 
 .sgc-help-grid {
   display: grid;
-  gap: 8px;
+  gap: 10px;
 }
 
 .sgc-help-item {
-  padding: 10px;
+  padding: 14px;
+  border-radius: 16px;
+  border: 1px solid color-mix(in srgb, var(--q-primary) 10%, var(--bp-card-border));
+  background: linear-gradient(180deg, color-mix(in srgb, var(--bp-card-bg) 96%, transparent), color-mix(in srgb, var(--bp-card-bg) 88%, transparent));
+  box-shadow: 0 8px 18px rgba(0, 0, 0, .05);
+}
+
+.sgc-help-icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
   border-radius: 12px;
-  border: 1px solid color-mix(in srgb, var(--q-primary) 12%, var(--bp-card-border));
-  background: color-mix(in srgb, var(--bp-card-bg) 94%, transparent);
+  background: color-mix(in srgb, var(--q-primary) 10%, transparent);
+  flex-shrink: 0;
 }
 
 .sgc-help-item-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 10px;
   margin-bottom: 6px;
 }
 
@@ -371,16 +494,43 @@ function updateAdjustDialog(value: boolean) {
   height: 20px;
   padding: 0 8px;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--q-primary) 14%, transparent);
+  background: color-mix(in srgb, var(--q-primary) 15%, transparent);
   color: var(--bp-text-primary);
   font-size: 10px;
   font-weight: 800;
   letter-spacing: .04em;
 }
 
+.sgc-help-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 76px;
+  height: 22px;
+  padding: 0 10px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+}
+
+.sgc-help-chip.is-adjustable {
+  background: color-mix(in srgb, var(--q-primary) 14%, transparent);
+  color: var(--q-primary);
+  border-color: color-mix(in srgb, var(--q-primary) 18%, transparent);
+}
+
+.sgc-help-chip.is-derived {
+  background: color-mix(in srgb, var(--bp-text-secondary) 10%, transparent);
+  color: var(--bp-text-secondary);
+  border-color: color-mix(in srgb, var(--bp-text-secondary) 14%, transparent);
+}
+
 .sgc-help-item-copy {
   color: var(--bp-text-secondary);
-  font-size: 11px;
-  line-height: 1.45;
+  font-size: 12px;
+  line-height: 1.55;
 }
 </style>

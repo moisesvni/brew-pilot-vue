@@ -10,6 +10,7 @@ import type { RecipeMisc } from './RecipeMisc'
 import type { RecipeWater } from './RecipeWater'
 import type { WaterProfile } from './WaterProfile'
 import type { WaterMinerals } from './WaterMinerals'
+import type { MashProfile } from '../mash/MashProfile'
 
 export interface Recipe {
   id: string
@@ -34,6 +35,8 @@ export interface Recipe {
   styleGuide?: StyleGuide
   equipmentProfileId?: string
   equipmentProfile?: EquipmentProfile
+  mashProfileId?: string
+  mashProfile?: MashProfile
   fermentables: RecipeFermentable[]
   hops: RecipeHop[]
   yeasts: RecipeYeast[]

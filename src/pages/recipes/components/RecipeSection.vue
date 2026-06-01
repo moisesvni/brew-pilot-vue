@@ -4,7 +4,7 @@
     <div class="section-header row items-center no-wrap q-px-md q-py-sm cursor-pointer" @click="isOpen = !isOpen">
       <q-icon :name="icon" :color="iconColor ?? 'primary'" size="18px" class="q-mr-sm" />
       <span class="text-body2 text-weight-bold bp-section-title">{{ title }}</span>
-      <q-badge v-if="badge" color="grey-9" class="q-ml-sm text-grey-4" style="font-size:0.65rem">
+      <q-badge v-if="badge" color="grey-9" :class="['q-ml-sm text-grey-4', badgeClass]" style="font-size:0.65rem">
         {{ badge }}
       </q-badge>
       <q-space />
@@ -39,6 +39,7 @@ const props = withDefaults(defineProps<{
   title: string
   icon: string
   badge?: string
+  badgeClass?: string
   iconColor?: string
   defaultOpen?: boolean
 }>(), {

@@ -6,16 +6,23 @@
     :badge="totalHopWeight"
   >
     <template #actions>
-      <brew-pilot-button variant="outline" round dense icon="mdi-format-list-bulleted"
+      <brew-pilot-button v-if="recipe.hops.length" variant="outline" round dense icon="mdi-format-list-bulleted"
         :tooltip="listMode ? 'Modo compacto' : 'Modo lista'" @click.stop="listMode = !listMode" />
-      <brew-pilot-button variant="outline" round dense label="IBU"
+      <brew-pilot-button v-if="recipe.hops.length" variant="outline" round dense label="IBU"
         class="q-ml-xs" tooltip="Calculadora de IBU" />
-      <brew-pilot-button variant="outline" round dense icon="mdi-plus" primary
-        class="q-ml-xs" tooltip="Adicionar Lúpulo" @click.stop="pickerOpen = true" />
+      <div class="hop-add-action q-ml-xs">
+        <brew-pilot-button variant="outline" round dense icon="mdi-plus" primary
+          :disable="!hasSelectedStyle"
+          :tooltip="hasSelectedStyle ? 'Adicionar Lúpulo' : undefined"
+          @click.stop="pickerOpen = true" />
+        <q-tooltip v-if="!hasSelectedStyle" anchor="bottom middle" self="top middle" class="hop-action-tooltip">
+          Selecione um estilo para liberar a adição de lúpulos.
+        </q-tooltip>
+      </div>
     </template>
 
     <!-- ── Lista ──────────────────────────────────────────────────────────── -->
-    <q-list dense class="q-mt-xs">
+    <q-list v-if="recipe.hops.length" dense class="q-mt-xs">
       <q-item
         v-for="h in sortedHops"
         :key="h.id"
@@ -57,9 +64,17 @@
         </q-item-section>
       </q-item>
     </q-list>
+    <overview-empty-state-banner
+      v-else
+      class="q-mt-xs"
+      icon="mdi-hops"
+      tone="green"
+      title="Nenhum lúpulo adicionado"
+      description="Adicione lúpulos para construir amargor, aroma e camadas de sabor na fervura, whirlpool ou dry hop."
+    />
 
     <!-- ── Stats ──────────────────────────────────────────────────────────── -->
-    <div class="bp-stats-muted text-right q-mt-xs" style="font-size: 11px">
+    <div v-if="recipe.hops.length" class="bp-stats-muted text-right q-mt-xs" style="font-size: 11px">
       <template v-if="hopstandInfo">
         Hopstand: <strong class="bp-stats-value">{{ hopstandInfo }}</strong>
         &nbsp;·&nbsp;
@@ -152,10 +167,12 @@ import {
   calculateIbuTinseth,
   calculateIbuWhirlpool
 } from '@/composables/useBrewCalculator'
+import OverviewEmptyStateBanner from './OverviewEmptyStateBanner.vue'
 
 const store = useRecipeStore()
 const recipe = computed(() => store.currentRecipe!)
 const stats   = computed(() => store.stats)
+const hasSelectedStyle = computed(() => Boolean(recipe.value.styleGuide))
 
 const pickerOpen = ref(false)
 const listMode   = ref(false)
@@ -295,4 +312,8 @@ const useOptions = [
 <style scoped>
 .hop-row { border-radius: 4px; transition: background 0.12s; }
 .hop-row:hover { background: rgba(255,255,255,0.05); }
+
+.hop-add-action { display: inline-flex; }
+
+.hop-action-tooltip { font-size: 12px; }
 </style>

@@ -1,6 +1,6 @@
 <template>
-    <div class="sbr-row">
-        <div class="sbr-label" :class="`status--${status}`">
+    <div class="sbr-row" :class="{ 'sbr-row--no-label': !showMetricLabel }">
+        <div v-if="showMetricLabel" class="sbr-label" :class="`status--${status}`">
             {{ label }}
             <q-tooltip anchor="center right" self="center left" :offset="[6, 0]" class="sbr-tooltip">
                 <div class="text-weight-bold" style="font-size: 12px">{{ labelInfo.name }}</div>
@@ -9,8 +9,9 @@
         </div>
         <div class="sbr-track">
             <div class="sbr-zone-base" />
-            <div class="sbr-zone sbr-zone--warning" :style="warningZoneStyle" />
+            <div class="sbr-zone sbr-zone--warning" :style="leftWarningZoneStyle" />
             <div class="sbr-zone sbr-zone--ok" :style="okZoneStyle" />
+            <div class="sbr-zone sbr-zone--warning" :style="rightWarningZoneStyle" />
 
             <span class="sbr-edge" :style="{ left: `calc(${minPct}% + 5px)` }">{{ fmtMin }}</span>
             <span class="sbr-edge sbr-edge--right" :style="{ right: `calc(${100 - maxPct}% + 5px)` }">{{ fmtMax
@@ -48,9 +49,11 @@ const props = withDefaults(defineProps<{
     actionHint?: string
     actionIcon?: string
     showCurrentValue?: boolean
+    showMetricLabel?: boolean
 }>(), {
     adjustable: false,
     showCurrentValue: true,
+    showMetricLabel: true,
 })
 
 const emit = defineEmits<{
@@ -91,14 +94,19 @@ const status = computed(() => getStyleMetricStatus(props.current, props.min, pro
 const ready = ref(false)
 onMounted(() => requestAnimationFrame(() => { ready.value = true }))
 
-const warningZoneStyle = computed(() => ({
+const leftWarningZoneStyle = computed(() => ({
     left: `${warningMinPct.value}%`,
-    width: ready.value ? `${Math.max(warningMaxPct.value - warningMinPct.value, 0)}%` : '0%',
+    width: ready.value ? `${Math.max(minPct.value - warningMinPct.value, 0)}%` : '0%',
 }))
 
 const okZoneStyle = computed(() => ({
     left: `${minPct.value}%`,
     width: ready.value ? `${Math.max(maxPct.value - minPct.value, 0)}%` : '0%',
+}))
+
+const rightWarningZoneStyle = computed(() => ({
+    left: `${maxPct.value}%`,
+    width: ready.value ? `${Math.max(warningMaxPct.value - maxPct.value, 0)}%` : '0%',
 }))
 
 const decimals = computed(() => props.decimals ?? 0)
@@ -113,45 +121,54 @@ function requestAdjust() {
     emit('adjust')
 }
 
-const trackBg = computed(() => dark.value ? '#1f1610' : '#eadfcd')
-const edgeColor = computed(() => dark.value ? 'rgba(255,244,230,.72)' : 'rgba(74,47,18,.88)')
+const showMetricLabel = computed(() => props.showMetricLabel)
 
-const zoneWarningBg = computed(() => dark.value ? 'rgba(173,126,28,.42)' : 'rgba(204,169,74,.44)')
-const zoneOkBg = computed(() => dark.value ? 'rgba(73,122,45,.58)' : 'rgba(128,162,92,.56)')
+const trackBg = computed(() => dark.value ? '#2a1e1b' : '#f3e4dd')
+const edgeColor = computed(() => dark.value ? 'rgba(255,243,224,.78)' : '#5d4037')
 
-const markerOk = computed(() => dark.value ? '#9be28f' : '#215e26')
-const markerWarning = computed(() => dark.value ? '#ffd45e' : '#9a6d00')
-const markerHigh = computed(() => dark.value ? '#ff9191' : '#9B1C1C')
+const zoneWarningBg = computed(() => dark.value ? 'rgba(240,194,77,.70)' : 'rgba(240,194,45,.60)')
+const zoneOkBg = computed(() => dark.value ? '#3c7d48' : '#82b56b')
 
-const curOkColor = computed(() => dark.value ? '#8ee285' : '#1f5f24')
-const curOkBg = computed(() => dark.value ? 'rgba(73,122,45,.22)' : 'rgba(128,162,92,.16)')
-const curWarningColor = computed(() => dark.value ? '#ffd45e' : '#7a5600')
-const curWarningBg = computed(() => dark.value ? 'rgba(173,126,28,.16)' : 'rgba(204,169,74,.18)')
-const curHighColor = computed(() => dark.value ? '#ff9c9c' : '#8B1A1A')
-const curHighBg = computed(() => dark.value ? 'rgba(160,30,30,.14)' : 'rgba(160,30,30,.11)')
+const labelOkBg = computed(() => dark.value ? '#3f8c4f' : '#58a56b')
+const labelWarningBg = computed(() => dark.value ? '#b88428' : '#c7963a')
+const labelDangerBg = computed(() => dark.value ? '#b42323' : '#cf5757')
+const labelTextOk = computed(() => dark.value ? '#f3fff1' : '#f4fff2')
+const labelTextWarning = computed(() => dark.value ? '#fff6da' : '#fff9eb')
+const labelTextDanger = computed(() => dark.value ? '#fff0f0' : '#fff5f5')
 
-const actionNeutralBg = computed(() => dark.value ? 'rgba(96,68,35,.16)' : 'rgba(193,113,14,.08)')
-const actionNeutralBorder = computed(() => dark.value ? 'rgba(193,113,14,.22)' : 'rgba(144,88,28,.18)')
-const actionNeutralText = computed(() => dark.value ? 'rgba(235,203,160,.74)' : 'rgba(116,72,22,.72)')
-const actionHover = computed(() => dark.value ? 'rgba(193,113,14,.24)' : 'rgba(193,113,14,.16)')
-const actionDisabledBg = computed(() => dark.value ? 'rgba(96,68,35,.10)' : 'rgba(193,113,14,.05)')
-const actionDisabledBorder = computed(() => dark.value ? 'rgba(193,113,14,.14)' : 'rgba(144,88,28,.12)')
-const actionDisabledText = computed(() => dark.value ? 'rgba(235,203,160,.34)' : 'rgba(116,72,22,.30)')
-const actionOkBg = computed(() => dark.value ? 'rgba(73,122,45,.20)' : 'rgba(128,162,92,.18)')
-const actionOkBorder = computed(() => dark.value ? 'rgba(142,226,133,.26)' : 'rgba(31,95,36,.18)')
-const actionOkText = computed(() => dark.value ? '#8ee285' : '#1f5f24')
-const actionWarningBg = computed(() => dark.value ? 'rgba(173,126,28,.18)' : 'rgba(204,169,74,.20)')
-const actionWarningBorder = computed(() => dark.value ? 'rgba(255,212,94,.24)' : 'rgba(154,109,0,.18)')
-const actionWarningText = computed(() => dark.value ? '#ffd45e' : '#7a5600')
-const actionDangerBg = computed(() => dark.value ? 'rgba(160,30,30,.18)' : 'rgba(160,30,30,.12)')
-const actionDangerBorder = computed(() => dark.value ? 'rgba(255,156,156,.22)' : 'rgba(139,26,26,.18)')
-const actionDangerText = computed(() => dark.value ? '#ff9c9c' : '#8B1A1A')
+const markerOk = computed(() => dark.value ? '#79d98d' : '#24783b')
+const markerWarning = computed(() => dark.value ? '#f0c24d' : '#b8821b')
+const markerHigh = computed(() => dark.value ? '#ff6b6b' : '#c62828')
+
+const curOkColor = computed(() => dark.value ? '#9be6ad' : '#1f6d35')
+const curOkBg = computed(() => dark.value ? 'rgba(60,125,72,.26)' : 'rgba(130,181,107,.20)')
+const curWarningColor = computed(() => dark.value ? '#f4d27a' : '#9a6a12')
+const curWarningBg = computed(() => dark.value ? 'rgba(240,194,77,.18)' : 'rgba(240,194,77,.16)')
+const curHighColor = computed(() => dark.value ? '#ff8e8e' : '#b42323')
+const curHighBg = computed(() => dark.value ? 'rgba(198,40,40,.20)' : 'rgba(198,40,40,.12)')
+
+const actionNeutralBg = computed(() => dark.value ? 'rgba(84,69,61,.24)' : 'rgba(120,96,78,.08)')
+const actionNeutralBorder = computed(() => dark.value ? 'rgba(198,173,148,.18)' : 'rgba(132,103,73,.18)')
+const actionNeutralText = computed(() => dark.value ? 'rgba(231,212,188,.72)' : 'rgba(112,84,56,.72)')
+const actionHover = computed(() => dark.value ? 'rgba(173,128,67,.26)' : 'rgba(193,113,14,.14)')
+const actionDisabledBg = computed(() => dark.value ? 'rgba(84,69,61,.12)' : 'rgba(120,96,78,.05)')
+const actionDisabledBorder = computed(() => dark.value ? 'rgba(198,173,148,.10)' : 'rgba(132,103,73,.10)')
+const actionDisabledText = computed(() => dark.value ? 'rgba(231,212,188,.28)' : 'rgba(112,84,56,.28)')
+const actionOkBg = computed(() => dark.value ? 'rgba(60,125,72,.22)' : 'rgba(130,181,107,.18)')
+const actionOkBorder = computed(() => dark.value ? 'rgba(121,217,141,.28)' : 'rgba(36,120,59,.18)')
+const actionOkText = computed(() => dark.value ? '#8fe0a1' : '#24783b')
+const actionWarningBg = computed(() => dark.value ? 'rgba(240,194,77,.16)' : 'rgba(240,194,77,.14)')
+const actionWarningBorder = computed(() => dark.value ? 'rgba(240,194,77,.28)' : 'rgba(184,130,27,.18)')
+const actionWarningText = computed(() => dark.value ? '#f0c24d' : '#9a6a12')
+const actionDangerBg = computed(() => dark.value ? 'rgba(198,40,40,.22)' : 'rgba(198,40,40,.12)')
+const actionDangerBorder = computed(() => dark.value ? 'rgba(255,107,107,.28)' : 'rgba(180,35,35,.18)')
+const actionDangerText = computed(() => dark.value ? '#ff7b7b' : '#b42323')
 </script>
 
 <style scoped>
 .sbr-row {
     display: grid;
-    grid-template-columns: 42px minmax(0, 1fr) auto 28px;
+    grid-template-columns: 42px minmax(0, 1fr) 66px 28px;
     column-gap: 4px;
     height: 26px;
     margin-bottom: 2px;
@@ -159,7 +176,7 @@ const actionDangerText = computed(() => dark.value ? '#ff9c9c' : '#8B1A1A')
 }
 
 .sbr-row:has(.sbr-cur):not(:has(.sbr-action-wrap)) {
-    grid-template-columns: 42px minmax(0, 1fr) 74px;
+    grid-template-columns: 42px minmax(0, 1fr) 66px;
 }
 
 .sbr-row:not(:has(.sbr-cur)):has(.sbr-action-wrap) {
@@ -170,6 +187,22 @@ const actionDangerText = computed(() => dark.value ? '#ff9c9c' : '#8B1A1A')
     grid-template-columns: 42px minmax(0, 1fr);
 }
 
+.sbr-row--no-label {
+    grid-template-columns: minmax(0, 1fr) 66px 28px;
+}
+
+.sbr-row--no-label:has(.sbr-cur):not(:has(.sbr-action-wrap)) {
+    grid-template-columns: minmax(0, 1fr) 66px;
+}
+
+.sbr-row--no-label:not(:has(.sbr-cur)):has(.sbr-action-wrap) {
+    grid-template-columns: minmax(0, 1fr) 28px;
+}
+
+.sbr-row--no-label:not(:has(.sbr-cur)):not(:has(.sbr-action-wrap)) {
+    grid-template-columns: minmax(0, 1fr);
+}
+
 .sbr-label {
     font-size: 10px;
     font-weight: 800;
@@ -178,22 +211,24 @@ const actionDangerText = computed(() => dark.value ? '#ff9c9c' : '#8B1A1A')
     justify-content: center;
     height: 100%;
     letter-spacing: .04em;
-    color: #fff;
     border-radius: 3px 0 0 3px;
     cursor: default;
 }
 
 .sbr-label.status--ok {
-    background: #4a7c30;
+    background: v-bind(labelOkBg);
+    color: v-bind(labelTextOk);
 }
 
 .sbr-label.status--warning {
-    background: #b58b18;
+    background: v-bind(labelWarningBg);
+    color: v-bind(labelTextWarning);
 }
 
 .sbr-label.status--low,
 .sbr-label.status--high {
-    background: #932020;
+    background: v-bind(labelDangerBg);
+    color: v-bind(labelTextDanger);
 }
 
 .sbr-track {
@@ -201,12 +236,13 @@ const actionDangerText = computed(() => dark.value ? '#ff9c9c' : '#8B1A1A')
     height: 100%;
     background: v-bind(trackBg);
     overflow: hidden;
+    border-radius: 0;
 }
 
 .sbr-zone-base {
     position: absolute;
     inset: 0;
-    background: linear-gradient(90deg, rgba(160, 30, 30, .30), rgba(160, 30, 30, .22));
+    background: linear-gradient(90deg, rgba(180, 35, 35, .34), rgba(180, 35, 35, .28));
 }
 
 .sbr-zone {
@@ -268,6 +304,7 @@ const actionDangerText = computed(() => dark.value ? '#ff9c9c' : '#8B1A1A')
     font-size: 10px;
     font-weight: 700;
     height: 100%;
+    min-width: 0;
     display: flex;
     align-items: center;
     justify-content: flex-end;

@@ -7,6 +7,9 @@ export interface RecipeStats {
   srm: number
   buGuRatio: number
   calories: number
+  caloriesPer100Ml: number
+  energyKjPer100Ml: number
+  carbsPer100Ml: number
   preBoilOg: number
   totalGrainWeight: number
   totalHopWeight: number

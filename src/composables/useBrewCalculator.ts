@@ -187,12 +187,33 @@ export function calculateBuGu (ibu: number, og: number): number {
 }
 
 // ─── Calorias estimadas ──────────────────────────────────────────────────────
-export function calculateCalories (og: number, fg: number, servingMl = 355): number {
-  const servingOz = servingMl / 29.5735
+export function sgToPlato (sg: number): number {
+  return -616.868 + (1111.14 * sg) - (630.272 * Math.pow(sg, 2)) + (135.997 * Math.pow(sg, 3))
+}
+
+export function calculateRealExtract (og: number, fg: number): number {
+  const originalExtract = sgToPlato(og)
+  const apparentExtract = sgToPlato(fg)
+  return (0.1808 * originalExtract) + (0.8192 * apparentExtract)
+}
+
+export function calculateAbw (og: number, fg: number): number {
   const abv = calculateAbv(og, fg)
-  const realExtract = (0.1808 * og + 0.8192 * fg - 1.0) * 1000
-  const calories = servingOz * ((6.9 * abv) + 4.0 * (realExtract - 0.1))
+  if (!fg) return 0
+  return (0.79 * abv) / fg
+}
+
+export function calculateCalories (og: number, fg: number, servingMl = 355): number {
+  const abw = calculateAbw(og, fg)
+  const realExtract = calculateRealExtract(og, fg)
+  const calories = ((6.9 * abw) + (4.0 * (realExtract - 0.1))) * fg * (servingMl / 100)
   return Math.round(calories)
+}
+
+export function calculateCarbs (og: number, fg: number, servingMl = 100): number {
+  const realExtract = calculateRealExtract(og, fg)
+  const grams = realExtract * fg * (servingMl / 100)
+  return parseFloat(grams.toFixed(1))
 }
 
 // ─── IBU total da receita ─────────────────────────────────────────────────────
@@ -222,6 +243,9 @@ export function calculateRecipeStats (recipe: Recipe): RecipeStats {
   const ibu = totalIbu(recipe.hops, og, recipe.batchVolume)
   const buGu = calculateBuGu(ibu, og)
   const calories = calculateCalories(og, fg)
+  const caloriesPer100Ml = calculateCalories(og, fg, 100)
+  const energyKjPer100Ml = Math.round(caloriesPer100Ml * 4.184)
+  const carbsPer100Ml = calculateCarbs(og, fg, 100)
 
   const totalGrainWeight = recipe.fermentables.reduce((s, f) => s + f.amount, 0)
   const totalHopWeight = recipe.hops.reduce((s, h) => s + h.amount, 0)
@@ -237,5 +261,21 @@ export function calculateRecipeStats (recipe: Recipe): RecipeStats {
     ? parseFloat((1 + preBoilPoints / recipe.preBoilVolume / 1000).toFixed(4))
     : og
 
-  return { og, fg, abv, ibu, ebc, srm, buGuRatio: buGu, calories, preBoilOg, totalGrainWeight, totalHopWeight, fermentableContributions }
+  return {
+    og,
+    fg,
+    abv,
+    ibu,
+    ebc,
+    srm,
+    buGuRatio: buGu,
+    calories,
+    caloriesPer100Ml,
+    energyKjPer100Ml,
+    carbsPer100Ml,
+    preBoilOg,
+    totalGrainWeight,
+    totalHopWeight,
+    fermentableContributions,
+  }
 }

@@ -9,12 +9,19 @@
           tooltip="Definir Porcentagens" @click.stop="pctDialog = true" />
         <brew-pilot-button v-if="recipe.fermentables.length >= 1" variant="outline" round dense label="OG"
           class="circle-btn" tooltip="Redimensionar por OG" @click.stop="ogDialog = true" />
-        <brew-pilot-button variant="outline" round dense icon="mdi-plus" primary
-          tooltip="Adicionar Fermentável" @click.stop="pickerOpen = true" />
+        <div class="fov-add-action">
+          <brew-pilot-button variant="outline" round dense icon="mdi-plus" primary
+            :disable="!hasSelectedStyle"
+            :tooltip="hasSelectedStyle ? 'Adicionar Fermentável' : undefined"
+            @click.stop="pickerOpen = true" />
+          <q-tooltip v-if="!hasSelectedStyle" anchor="bottom middle" self="top middle" class="sbr-tooltip">
+            Selecione um estilo para liberar a adição de fermentáveis.
+          </q-tooltip>
+        </div>
       </template>
 
       <!-- ── Lista ──────────────────────────────────────────────────────────── -->
-      <q-list dense class="q-mt-xs">
+      <q-list v-if="recipe.fermentables.length" dense class="q-mt-xs">
         <q-item v-for="f in sortedFermentables" :key="f.id" clickable v-ripple class="fov-row q-px-xs q-py-xs"
           @click="openEdit(f)">
           <!-- swatch -->
@@ -42,13 +49,21 @@
           </q-item-section>
         </q-item>
       </q-list>
+      <overview-empty-state-banner
+        v-else
+        class="q-mt-xs"
+        icon="mdi-barley"
+        tone="amber"
+        title="Nenhum fermentável adicionado"
+        description="Adicione os maltes e adjuntos que vao construir corpo, cor e densidade da receita."
+      />
       <!-- color bar -->
       <div v-if="recipe.fermentables.length" class="fov-bar q-mt-xs">
         <div v-for="f in sortedFermentables" :key="f.id"
           :style="{ width: pct(f.amount) + '%', background: ebcToHex(f.colorEbc) }" />
       </div>
       <!-- stats -->
-      <div v-if="stats" class="bp-stats-muted text-right q-mt-xs" style="font-size: 11px">
+      <div v-if="recipe.fermentables.length && stats" class="bp-stats-muted text-right q-mt-xs" style="font-size: 11px">
         <span style="cursor: help;">
           <span class="q-mr-sx">OG:</span> <strong class="bp-stats-value">{{ stats.og.toFixed(3) }}</strong>
           <q-tooltip anchor="center right" self="center left" :offset="[6, 0]" class="sbr-tooltip">
@@ -101,10 +116,12 @@ import { ref, computed } from 'vue'
 import { useRecipeStore } from '@/stores/recipeStore'
 import type { RecipeFermentable, FermentableType } from '@/types/recipe'
 import { ebcToHex } from '@/core/utils/brewColors'
+import OverviewEmptyStateBanner from './OverviewEmptyStateBanner.vue'
 
 const store = useRecipeStore()
 const recipe = computed(() => store.currentRecipe!)
 const stats = computed(() => store.stats)
+const hasSelectedStyle = computed(() => Boolean(recipe.value.styleGuide))
 
 const pickerOpen = ref(false)
 const editDialog = ref(false)
@@ -214,5 +231,9 @@ function guessDp(f: RecipeFermentable): number {
 
 .palette-btn :deep(.q-icon) {
   color: var(--palette-color) !important;
+}
+
+.fov-add-action {
+  display: inline-flex;
 }
 </style>
